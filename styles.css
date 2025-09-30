@@ -1,0 +1,31 @@
+/* V2 glass hero + gradient, for GitHub Pages */
+:root{
+  --bg:#0b0f14; --text:#e5e7eb; --muted:#bac1cc; --line:#1d2837;
+  --brand:#6ea8fe; --brand2:#a78bfa; --accent:linear-gradient(90deg,var(--brand),var(--brand2));
+}
+*{box-sizing:border-box} html,body{height:100%;margin:0;background:
+radial-gradient(1200px 600px at 10% -10%, rgba(110,168,254,.18), transparent),
+radial-gradient(800px 500px at 120% -40%, rgba(167,139,250,.22), transparent),
+var(--bg); color:var(--text); font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+a{color:#d6dcff;text-decoration:none} a:hover{text-decoration:underline}
+.wrap{min-height:100%;display:flex;flex-direction:column;justify-content:space-between}
+.hero{display:grid;place-items:center;padding:56px 16px}
+.glass{max-width:880px;width:100%;background:linear-gradient(180deg, rgba(18,25,40,.75), rgba(11,15,20,.75));
+backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.35);
+text-align:center;padding:36px 24px}
+.brand{margin:6px auto 8px;filter:drop-shadow(0 10px 30px rgba(167,139,250,.35))}
+h1{font-size:2.6rem;line-height:1.15;margin:.2rem 0 1rem}
+.tagline{max-width:60ch;margin:0 auto;color:var(--muted)}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:18px 0 0}
+.btn{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 1.1rem;border-radius:14px;border:1px solid var(--line);
+background:#0b1220;color:#fff;font-weight:650;box-shadow:0 8px 18px rgba(0,0,0,.25);transition:transform .06s ease, box-shadow .2s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.btn-primary{background-image:var(--accent);border:none;color:#0b0f14}
+.btn-secondary{background:#151c2b}
+.contact{margin:12px 0 0;color:var(--muted)}
+.highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 16px 24px;max-width:1000px;margin:0 auto}
+.card{background:linear-gradient(180deg,#0c1220,#0b0f14);border:1px solid var(--line);border-radius:18px;padding:18px 16px}
+.card h3{margin:.4rem 0 .3rem} .card p{margin:0;color:#cbd2dc} .emoji{font-size:1.6rem;margin-bottom:4px}
+.footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-top:1px solid var(--line);color:#9aa5b3}
+.footer nav{display:flex;gap:16px} .footer a{color:#b8c0cc}
+@media (max-width:850px){.highlights{grid-template-columns:1fr} h1{font-size:2.2rem}}
