@@ -1,48 +1,36 @@
-/* Clean final styling: keep approved layout; add gradient BG + faint brain; stronger shadows */
-:root{
-  --text:#0b1220; --muted:#1f2a44; --white:#fff;
-  --line: rgba(3,8,20,.12);
-  --p1:#6aa8ff; --p2:#a47aff;
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #0b1220;
+  text-align: center;
+  background: linear-gradient(180deg, #f5fbff, #eaf2ff);
+  background-image: url("images/bg-final.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-attachment: fixed;
+  background-size: cover;
 }
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;color:var(--text)}
-/* Background: image if present, else soft gradient */
-body{
-  background: #eef5fb;
-  background-image: url('images/bg-final.png');
-  background-repeat:no-repeat; background-position:center; background-attachment:fixed; background-size:cover;
+.hero { padding: 64px 20px 28px; }
+.brand { width: 170px; height: auto; margin-bottom: 12px;
+  filter: drop-shadow(0 16px 32px rgba(0,0,0,.25)) drop-shadow(0 4px 12px rgba(0,0,0,.18)); }
+h1 { font-size: clamp(2.4rem, 6vw, 4rem); margin: 10px 0 6px; }
+.tagline { font-weight: 700; color: #11213a; opacity: .95; margin: 0 0 16px; }
+.ctas { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin: 10px 0 6px; }
+.btn { display: inline-flex; align-items: center; gap: .6rem; padding: .9rem 1.15rem;
+  border-radius: 16px; font-weight: 750; text-decoration: none; color: #fff;
+  transition: transform .06s ease, box-shadow .2s ease; }
+.btn-proposal { background-image: linear-gradient(90deg, #6aa8ff, #a47aff);
+  box-shadow: 0 16px 36px rgba(82,87,255,.26), 0 8px 16px rgba(0,0,0,.20); }
+.btn-investor { background: #0e1628;
+  box-shadow: 0 16px 36px rgba(8,16,34,.36), 0 8px 16px rgba(0,0,0,.20); }
+.btn:hover { transform: translateY(-1px); }
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 1050px; margin: 18px auto 36px; padding: 0 16px; }
+.card { background: rgba(255,255,255,.66); backdrop-filter: blur(8px);
+  border: 1px solid rgba(3,8,20,.12); border-radius: 16px; padding: 18px 16px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+.footer { display:flex;justify-content:center;gap:10px;margin: 24px 0; font-size: 0.9rem; color: #555; }
+.footer a { color: #0b1220; text-decoration: none; margin: 0 6px; }
+@media (max-width: 900px) {
+  .features { grid-template-columns: 1fr; }
+  .brand { width: 150px; }
 }
-.wrap{min-height:100%;display:flex;flex-direction:column;justify-content:space-between}
-
-/* HERO */
-.hero{display:grid;place-items:center;text-align:center;padding:72px 16px 28px}
-.brand{width:160px;height:auto;
-  filter: drop-shadow(0 16px 32px rgba(0,0,0,.25)) drop-shadow(0 4px 10px rgba(0,0,0,.18));
-  margin-bottom:10px;
-}
-h1{font-size: clamp(2.4rem, 6vw, 4rem); line-height:1.1; margin:10px 0 6px; color:#0c1424;}
-.tagline{font-weight:700;color:#11213a;opacity:.95;margin:0 0 14px}
-
-/* CTAs */
-.ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:10px 0 6px}
-.btn{display:inline-flex;align-items:center;gap:.6rem;padding:0.9rem 1.15rem;border-radius:16px;font-weight:750;text-decoration:none;color:var(--white);
-     transition:transform .06s ease, box-shadow .2s ease}
-.btn-proposal{background-image:linear-gradient(90deg,var(--p1),var(--p2)); box-shadow:0 16px 36px rgba(82,87,255,.26), 0 8px 16px rgba(0,0,0,.2)}
-.btn-investor{background:#0e1628; box-shadow:0 16px 36px rgba(8,16,34,.36), 0 8px 16px rgba(0,0,0,.2)}
-.btn:hover{transform:translateY(-1px)}
-
-.contact a{color:#214bff}
-
-/* FEATURES */
-.features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1050px;margin:18px auto 36px;padding:0 16px}
-.card{background:rgba(255,255,255,.66);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:16px;padding:18px 16px;
-      box-shadow:0 10px 24px rgba(0,0,0,.08)}
-.card h3{margin:.2rem 0 .25rem}
-.card p{margin:0;color:#20324f}
-
-/* FOOTER */
-.footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--line);
-        background:rgba(255,255,255,.6)}
-
-/* Responsive */
-@media (max-width:900px){ .features{grid-template-columns:1fr} .brand{width:150px} }
