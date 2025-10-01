@@ -1,26 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>High Functioning Brains</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>High Functioning Brains (HFB)</title>
+  <link rel="preload" as="image" href="logo.png?v=5">
+  <link rel="preload" as="image" href="bg.png?v=5">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
-  <div class="container">
-    <img src="logo.png" alt="HFB Logo" class="logo" />
-    <h1>High Functioning Brains</h1>
-    <p class="subtitle">Neurodiversity. Empowered by Unity.</p>
-    <div class="buttons">
-      <a href="HFB_Full_Proposal.pdf" class="btn proposal">📄 Download Proposal (PDF)</a>
-      <a href="HFB_Investor_Pack.pdf" class="btn investor">💼 Download Investor Pack (PDF)</a>
-    </div>
-    <p class="contact">Contact: <a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a></p>
-    <div class="features">
-      <div class="feature">🌍 <b>Clear need</b><br />61.8M+ people on the spectrum globally; fragmented tools and data silos for families & clinicians.</div>
-      <div class="feature">🎯 <b>Focused MVP</b><br />Private, verified spaces + structured outcomes data for better decisions.</div>
-      <div class="feature">🔒 <b>Privacy-first</b><br />Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</div>
-    </div>
-  </div>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="logo-wrap">
+        <img src="logo.png?v=5" alt="HFB Logo" class="logo" decoding="async" />
+      </div>
+      <h1 class="title">High Functioning Brains</h1>
+      <p class="tagline">Neurodiversity. Empowered by Unity.</p>
+
+      <div class="cta-row">
+        <a class="btn btn-proposal" href="HFB_Full_Proposal.pdf" download>
+          <span class="btn-ico">⬇️</span>
+          <span>Download Proposal (PDF)</span>
+        </a>
+        <a class="btn btn-investor" href="HFB_Investor_Pack.pdf" download>
+          <span class="btn-ico">💼</span>
+          <span>Download Investor Pack (PDF)</span>
+        </a>
+      </div>
+
+      <p class="contact">
+        Contact: <a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a>
+      </p>
+    </section>
+
+    <section class="features">
+      <article class="card">
+        <h3>🌍 Clear need</h3>
+        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families & clinicians.</p>
+      </article>
+      <article class="card">
+        <h3>🎯 Focused MVP</h3>
+        <p>Private, verified spaces + structured outcomes data for better decisions.</p>
+      </article>
+      <article class="card">
+        <h3>🔒 Privacy-first</h3>
+        <p>Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</p>
+      </article>
+    </section>
+
+    <footer class="foot">
+      <small>© 2025 High Functioning Brains — San Diego, CA</small>
+      <nav class="foot-links">
+        <a href="#">Privacy</a> · <a href="#">Terms</a>
+      </nav>
+    </footer>
+  </main>
 </body>
 </html>
