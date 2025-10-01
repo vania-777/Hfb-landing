@@ -1,48 +1,54 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>High Functioning Brains (HFB)</title>
-  <meta name="description" content="Modern, minimal tools for the autism community — privacy‑first and globally inclusive." />
-  <link rel="icon" href="images/logo.png" />
-  <link rel="stylesheet" href="styles.css?v=1" />
+  <meta name="description" content="Neurodiversity. Empowered by Unity.">
+  <link rel="preload" as="image" href="logo.png?v=20251001">
+  <link rel="stylesheet" href="styles.css?v=20251001">
+  <link rel="icon" href="logo.png?v=20251001">
 </head>
 <body>
   <main class="wrap">
-    <section class="hero">
-      <img src="images/logo.png" class="logo" alt="HFB Logo" />
+    <header>
+      <img src="logo.png?v=20251001" alt="HFB Logo" class="brand">
       <h1>High Functioning Brains</h1>
       <p class="tagline">Neurodiversity. Empowered by Unity.</p>
 
-      <div class="ctas">
-        <a class="btn btn-proposal" href="HFB_Full_Proposal.pdf" target="_blank" rel="noopener">📄 Download Proposal (PDF)</a>
-        <a class="btn btn-investor" href="HFB_Investor_Pack.pdf" target="_blank" rel="noopener">💼 Download Investor Pack (PDF)</a>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="HFB_Full_Proposal.pdf" download>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download Proposal (PDF)
+        </a>
+        <a class="btn btn-dark" href="HFB_Investor_Pack.pdf" download>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download Investor Pack (PDF)
+        </a>
       </div>
+      <div class="contact">Contact: <a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a></div>
+    </header>
 
-      <p class="contact">Contact: <a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a></p>
-    </section>
-
-    <section class="features">
+    <section class="grid">
       <article class="card">
         <h3>🌍 Clear need</h3>
-        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families &amp; clinicians.</p>
+        <p class="muted">61.8M+ people on the spectrum globally; fragmented tools and data silos for families &amp; clinicians.</p>
       </article>
       <article class="card">
         <h3>🧭 Focused MVP</h3>
-        <p>Private, verified spaces + structured outcomes data for better decisions.</p>
+        <p class="muted">Private, verified spaces + structured outcomes data for better decisions.</p>
       </article>
       <article class="card">
-        <h3>🔒 Privacy-first</h3>
-        <p>Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</p>
+        <h3>🔒 Privacy‑first</h3>
+        <p class="muted">Encryption in transit/at rest, least‑privilege access, audit logs, opt‑in sharing, data minimization.</p>
       </article>
     </section>
   </main>
 
-  <footer class="footer">
-    <p>© <span id="y"></span> High Functioning Brains — San Diego, CA</p>
-    <nav><a href="#">Privacy</a> • <a href="#">Terms</a></nav>
+  <footer>
+    <div>© 2025 High Functioning Brains — San Diego, CA</div>
+    <div><a href="#">Privacy</a> • <a href="#">Terms</a></div>
   </footer>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
