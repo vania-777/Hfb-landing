@@ -1,0 +1,39 @@
+
+body {
+  margin:0;
+  font-family: system-ui, sans-serif;
+  background:#f3f7fb;
+  color:#0b1220;
+}
+.site-bg {
+  position:fixed; inset:0; pointer-events:none;
+  background: url("images/background.png") center/cover no-repeat;
+  opacity:.15;
+}
+.logo {
+  width:128px; margin:0 auto 14px; display:block;
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,.2));
+}
+.hero.panel {
+  max-width:1100px; margin:0 auto; text-align:center;
+  background:rgba(255,255,255,.75); border-radius:24px;
+  padding:48px 20px; box-shadow:0 20px 40px rgba(0,0,0,.1);
+}
+.sub {
+  font-weight:600; color:#374151; margin:0 0 18px;
+}
+.ctas { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin: 20px 0; }
+.btn {
+  padding:14px 22px; border-radius:14px; text-decoration:none; font-weight:700; color:#fff;
+  box-shadow:0 10px 20px rgba(0,0,0,.15); transition:.15s;
+}
+.btn-primary { background:linear-gradient(90deg,#8bb6ff,#7b86ff,#8a62ff); }
+.btn-dark { background:#0b1220; }
+.btn:hover { transform:translateY(-2px); }
+.grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:24px;
+}
+.card {
+  background:#fff; border-radius:16px; padding:18px; box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
+footer { text-align:center; margin:24px 0; font-size:14px; color:#6b7280; }
