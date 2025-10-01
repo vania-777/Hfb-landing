@@ -1,19 +1,22 @@
-
 High Functioning Brains — static landing package
 
 Files
 -----
-- index.html         Main page (references logo.png, bg.png, and your PDFs)
-- styles.css         Styles
-- logo.png           Final logo (as provided)
-- bg.png             Faint neural background
-- HFB_Full_Proposal.pdf     (NOT INCLUDED in this zip)
-- HFB_Investor_Pack.pdf     (NOT INCLUDED in this zip)
+- index.html
+- styles.css
+- logo.png      (Place your approved transparent HFB logo here; same filename)
+- bg.png        (Place the soft abstract background here; same filename)
+- HFB_Full_Proposal.pdf     (optional; place alongside to enable the first button)
+- HFB_Investor_Pack.pdf     (optional; place alongside to enable the second button)
 
-How to deploy
--------------
-1) Upload index.html, styles.css, logo.png, bg.png to the root of your repo.
-2) Keep (or re-upload) your actual PDFs named exactly:
-   HFB_Full_Proposal.pdf   and   HFB_Investor_Pack.pdf
-3) Commit to main and wait for GitHub Pages to deploy.
-4) If cache resists, reload with:  https://highfunctioningbrains.com/?v=20251001
+How to deploy on GitHub Pages
+-----------------------------
+1) In your repo root (main branch), keep ONLY these files (plus your PDFs):
+   CNAME (optional), index.html, styles.css, logo.png, bg.png, PDFs.
+2) Commit & push. GitHub Pages will rebuild automatically.
+
+Notes
+-----
+- The logo casts a soft drop shadow onto the panel only (no inner glow).
+- The background uses your bg.png plus extra ultra-faint rings to feel alive.
+- The Investor button is now a deep blue gradient (no black).
