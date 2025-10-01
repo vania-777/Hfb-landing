@@ -1,39 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>High Functioning Brains</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>High Functioning Brains (HFB)</title>
+  <link rel="preload" href="logo.png?v=2" as="image">
+  <link rel="preload" href="bg.png?v=2" as="image">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
-<body>
-  <div class="container">
-    <img src="logo.png" alt="HFB Logo" class="logo">
-    <h1>High Functioning Brains</h1>
-    <p class="subtitle">Neurodiversity. Empowered by Unity.</p>
-    <div class="buttons">
-      <a href="HFB_Full_Proposal.pdf" class="btn btn-blue" target="_blank">📄 Download Proposal (PDF)</a>
-      <a href="HFB_Investor_Pack.pdf" class="btn btn-dark" target="_blank">📄 Download Investor Pack (PDF)</a>
+
+<!-- نسخه SAFE (پیشنهادی) -->
+<!-- اگر بخواهی نسخه PRO (لوگوی بزرگ واترمارک وسط) را فعال کنی، فقط class="safe" را به class="pro" تغییر بده -->
+<body class="safe">
+  <main class="wrap">
+
+    <div class="logo-top" role="img" aria-label="HFB Logo">
+      <img src="logo.png?v=2" alt="High Functioning Brains logo" />
     </div>
+
+    <h1>High Functioning Brains</h1>
+    <p class="tagline">Neurodiversity. Empowered by Unity.</p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="HFB_Full_Proposal.pdf" download>⬇️ Download Proposal (PDF)</a>
+      <a class="btn btn-dark" href="HFB_Investor_Pack.pdf" download>📁 Download Investor Pack (PDF)</a>
+    </div>
+
     <p class="contact">Contact: <a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a></p>
-    <div class="features">
-      <div class="card">
+
+    <section class="cards">
+      <article class="card">
         <h3>🌍 Clear need</h3>
-        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families & clinicians.</p>
-      </div>
-      <div class="card">
-        <h3>🎯 Focused MVP</h3>
+        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families &amp; clinicians.</p>
+      </article>
+      <article class="card">
+        <h3>🧭 Focused MVP</h3>
         <p>Private, verified spaces + structured outcomes data for better decisions.</p>
-      </div>
-      <div class="card">
+      </article>
+      <article class="card">
         <h3>🔒 Privacy-first</h3>
         <p>Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</p>
-      </div>
-    </div>
-  </div>
-  <footer>
-    <p>© 2025 High Functioning Brains — San Diego, CA</p>
-    <a href="#">Privacy</a> | <a href="#">Terms</a>
-  </footer>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <span>© 2025 High Functioning Brains — San Diego, CA</span>
+      <nav class="foot-links"><a href="#">Privacy</a> · <a href="#">Terms</a></nav>
+    </footer>
+  </main>
 </body>
 </html>
