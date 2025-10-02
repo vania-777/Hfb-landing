@@ -1,67 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>High Functioning Brains (HFB)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>High Functioning Brains (HFB)</title>
+<link rel="icon" href="logo.png" type="image/png"/>
+<link rel="stylesheet" href="styles.css" />
+<meta name="description" content="Neurodiversity. Empowered by Unity." />
 </head>
 <body>
-  <div class="page-bg"></div>
-
-  <main class="shell">
-    <section class="hero card">
-      <!-- Bigger logo (2x) and no main heading per request -->
-      <img src="logo.png" alt="HFB Logo" class="logo-xl" />
+  <div class="container">
+    <main class="hero" role="main" aria-labelledby="brand">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="HFB Logo" class="logo" id="brand"/>
+      </div>
 
       <p class="tagline">Neurodiversity. Empowered by Unity.</p>
 
-      <div class="cta-row">
-        <a class="btn btn-proposal" href="HFB_Full_Proposal.pdf" download>
-          <span class="i i-doc"></span>
-          <span>Download Proposal (PDF)</span>
-        </a>
-        <a class="btn btn-investor" href="HFB_Investor_Pack.pdf" download>
-          <span class="i i-lock"></span>
-          <span>Download Investor Pack (PDF)</span>
-        </a>
+      <div class="actions" role="group" aria-label="Primary actions">
+        <a class="btn btn-primary" href="HFB_Full_Proposal.pdf" download><span>Download Proposal (PDF)</span></a>
+        <a class="btn btn-dark" href="HFB_Investor_Pack.pdf" download><span>Download Investor Pack (PDF)</span></a>
       </div>
 
       <p class="contact">Contact: <a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a></p>
-    </section>
 
-    <!-- Bring back the three info cards -->
-    <section class="features">
-      <article class="feature card small">
-        <div class="f-title"><span class="i i-globe"></span> Clear need</div>
-        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families &amp; clinicians.</p>
-      </article>
+      <section class="cards" aria-label="Highlights">
+        <article class="card">
+          <h3>🌍 Clear need</h3>
+          <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families &amp; clinicians.</p>
+        </article>
 
-      <article class="feature card small">
-        <div class="f-title"><span class="i i-target"></span> Focused MVP</div>
-        <p>Private, verified spaces + structured outcomes data for better decisions.</p>
-      </article>
+        <article class="card">
+          <h3>🎯 Focused MVP</h3>
+          <p>Private, verified spaces + structured outcomes data for better decisions.</p>
+        </article>
 
-      <article class="feature card small">
-        <div class="f-title"><span class="i i-lock"></span> Privacy-first</div>
-        <p>Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</p>
-      </article>
-    </section>
-
-    <footer class="footer">
-      <div>© 2025 High Functioning Brains — San Diego, CA</div>
-      <nav class="links">
-        <a href="#" aria-label="Privacy">Privacy</a>
-        <span>·</span>
-        <a href="#" aria-label="Terms">Terms</a>
-      </nav>
+        <article class="card">
+          <h3>🔒 Privacy-first</h3>
+          <p>Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</p>
+        </article>
+      </section>
+    </main>
+    <footer>
+      © 2025 High Functioning Brains — San Diego, CA ·
+      <a href="privacy.html">Privacy</a> ·
+      <a href="terms.html">Terms</a>
     </footer>
-  </main>
-
-  <!-- Background watermark brain/network -->
-  <img src="bg.png" alt="" class="bg-hero" />
+  </div>
 </body>
 </html>
