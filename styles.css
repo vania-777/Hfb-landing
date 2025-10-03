@@ -1,113 +1,129 @@
+/* HFB Landing — minimal change, just removes tiny caption under logo */
 :root{
-  --card-bg: #ffffff;
-  --text: #0d1220;
-  --muted: #5a6475;
-  --ring: rgba(2, 6, 23, .08);
-  --shadow: rgba(2, 6, 23, .20);
-  --blue: #3a7bff;
-  --purple: #6f45d6;
-  --dark: #111827;
+  --bg: #f3f7fb;
+  --ink: #0f172a;
+  --muted: #4b5563;
+  --card: #ffffff;
+  --ring: rgba(17,24,39,.08);
+  --shadow: 0 10px 25px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --blue: #3b82f6;
+  --purple: #7c3aed;
+  --btn-grad-start: #5aa4ff;
+  --btn-grad-end: #6a5cff;
+  --btn-dark-start: #12253f;
+  --btn-dark-end: #2d1a68;
 }
+
 *{box-sizing:border-box}
-html,body{
-  height:100%;
-}
+html,body{height:100%}
 body{
   margin:0;
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;
-  color:var(--text);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.92)),
-    url('assets/bg.png') center/cover no-repeat fixed;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  color:var(--ink);
+  background: radial-gradient(1200px 600px at 50% -100px, #e7f0fb 0%, #eef3fa 40%, #f7f9fd 100%);
 }
-.container{
-  max-width: 1040px;
-  margin: 60px auto;
-  padding: 0 20px;
+a{color:#2563eb;text-decoration:none}
+.page{
+  position:relative;
+  max-width:1100px;
+  margin:0 auto;
+  padding:28px 16px 64px;
+}
+.card{
+  background:var(--card);
+  border-radius:20px;
+  box-shadow: var(--shadow);
+  border:1px solid var(--ring);
 }
 .hero{
-  background: var(--card-bg);
-  border-radius: 24px;
-  box-shadow: 0 10px 30px var(--ring), 0 40px 80px var(--shadow);
-  padding: 48px 28px 36px;
+  padding:36px 18px 28px;
   text-align:center;
-  backdrop-filter: blur(2px);
+  position:relative;
 }
+.logo-wrap{ display:flex; justify-content:center; align-items:center; margin:8px 0 8px; }
 .logo{
-  width: 120px;
-  height: auto;
+  width:112px;
+  height:auto;
   display:block;
-  margin: 0 auto 18px;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.12));
+  border-radius:16px; /* keeps soft look if your logo has square edge */
+  background: #fff;  /* faint tile behind the PNG so it pops */
 }
-h1{
-  margin: 0 0 8px;
-  font-size: clamp(26px, 4vw, 46px);
-  letter-spacing: .2px;
+.title{
+  font-size: clamp(32px, 5vw, 56px);
+  line-height:1.05;
+  margin: 6px 0 6px;
 }
-.sub{
-  margin: 0 0 18px;
-  color: var(--muted);
-  font-weight: 600;
+.tagline{
+  color:var(--muted);
+  margin:0 0 18px;
+  font-weight:600;
 }
-.btnrow{
+.hfb{
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: clamp(42px, 6vw, 80px);
+  letter-spacing:.5px;
+  color:#233447;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  margin: 6px 0 18px;
+}
+.cta-row{
   display:flex;
   gap:16px;
   justify-content:center;
-  margin: 14px 0 18px;
   flex-wrap:wrap;
+  margin:8px 0 6px;
 }
 .btn{
-  --padY: 14px;
-  --padX: 18px;
   display:inline-flex;
   align-items:center;
   gap:10px;
-  padding: var(--padY) var(--padX);
-  border-radius: 14px;
-  color:#fff;
-  text-decoration:none;
-  font-weight:700;
-  box-shadow: 0 6px 18px rgba(16, 24, 40, .18);
+  padding:16px 22px;
+  border-radius:14px;
+  font-weight:800;
+  box-shadow: 0 10px 20px rgba(59,130,246,.25);
   transform: translateZ(0);
 }
-.btn.primary{
-  background: linear-gradient(90deg, #5aa4ff, #7b67ff);
+.btn-primary{
+  background: linear-gradient(90deg, var(--btn-grad-start), var(--btn-grad-end));
+  color:#fff;
 }
-.btn.dark{
-  background: linear-gradient(90deg, #1a2440, #2b0f6b);
+.btn-dark{
+  background: linear-gradient(90deg, var(--btn-dark-start), var(--btn-dark-end));
+  color:#fff;
+  box-shadow: 0 10px 22px rgba(17,24,39,.25);
 }
-.contact{
-  margin: 12px 0 8px;
-}
-.grid{
+.btn:hover{ filter:brightness(1.03) }
+.btn .ico{font-size:18px}
+.contact{ margin:14px 0 8px; }
+
+.features{
+  margin:18px 0 0;
   display:grid;
   grid-template-columns: repeat(3, 1fr);
-  gap:22px;
-  margin-top: 26px;
+  gap:18px;
 }
-.card{
-  background: var(--card-bg);
-  border-radius: 16px;
-  padding: 18px 20px;
-  box-shadow: 0 8px 20px var(--ring);
-}
-.card h3{margin:0 0 10px}
+.feature{ padding:22px 20px; }
+.feature h3{ margin:4px 0 10px; }
 .footer{
   text-align:center;
-  color:var(--muted);
-  font-size: 14px;
-  margin: 26px 0 40px;
+  color:#6b7280;
+  font-size:14px;
+  margin:26px 0 0;
 }
-/* Alt variant HFB big */
-.hfb{ 
-  font-family: "Times New Roman",ui-serif,serif;
-  font-weight: 800;
-  letter-spacing:.5px;
-  color:#1d3045;
-  font-size: clamp(40px, 10vw, 88px);
-  margin: 4px 0 0;
+
+/* soft radial brain pattern background image */
+.bg{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background: url('assets/bg.png') center/cover no-repeat fixed;
+  opacity:.95;
+  mix-blend-mode: normal;
+  z-index:-1;
 }
+
+/* Responsive */
 @media (max-width: 880px){
-  .grid{ grid-template-columns: 1fr; }
+  .features{ grid-template-columns:1fr; }
 }

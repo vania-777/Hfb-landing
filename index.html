@@ -1,41 +1,60 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>High Functioning Brains</title>
-<link rel="icon" href="assets/logo_with_text.png">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>High Functioning Brains (HFB)</title>
+  <link rel="preload" href="assets/bg.png" as="image">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <section class="hero">
-      <img class="logo" src="assets/logo_with_text.png" alt="HFB Logo">
-      <h1>High Functioning Brains</h1>
-      <p class="sub">Neurodiversity. Empowered by Unity.</p>
-      <div class="btnrow">
-        <a class="btn primary" href="HFB_Full_Proposal.pdf" download>Download Proposal (PDF)</a>
-        <a class="btn dark" href="HFB_Investor_Pack.pdf" download>Download Investor Pack (PDF)</a>
+  <div class="page">
+    <header class="hero card">
+      <div class="logo-wrap">
+        <!-- Use the transparent logo WITHOUT any text -->
+        <img src="assets/logo.png" alt="HFB Logo" class="logo">
       </div>
-      <p class="contact">Contact: <a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a></p>
-    </section>
 
-    <section class="grid">
-      <article class="card">
+      <!-- Keep main title & tagline exactly as-is -->
+      <h1 class="title">High Functioning Brains</h1>
+      <p class="tagline">Neurodiversity. Empowered by Unity.</p>
+
+      <!-- Big HFB under the title -->
+      <div class="hfb">HFB</div>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" href="HFB_Full_Proposal.pdf" download>
+          <span class="ico">📄</span> Download Proposal (PDF)
+        </a>
+        <a class="btn btn-dark" href="HFB_Investor_Pack.pdf" download>
+          <span class="ico">💼</span> Download Investor Pack (PDF)
+        </a>
+      </div>
+
+      <p class="contact">Contact: <a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a></p>
+    </header>
+
+    <main class="features">
+      <section class="card feature">
         <h3>🌍 Clear need</h3>
-        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families & clinicians.</p>
-      </article>
-      <article class="card">
+        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families &amp; clinicians.</p>
+      </section>
+      <section class="card feature">
         <h3>🎯 Focused MVP</h3>
         <p>Private, verified spaces + structured outcomes data for better decisions.</p>
-      </article>
-      <article class="card">
+      </section>
+      <section class="card feature">
         <h3>🔒 Privacy-first</h3>
         <p>Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</p>
-      </article>
-    </section>
+      </section>
+    </main>
 
-    <p class="footer">© 2025 High Functioning Brains — San Diego, CA · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+    <footer class="footer">
+      <p>© 2025 High Functioning Brains — San Diego, CA · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+    </footer>
   </div>
+
+  <!-- Background -->
+  <div class="bg"></div>
 </body>
 </html>
