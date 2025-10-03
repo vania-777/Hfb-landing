@@ -1,17 +1,11 @@
-/* HFB Landing — minimal change, just removes tiny caption under logo */
+/* High Functioning Brains — minimal public site (no PDFs) */
 :root{
-  --bg: #f3f7fb;
-  --ink: #0f172a;
-  --muted: #4b5563;
+  --bg: #eef5fb;
   --card: #ffffff;
-  --ring: rgba(17,24,39,.08);
-  --shadow: 0 10px 25px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-  --blue: #3b82f6;
-  --purple: #7c3aed;
-  --btn-grad-start: #5aa4ff;
-  --btn-grad-end: #6a5cff;
-  --btn-dark-start: #12253f;
-  --btn-dark-end: #2d1a68;
+  --text: #0f172a;
+  --muted: #475569;
+  --shadow: 0 8px 28px rgba(2,8,23,.12), 0 2px 8px rgba(2,8,23,.06);
+  --radius: 18px;
 }
 
 *{box-sizing:border-box}
@@ -19,111 +13,119 @@ html,body{height:100%}
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-  color:var(--ink);
-  background: radial-gradient(1200px 600px at 50% -100px, #e7f0fb 0%, #eef3fa 40%, #f7f9fd 100%);
+  color: var(--text);
+  background:
+    linear-gradient(0deg, rgba(255,255,255,.72), rgba(255,255,255,.72)),
+    url('assets/bg.png') center/cover fixed no-repeat;
 }
-a{color:#2563eb;text-decoration:none}
+
 .page{
-  position:relative;
-  max-width:1100px;
-  margin:0 auto;
-  padding:28px 16px 64px;
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
+  gap:32px;
+  padding:48px 20px 32px;
 }
-.card{
-  background:var(--card);
-  border-radius:20px;
+
+.hero-card{
+  max-width: 980px;
+  margin: 0 auto;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 48px 28px;
   box-shadow: var(--shadow);
-  border:1px solid var(--ring);
-}
-.hero{
-  padding:36px 18px 28px;
   text-align:center;
-  position:relative;
 }
-.logo-wrap{ display:flex; justify-content:center; align-items:center; margin:8px 0 8px; }
+
 .logo{
-  width:112px;
-  height:auto;
+  width:96px;
+  height:96px;
+  object-fit:contain;
+  border-radius:16px;
+  background:#f8fafc;
+  box-shadow: 0 6px 16px rgba(2,8,23,.12);
+  margin: 0 auto 12px;
   display:block;
-  filter: drop-shadow(0 8px 18px rgba(0,0,0,.12));
-  border-radius:16px; /* keeps soft look if your logo has square edge */
-  background: #fff;  /* faint tile behind the PNG so it pops */
 }
-.title{
+
+h1{
   font-size: clamp(32px, 5vw, 56px);
   line-height:1.05;
-  margin: 6px 0 6px;
+  margin: 8px 0 8px;
+  letter-spacing: -.02em;
 }
+
 .tagline{
-  color:var(--muted);
-  margin:0 0 18px;
+  margin: 0 0 14px;
+  color: var(--muted);
   font-weight:600;
 }
-.hfb{
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-size: clamp(42px, 6vw, 80px);
-  letter-spacing:.5px;
-  color:#233447;
-  text-shadow: 0 1px 0 rgba(255,255,255,.5);
-  margin: 6px 0 18px;
-}
-.cta-row{
+
+.cta{
   display:flex;
-  gap:16px;
+  gap:14px;
   justify-content:center;
   flex-wrap:wrap;
-  margin:8px 0 6px;
+  margin: 20px 0 8px;
 }
+
 .btn{
+  --pad-y: 14px;
+  --pad-x: 18px;
   display:inline-flex;
   align-items:center;
   gap:10px;
-  padding:16px 22px;
-  border-radius:14px;
-  font-weight:800;
-  box-shadow: 0 10px 20px rgba(59,130,246,.25);
-  transform: translateZ(0);
+  padding: var(--pad-y) var(--pad-x);
+  border-radius: 12px;
+  font-weight: 800;
+  text-decoration:none;
+  color:#fff;
+  box-shadow: 0 10px 24px rgba(59,130,246,.25);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .2s ease;
+  user-select:none;
 }
+
+.btn:hover{ transform: translateY(-1px);}
+.btn:active{ transform: translateY(0);}
+
+.btn .icon{ filter: drop-shadow(0 1px 0 rgba(0,0,0,.15)); }
+
 .btn-primary{
-  background: linear-gradient(90deg, var(--btn-grad-start), var(--btn-grad-end));
-  color:#fff;
+  background-image: linear-gradient(90deg, #4f86ff, #7b4dff);
 }
+
 .btn-dark{
-  background: linear-gradient(90deg, var(--btn-dark-start), var(--btn-dark-end));
-  color:#fff;
-  box-shadow: 0 10px 22px rgba(17,24,39,.25);
+  background-image: linear-gradient(90deg, #203147, #2a2558);
+  box-shadow: 0 10px 24px rgba(2,8,23,.25);
 }
-.btn:hover{ filter:brightness(1.03) }
-.btn .ico{font-size:18px}
-.contact{ margin:14px 0 8px; }
+
+.contact{ margin: 10px 0 0; }
 
 .features{
-  margin:18px 0 0;
   display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap:18px;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap:20px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
-.feature{ padding:22px 20px; }
-.feature h3{ margin:4px 0 10px; }
+
+.feature{
+  background: var(--card);
+  padding: 22px 22px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.feature h3{
+  margin: 4px 0 10px;
+}
+
 .footer{
   text-align:center;
-  color:#6b7280;
-  font-size:14px;
-  margin:26px 0 0;
+  margin-top:auto;
+  color: var(--muted);
 }
 
-/* soft radial brain pattern background image */
-.bg{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background: url('assets/bg.png') center/cover no-repeat fixed;
-  opacity:.95;
-  mix-blend-mode: normal;
-  z-index:-1;
-}
-
-/* Responsive */
-@media (max-width: 880px){
-  .features{ grid-template-columns:1fr; }
+@media (max-width: 860px){
+  .features{ grid-template-columns: 1fr; }
 }
