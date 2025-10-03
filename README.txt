@@ -1,11 +1,24 @@
-High Functioning Brains — static landing package
+High Functioning Brains — Preview (Logo without text + big 'HFB')
+===================================================================
+این بسته، نسخه‌ی پیش‌نمایش را می‌سازد که در آن:
+  • پس‌زمینه همان bg.png خیلی محو است.
+  • لوگوی ترنسپرنتِ بی‌نوشته (logo.png) استفاده می‌شود.
+  • متن بزرگ «HFB» زیر شعار افزوده شده است.
+  • رنگ و استایل دکمه‌ها همانند نسخهٔ فعلی (آبی→بنفش، و تیره‌تر برای Investor) است.
 
-Files
------
-index.html
-styles.css
-logo.png
-bg.png
-HFB_Full_Proposal.pdf (add yourself)
-HFB_Investor_Pack.pdf (add yourself)
-CNAME (optional)
+فایل‌ها:
+- index.html     — صفحه اصلی
+- styles.css     — استایل‌ها
+
+قرار دادن در ریپو:
+1) این دو فایل را در روت ریپوی Pages آپلود/جایگزین کنید.
+2) مطمئن شوید فایل‌های زیر در همان روت موجودند و همین نام‌ها را دارند:
+     - bg.png                (پس‌زمینه محو)
+     - logo.png              (لوگوی ترنسپرنت بی‌نوشته)
+     - HFB_Full_Proposal.pdf
+     - HFB_Investor_Pack.pdf
+     - privacy.html          (اختیاری)
+     - terms.html            (اختیاری)
+3) بعد از Commit، GitHub Pages را ریفرش کنید.
+
+نکته: اگر bg.png یا logo.png موقتاً نباشند، صفحه با گرادیانِ خیلی لطیف بالا می‌آید و جای لوگو خالی می‌ماند.
