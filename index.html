@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>High Functioning Brains (HFB)</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <img src="assets/logo.png" alt="HFB logo" class="hero__logo">
+      <h1 class="hero__brand">HFB</h1>
+      <div class="hero__subtitle">High functioning brains</div>
+      <p class="hero__tagline">Neurodiversity. Empowered by Unity.</p>
+    </header>
+
+    <section class="hfb-accord">
+      <div class="hfb-accord__item">
+        <button class="hfb-accord__header" aria-expanded="false">
+          <span class="hfb-accord__icon" aria-hidden="true">🎯</span>
+          <span class="hfb-accord__title">Our Mission</span>
+          <span class="hfb-accord__chev" aria-hidden="true">▾</span>
+        </button>
+        <div class="hfb-accord__panel">
+          <p>
+            High Functioning Brains (HFB) is committed to empowering neurodiverse
+            individuals, families, and clinicians through privacy-first technology,
+            verified communities, and actionable insights. We bridge fragmented tools
+            to build a unified ecosystem where neurodiverse voices are heard, supported, and respected.
+          </p>
+        </div>
+      </div>
+
+      <div class="hfb-accord__item">
+        <button class="hfb-accord__header" aria-expanded="false">
+          <span class="hfb-accord__icon" aria-hidden="true">🌐</span>
+          <span class="hfb-accord__title">Our Vision</span>
+          <span class="hfb-accord__chev" aria-hidden="true">▾</span>
+        </button>
+        <div class="hfb-accord__panel">
+          <p>
+            A future where neurodiverse communities never face isolation. With
+            structured outcomes data, secure communication tools, and verified networks,
+            HFB becomes the trusted digital hub that enables long-term independence,
+            collaboration, and growth.
+          </p>
+        </div>
+      </div>
+
+      <div class="hfb-accord__item">
+        <button class="hfb-accord__header" aria-expanded="false">
+          <span class="hfb-accord__icon" aria-hidden="true">⏱️</span>
+          <span class="hfb-accord__title">Why Now</span>
+          <span class="hfb-accord__chev" aria-hidden="true">▾</span>
+        </button>
+        <div class="hfb-accord__panel">
+          <p>
+            With over <strong>61.8M+</strong> people on the spectrum globally,
+            current solutions are fragmented and create data silos. HFB provides a timely,
+            scalable, privacy-first platform for better decisions, coordinated care,
+            and sustainable outcomes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <div class="card__title">🌍 Clear need</div>
+        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families & clinicians.</p>
+      </article>
+      <article class="card">
+        <div class="card__title">🎯 Focused MVP</div>
+        <p>Private, verified spaces + structured outcomes data for better decisions.</p>
+      </article>
+      <article class="card">
+        <div class="card__title">🔒 Privacy-first</div>
+        <p>Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</p>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <small>© 2025 High Functioning Brains — San Diego, CA • <a href="privacy.html">Privacy</a> • <a href="terms.html">Terms</a></small>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const items = document.querySelectorAll('.hfb-accord__item');
+      items.forEach(item => {
+        const btn = item.querySelector('.hfb-accord__header');
+        const panel = item.querySelector('.hfb-accord__panel');
+        btn.setAttribute('role','button');
+        const id = 'acc-' + Math.random().toString(36).slice(2);
+        btn.setAttribute('aria-controls', id);
+        panel.id = id;
+        btn.addEventListener('click', () => {
+          const open = item.getAttribute('aria-current') === 'open';
+          items.forEach(i => { i.removeAttribute('aria-current'); i.querySelector('.hfb-accord__header').setAttribute('aria-expanded','false'); });
+          if (!open) { item.setAttribute('aria-current','open'); btn.setAttribute('aria-expanded','true'); }
+        });
+        btn.setAttribute('aria-expanded','false');
+      });
+    })();
+  </script>
+</body>
+</html>
