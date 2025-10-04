@@ -1,60 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>High Functioning Brains (HFB)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Sans for body; Playfair for the HFB wordmark -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="page-bg"></div>
-  <main class="card">
-    <header class="hero">
-      <img class="hero-logo" src="assets/logo.png" alt="HFB logo" width="200" height="200"/>
-      <div class="wordmark">
-        <div class="wordmark-sub">High functioning brains</div>
-        <div class="wordmark-main">HFB</div>
-      </div>
+  <main class="container">
+    <section class="hero card">
+      <img class="hero-logo" src="assets/logo.png" alt="HFB logo" width="440" height="440" decoding="async">
+      <h1 class="wordmark-small">High functioning brains</h1>
+      <h2 class="hfb">HFB</h2>
       <p class="tagline">Neurodiversity. Empowered by Unity.</p>
-      <p class="lede">
+      <p class="desc">
         High Functioning Brains (HFB) builds privacy-first tools and verified communities for
         neurodiverse individuals, families, and clinicians. Structured outcomes data empowers better
         decisions, care coordination, and long-term independence.
       </p>
-    </header>
+    </section>
 
-    <section class="features">
-      <article class="feature">
-        <div class="feature-icon">🌐</div>
-        <h3>Clear need</h3>
-        <p>
-          61.8M+ people on the spectrum globally; fragmented tools and data silos for families &amp; clinicians.
-        </p>
+    <section class="cards-row">
+      <article class="pill card">
+        <div class="pill-title">🌐 <strong>Clear need</strong></div>
+        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families &amp; clinicians.</p>
       </article>
-
-      <article class="feature">
-        <div class="feature-icon">🎯</div>
-        <h3>Focused MVP</h3>
-        <p>
-          Private, verified spaces + structured outcomes data for better decisions.
-        </p>
+      <article class="pill card">
+        <div class="pill-title">🎯 <strong>Focused MVP</strong></div>
+        <p>Private, verified spaces + structured outcomes data for better decisions.</p>
       </article>
-
-      <article class="feature">
-        <div class="feature-icon">🔒</div>
-        <h3>Privacy-first</h3>
-        <p>
-          Encryption in transit/at rest, least‑privilege access, audit logs, opt‑in sharing, data minimization.
-        </p>
+      <article class="pill card">
+        <div class="pill-title">🔒 <strong>Privacy-first</strong></div>
+        <p>Encryption in transit/at rest, least-privilege access, audit logs, opt-in sharing, data minimization.</p>
       </article>
     </section>
 
-    <footer class="foot">
-      <p>© 2025 High Functioning Brains — San Diego, CA · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+    <footer class="footer">
+      <small>© 2025 High Functioning Brains — San Diego, CA · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></small>
     </footer>
   </main>
 </body>

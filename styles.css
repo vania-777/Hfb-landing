@@ -1,123 +1,115 @@
-/* Core layout */
-:root{
-  --ink:#0f2940;
-  --ink-soft:#1e3550;
-  --card:#ffffff;
-  --bg: #f4f7fb;
-  --shadow: 0 12px 30px rgba(15,41,64,.10), 0 2px 8px rgba(15,41,64,.05);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji','Segoe UI Emoji';
-  color:var(--ink);
-  background: var(--bg);
+/* Basic reset */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: #111827;
+  background: #eef5fb;
+  background-image: radial-gradient(1200px 1200px at 50% -10%, rgba(31, 41, 55, 0.05), transparent 60%);
 }
 
-/* Very light brain pattern background stays (expects assets/bg.png if you have one) */
-.page-bg{
-  position:fixed; inset:0;
-  background:
-    radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.85), rgba(255,255,255,.95) 60%),
-    url('assets/bg.png') center/cover no-repeat;
-  opacity:.9;
-  z-index:-1;
+/* Card and layout */
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 20px 64px;
+}
+.card {
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 10px 30px rgba(15,23,42,0.08), 0 1px 0 rgba(255,255,255,0.6) inset;
+}
+.hero {
+  text-align: center;
+  padding: 56px 24px 40px;
 }
 
-.card{
-  max-width:1100px;
-  margin:48px auto;
-  background:var(--card);
-  border-radius:24px;
-  box-shadow: var(--shadow);
-  padding:56px 48px 40px;
+/* Logo bigger + tighter to HFB */
+.hero-logo {
+  width: 280px; /* bigger logo */
+  max-width: 80vw;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px; /* small gap before next element */
+  filter: drop-shadow(0 12px 24px rgba(16,24,40,0.18));
 }
 
-/* HERO */
-.hero{
-  text-align:center;
-}
+/* We want the small title BELOW HFB while keeping its style */
+.hero { display: flex; flex-direction: column; align-items: center; }
+.hfb { order: 1; }
+.wordmark-small { order: 2; }
+.tagline { order: 3; }
+.desc { order: 4; }
 
-.hero-logo{
-  width: 220px; /* ~2x previous */
-  height:auto;
-  display:block;
-  margin: 0 auto 8px; /* tightened spacing above HFB */
-  filter: drop-shadow(0 10px 18px rgba(15,41,64,.15));
-}
-
-/* Wordmark that mimics the sample: small title and big serif 'HFB' in navy */
-.wordmark{
-  margin-bottom:12px;
-}
-.wordmark-sub{
-  font-family: "Playfair Display", Georgia, 'Times New Roman', serif;
-  font-weight:700;
+/* Typography */
+.wordmark-small {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 700;
   font-size: 26px;
-  letter-spacing:.2px;
-  color: var(--ink);
-  line-height:1.1;
-  margin-bottom:4px;
+  color: #0F2940;
+  letter-spacing: 0.2px;
+  margin: 2px 0 0 0; /* sit right under HFB */
 }
-.wordmark-main{
-  font-family: "Playfair Display", Georgia, 'Times New Roman', serif;
-  font-weight:900;
-  font-size: 110px;           /* bold, imposing like the reference */
-  letter-spacing:.5px;
-  color: var(--ink);
-  line-height: .9;
-}
-
-/* Tagline & lede */
-.tagline{
-  margin:8px 0 12px;
-  font-weight:700;
-  color:var(--ink-soft);
-}
-.lede{
-  margin:0 auto 28px;
-  max-width:900px;
-  color:#394a63;
-  line-height:1.6;
+.hfb {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 900;
+  font-size: 88px;
+  line-height: 1.05;
+  color: #0F2940;
+  margin: 0 0 6px; /* tighter gap to small title below */
+  letter-spacing: 0.5px;
 }
 
-/* Feature cards */
-.features{
-  display:grid;
+/* Tagline with larger top gap from small title */
+.tagline {
+  margin: 18px 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2a44;
+  opacity: 0.9;
+}
+.desc {
+  max-width: 880px;
+  margin: 0 auto 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+/* Pill cards */
+.cards-row {
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap:24px;
+  gap: 20px;
+  margin-top: 28px;
 }
-.feature{
-  background:#fff;
-  border-radius:16px;
-  padding:20px 22px;
-  box-shadow: var(--shadow);
+.pill {
+  padding: 22px 20px;
+  border-radius: 18px;
 }
-.feature h3{
-  margin:10px 0 8px;
+.pill-title {
+  font-weight: 700;
+  margin-bottom: 6px;
 }
-.feature p{
-  margin:0;
-  color:#415472;
-}
-.feature-icon{
-  font-size:22px;
+.pill p {
+  margin: 0;
+  color: #374151;
 }
 
-.foot{
-  text-align:center;
-  margin-top:34px;
-  color:#6a7a97;
+/* Footer */
+.footer {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 22px;
 }
-.foot a{color:#425d9c; text-decoration:none}
-.foot a:hover{text-decoration:underline}
+.footer a { color: #3b82f6; text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
 
 /* Responsive */
-@media (max-width: 900px){
-  .wordmark-main{font-size: 84px;}
-  .wordmark-sub{font-size: 22px;}
-  .hero-logo{width:180px}
-  .features{grid-template-columns:1fr}
-  .card{margin:24px 12px; padding:32px 18px 20px;}
+@media (max-width: 860px) {
+  .hfb { font-size: 64px; }
+  .wordmark-small { font-size: 22px; }
+  .cards-row { grid-template-columns: 1fr; }
+  .hero-logo { width: 230px; }
 }
