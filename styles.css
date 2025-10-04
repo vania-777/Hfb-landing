@@ -1,0 +1,123 @@
+
+:root{
+  --navy:#1e2a39;
+  --ink:#0f1b2a;
+  --muted:#6b7280;
+  --card:#ffffff;
+  --bg:#f5f7fb;
+  --ring: rgba(15,27,42,.06);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color:var(--ink);
+  background: linear-gradient(180deg, #f7fafc 0%, #eef3fb 100%);
+}
+
+/* subtle background graphic */
+.hero-bg{
+  position:fixed; inset:0; pointer-events:none; z-index:-1;
+  background: url('assets/bg.png') center top / cover no-repeat;
+  opacity:.22;
+  filter:saturate(.9);
+}
+
+/* main card */
+.shell{
+  max-width: 1080px;
+  margin: 48px auto;
+  padding: 0 20px;
+}
+.panel{
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 20px 60px var(--ring), 0 2px 6px var(--ring);
+  padding: 56px 28px 40px;
+}
+
+/* Hero */
+.logo{
+  width: 172px;           /* bigger logo */
+  height:auto;
+  display:block;
+  margin: 0 auto 14px;    /* tighter gap above title */
+  filter: drop-shadow(0 8px 24px rgba(33, 118, 255,.18));
+}
+.title{
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 88px;        /* HFB big */
+  line-height: .95;
+  text-align:center;
+  color:#16283b;
+  margin: 0;
+  letter-spacing:1px;
+}
+.kicker{
+  text-align:center;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-weight:700;
+  font-size:28px;
+  color:#1d3349;
+  margin: 6px 0 14px;     /* directly under HFB */
+}
+.slogan{
+  text-align:center;
+  font-weight:800;
+  color:#1d3349;
+  margin: 10px 0 0;
+}
+
+/* New mission/vision/why card */
+.about{
+  background:#fff;
+  border-radius:16px;
+  padding: 28px 28px;
+  margin: 22px auto 32px;
+  box-shadow: 0 10px 30px var(--ring);
+}
+.about h3{
+  font-family: 'Georgia','Times New Roman',serif;
+  color:#12243a;
+  margin: 0 0 6px;
+  font-size:22px;
+}
+.about p{ margin:0 0 12px; color:#334155; line-height:1.65 }
+
+/* Feature cards */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin: 0 auto 18px;
+}
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:22px 22px;
+  box-shadow: 0 10px 30px var(--ring);
+}
+.card h4{
+  margin:0 0 10px;
+  font-size:22px;
+}
+.card p{ margin:0; color:#374151; line-height:1.6 }
+
+footer{
+  text-align:center;
+  color:#6b7280;
+  font-size:14px; padding:16px 0 26px;
+}
+
+/* Responsiveness */
+@media (max-width: 900px){
+  .title{ font-size:64px }
+}
+@media (max-width: 720px){
+  .grid{ grid-template-columns: 1fr; }
+  .title{ font-size:52px }
+  .kicker{ font-size:24px }
+  .logo{ width:150px }
+}
