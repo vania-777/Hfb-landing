@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    padding: 40px 20px;
+}
+
+.logo {
+    width: 300px; /* بزرگ‌تر از قبل */
+    margin-bottom: 10px; /* فاصله کمتر از نوشته */
+}
+
+h1 {
+    font-size: 48px;
+    margin: 5px 0;
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 400;
+    margin: 10px 0 20px;
+    color: #555;
+}
+
+.description {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+}
+
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+footer {
+    margin-top: 40px;
+    font-size: 14px;
+    color: #777;
+}
