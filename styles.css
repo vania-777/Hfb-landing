@@ -1,104 +1,63 @@
-
-:root{
-  --bg: #f6fbff;
-  --ink: #0b2436;
-  --muted:#5b6b7a;
-  --card:#ffffff;
-  --pill:#ffffff;
-  --shadow: 0 10px 30px rgba(16,42,67,.12);
-  --accent:#0d2b45;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('assets/background.png') no-repeat center center fixed;
+  background-size: cover;
+  text-align: center;
+  color: #222;
 }
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color:var(--ink);
-  background:#f7fbff;
-  min-height:100vh;
+.container {
+  padding: 40px;
 }
-/* Background image behind everything */
-body::before{
-  content:"";
-  position:fixed; inset:0;
-  background:url('background.png') center/cover no-repeat;
-  opacity:.78;
-  z-index:-1;
-  pointer-events:none;
-  filter:saturate(1.05) contrast(1.02) blur(.2px);
+#logo {
+  width: 180px;
+  margin-bottom: 10px;
 }
-
-.container{max-width:1100px;margin:0 auto;padding:64px 20px}
-
-.hero{ text-align:center; margin-top:8px; margin-bottom:28px;}
-.logo{ width:132px; height:auto; display:block; margin:0 auto 8px auto; filter: drop-shadow(0 8px 16px rgba(0,0,0,.12));}
-.hfb{
-  font-family:"Playfair Display", Georgia, 'Times New Roman', serif;
-  font-weight:800;
-  letter-spacing:.5px;
-  font-size:72px; line-height:1.05; margin:6px 0 10px 0;
-  color:#11283a;
+h1 {
+  font-size: 3rem;
+  margin: 0;
+  color: #1a2a49;
+  font-family: 'Georgia', serif;
 }
-.subhead{
-  font-family:"Playfair Display", Georgia, serif;
-  font-size:28px; font-weight:600; margin:0; color:#11283a;
+h2 {
+  font-size: 1.5rem;
+  margin: 5px 0;
+  color: #1a2a49;
 }
-.tagline{color:var(--muted); margin:8px 0 18px 0; font-weight:700}
-
-.cta-ghost{
-  display:inline-block;
-  padding:12px 18px;
-  background:#fff;
-  color:#0e2140;
-  border-radius:14px;
-  box-shadow: 0 8px 28px rgba(46, 38, 94, .18);
-  text-decoration:none; font-weight:700;
-  transition: transform .15s ease, box-shadow .2s ease;
+.tagline {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  font-weight: bold;
 }
-.cta-ghost:hover{ transform: translateY(-1px); box-shadow: 0 16px 38px rgba(46, 38, 94, .24);}
-
-.mission-card{
-  background: rgba(255,255,255,.86);
-  border-radius:22px;
-  padding:24px 22px;
-  box-shadow: var(--shadow);
-  margin: 14px auto 26px auto;
+.proposal-btn {
+  display: inline-block;
+  margin: 20px auto;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  background: #fff;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
 }
-
-/* Expandable pills */
-.pill{
-  background: var(--pill);
-  border-radius:18px;
-  margin: 14px auto;
-  box-shadow: 0 16px 42px rgba(74,48,170,.18);
-  overflow:hidden;
+.proposal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
-.pill summary{
-  list-style:none;
-  cursor:pointer;
-  padding:18px 22px;
-  font-weight:800;
-  color:#0f2238;
-  position:relative;
+.card {
+  margin: 15px auto;
+  padding: 18px;
+  width: 80%;
+  max-width: 600px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-weight: bold;
+  transition: all 0.3s ease;
 }
-.pill summary::-webkit-details-marker{display:none}
-.pill[open] summary{ border-bottom:1px solid #eef2f7}
-.pill-content{ padding:16px 22px 20px 22px; color:#344b5f; line-height:1.7}
-
-.cards{
-  display:grid; gap:18px;
-  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
-  margin: 18px 0 38px 0;
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
 }
-.card{
-  background:#ffffff;
-  border-radius:18px;
-  padding:18px 18px 20px 18px;
-  box-shadow: var(--shadow);
-  transition: transform .15s ease, box-shadow .2s ease;
-}
-.card:hover{ transform: translateY(-2px); box-shadow: 0 18px 48px rgba(16,42,67,.18);}
-.card-title{ font-weight:800; margin-bottom:6px; color:#0f2238}
-
-.footer{ text-align:center; color:#5a6a79; padding:14px 0 10px 0;}
-.footer a{ color:#385b86; text-decoration:none}
-.footer a:hover{ text-decoration:underline}
