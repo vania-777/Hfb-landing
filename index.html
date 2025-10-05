@@ -1,72 +1,103 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>High Functioning Brains (HFB)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="HFB bridges neuroscience, technology, and compassion to empower neurodiverse individuals, families, and specialists.">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta property="og:title" content="High Functioning Brains (HFB)">
+  <meta property="og:description" content="Empowering Minds Through Science and Compassion">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/logo_hfb.png">
+  <meta property="og:url" content="https://highfunctioningbrains.com/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="page-bg"></div>
-  <main class="card">
-    <header class="hero">
-      <img class="logo" src="assets/logo.png" alt="HFB logo" />
-      <h1 class="brand">HFB</h1>
-      <h2 class="subtitle">High functioning brains</h2>
-      <p class="tagline">Neurodiversity. Empowered by Unity.</p>
-      <a class="cta" href="mailto:vania@highfunctioningbrains.com?subject=HFB%20—%20Please%20send%20the%20proposal&body=Hi%20Vania%2C%0A%0AMy%20name%20is%20_____.%20Please%20send%20me%20the%20latest%20HFB%20proposal.%0A%0AThanks!">Request Proposal (Email)</a>
-    </header>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="#top" aria-label="High Functioning Brains (HFB)">
+        <img src="assets/logo_hfb.png" width="132" height="44" loading="eager" alt="HFB logo" class="logo">
+        <div class="brand-text">
+          <h1>High Functioning Brains (HFB)</h1>
+          <p class="tagline">Empowering Minds Through Science and Compassion</p>
+        </div>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#values">Values</a>
+        <a href="#cta">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-    <section class="accordion">
-      <button class="pill" data-target="#mission"><span>Our Mission</span><span class="chev">▾</span></button>
-      <div id="mission" class="panel">
-        <p>High Functioning Brains (HFB) is committed to empowering neurodiverse individuals, families, and clinicians through technology that prioritizes privacy, community, and actionable insights. Our mission is to bridge the gap between fragmented tools and create a unified ecosystem where neurodiverse voices are heard, supported, and respected.</p>
-      </div>
-
-      <button class="pill" data-target="#vision"><span>Our Vision</span><span class="chev">▾</span></button>
-      <div id="vision" class="panel">
-        <p>We envision a future where neurodiverse communities no longer face isolation or disconnection. By offering structured outcomes data and secure communication tools, HFB aims to become the trusted digital hub that helps families, professionals, and individuals achieve long‑term independence, collaboration, and growth.</p>
-      </div>
-
-      <button class="pill" data-target="#why"><span>Why Now</span><span class="chev">▾</span></button>
-      <div id="why" class="panel">
-        <p>The need has never been greater: with over <strong>61.8 million people on the spectrum globally</strong>, current solutions are fragmented and leave families and clinicians struggling with isolated data silos. HFB provides a timely, scalable, and privacy‑first platform that enables better decisions, coordinated care, and sustainable outcomes.</p>
+  <main id="top">
+    <section class="hero" role="banner">
+      <div class="container hero-inner">
+        <h2>Bridging Neuroscience, Technology, and Compassion</h2>
+        <p>HFB builds meaningful tools that empower neurodiverse individuals, families, and specialists — turning evidence into everyday support.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#cta">Investor Access</a>
+          <a class="btn ghost" href="#about">Learn More</a>
+        </div>
       </div>
     </section>
 
-    <section class="keys">
-      <div class="key">
-        <div class="key-icon">🌐</div>
-        <h3>Clear need</h3>
-        <p>61.8M+ people on the spectrum globally; fragmented tools and data silos for families & clinicians.</p>
-      </div>
-      <div class="key">
-        <div class="key-icon">🎯</div>
-        <h3>Focused MVP</h3>
-        <p>Private, verified spaces + structured outcomes data for better decisions.</p>
-      </div>
-      <div class="key">
-        <div class="key-icon">🔒</div>
-        <h3>Privacy-first</h3>
-        <p>Encryption in transit/at rest, least‑privilege access, audit logs, opt‑in sharing, data minimization.</p>
+    <section id="about" class="about">
+      <div class="container">
+        <h3>About HFB</h3>
+        <p><strong>High Functioning Brains (HFB)</strong> is a purpose-driven initiative to connect families, specialists, and neurodiverse individuals through practical, privacy-first tools. We translate the best of neuroscience into everyday solutions.</p>
       </div>
     </section>
 
-    <footer class="footer">
-      <small>© 2025 High Functioning Brains — San Diego, CA • <a href="privacy.html">Privacy</a> • <a href="terms.html">Terms</a></small>
-    </footer>
+    <section id="values" class="values">
+      <div class="container">
+        <h3>Core Principles</h3>
+        <div class="cards" role="list">
+          <a class="card" href="#clearneed" role="listitem" aria-label="ClearNeed">
+            <h4>ClearNeed</h4>
+            <p>Start from real, lived needs of families and providers.</p>
+          </a>
+          <a class="card" href="#privacyfirst" role="listitem" aria-label="PrivacyFirst">
+            <h4>PrivacyFirst</h4>
+            <p>Design with consent, security, and dignity from day one.</p>
+          </a>
+          <a class="card" href="#focusedmvp" role="listitem" aria-label="FocusedMVP">
+            <h4>FocusedMVP</h4>
+            <p>Deliver a simple, high-impact first version and learn fast.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta" class="cta">
+      <div class="container">
+        <h3>Partner with HFB</h3>
+        <p>We’re preparing for the next stage — growth and investment.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="mailto:vania@highfunctioningbrains.com">Contact: vania@highfunctioningbrains.com</a>
+          <a class="btn ghost" href="#" title="Coming soon">Download Proposal (PDF)</a>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> High Functioning Brains (HFB). All rights reserved.</p>
+      <div class="links">
+        <a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
   <script>
-    // Simple accordion interactivity (no external libs)
-    document.querySelectorAll('.pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const panel = document.querySelector(btn.dataset.target);
-        const open = panel.classList.toggle('open');
-        btn.classList.toggle('open', open);
-      });
-    });
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
