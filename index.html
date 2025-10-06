@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>High Functioning Brains (HFB)</title>
   <meta name="description" content="HFB bridges neuroscience, technology, and compassion to empower neurodiverse individuals, families, and specialists.">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=20251005inv">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=20251006inv2">
   <meta property="og:title" content="High Functioning Brains (HFB)">
   <meta property="og:description" content="Empowering Minds Through Science and Compassion">
   <meta property="og:type" content="website">
@@ -15,13 +15,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20251005inv">
+  <link rel="stylesheet" href="styles.css?v=20251006inv2">
 </head>
 <body>
   <header class="site-header">
     <div class="container">
       <a class="brand" href="#top" aria-label="High Functioning Brains (HFB)">
-        <img src="assets/logo_hfb.png?v=20251005inv" width="132" height="44" loading="eager" alt="HFB logo (transparent icon, no text)" class="logo">
+        <img src="assets/logo_hfb.png?v=20251006inv2" width="132" height="44" loading="eager" alt="HFB logo (transparent icon, no text)" class="logo">
         <div class="brand-text">
           <h1>High Functioning Brains (HFB)</h1>
           <p class="tagline">Empowering Minds Through Science and Compassion</p>
@@ -74,28 +74,77 @@
       </div>
     </section>
 
+    <!-- CTA + Contact Card -->
     <section id="cta" class="cta">
       <div class="container">
         <h3>Partner with HFB</h3>
         <p>We’re preparing for the next stage — growth and investment.</p>
         <div class="cta-row">
-          <a class="btn primary" href="mailto:vania@highfunctioningbrains.com">Contact: vania@highfunctioningbrains.com</a>
+          <a class="btn primary" href="mailto:vania@highfunctioningbrains.com?subject=Investor%20Access%20—%20HFB">Contact: vania@highfunctioningbrains.com</a>
           <a class="btn ghost" href="#" title="Coming soon">Download Proposal (PDF)</a>
+        </div>
+
+        <div class="contact-card" role="complementary" aria-label="Contact information">
+          <div class="contact-row">
+            <span class="dot"></span>
+            <div>
+              <strong>Email</strong><br>
+              <a class="link" href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a>
+            </div>
+          </div>
+          <div class="contact-row">
+            <span class="dot"></span>
+            <div>
+              <strong>LinkedIn</strong><br>
+              <a class="link" href="https://www.linkedin.com" target="_blank" rel="noopener">Connect</a>
+            </div>
+          </div>
+          <div class="contact-row">
+            <span class="dot"></span>
+            <div>
+              <strong>Investor Brief</strong><br>
+              <a class="link" href="#" title="Coming soon">1-pager (PDF)</a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <p>© <span id="year"></span> High Functioning Brains (HFB). All rights reserved.</p>
-      <div class="links">
-        <a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a>
+    <div class="container footer-grid">
+      <div class="col">
+        <div class="brand-mini">
+          <img src="assets/logo_hfb.png?v=20251006inv2" alt="HFB logo" class="logo-mini">
+          <div>
+            <strong>High Functioning Brains (HFB)</strong><br>
+            <span class="muted">Empowering Minds Through Science and Compassion</span>
+          </div>
+        </div>
       </div>
+      <div class="col">
+        <strong>Explore</strong>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#values">Values</a></li>
+          <li><a href="#cta">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col">
+        <strong>Contact</strong>
+        <ul>
+          <li><a href="mailto:vania@highfunctioningbrains.com">vania@highfunctioningbrains.com</a></li>
+          <li><a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">
+      © <span id="year"></span> High Functioning Brains (HFB). All rights reserved.
     </div>
   </footer>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
