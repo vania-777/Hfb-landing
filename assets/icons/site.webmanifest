@@ -1,9 +1,0 @@
-{
-  "name": "High Functioning Brains",
-  "short_name": "HFB",
-  "icons": [{ "src": "favicon.ico", "sizes": "48x48 32x32 16x16", "type": "image/x-icon" }],
-  "start_url": "/",
-  "display": "standalone",
-  "theme_color": "#0a1b3f",
-  "background_color": "#0a1b3f"
-}
