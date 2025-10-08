@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>High Functioning Brains (HFB)</title>
+  <meta name="description" content="HFB — Empowering Minds Through Science and Compassion. Bridging neuroscience, psychology, and technology for neurodiverse lives." />
+  <link rel="preload" href="assets/img/logo-hfb.png" as="image">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="hero" id="top">
+    <div class="hero__inner container">
+      <img class="hero__logo" src="assets/img/logo-hfb.png" alt="HFB logo" width="144" height="144" />
+      <h1 class="hero__title">High Functioning Brains (HFB)</h1>
+      <p class="hero__tagline">Empowering Minds Through Science and Compassion</p>
+      <div class="hero__cta">
+        <a href="#vision" class="btn btn--primary">Learn More</a>
+      </div>
+    </div>
+  </header>
+  <section class="vision" id="vision">
+    <div class="container">
+      <div class="vision__media">
+        <img src="assets/img/conscious-core.png" alt="The Conscious Core — crystal prism with lotus & DNA" loading="lazy" />
+      </div>
+      <div class="vision__copy">
+        <h2>The Conscious Core</h2>
+        <p>The Conscious Core symbolizes the living intersection of biology, awareness, and connection — a visual centerpoint for how science and empathy converge in HFB’s framework.</p>
+        <p>It captures HFB’s mission to align research with compassion, transforming data into understanding.</p>
+      </div>
+    </div>
+  </section>
+  <section class="pillars" id="pillars">
+    <div class="container">
+      <h2>Our Three Pillars</h2>
+      <div class="pillars__grid">
+        <article class="card"><h3>Research Integration</h3><p>Evidence-based neuroscience and psychology brought together into an adaptive model.</p></article>
+        <article class="card"><h3>Human-Centered Design</h3><p>Inclusive tools co-created with neurodiverse participants and verified through ongoing research.</p></article>
+        <article class="card"><h3>Community Empowerment</h3><p>Ethical, privacy-first connectivity that turns isolation into shared knowledge and support.</p></article>
+      </div>
+    </div>
+  </section>
+  <footer class="site-footer">
+    <div class="container site-footer__grid">
+      <div><h4>Contact</h4><a href="mailto:contact@highfunctioningbrains.com">contact@highfunctioningbrains.com</a></div>
+      <div><h4>Follow</h4><a href="https://www.linkedin.com/company/high-functioning-brains" target="_blank" rel="noopener">LinkedIn</a></div>
+      <div class="copy">© 2025 High Functioning Brains (HFB). All Rights Reserved.</div>
+    </div>
+  </footer>
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id = a.getAttribute('href');
+        if(id.length>1){ e.preventDefault(); document.querySelector(id).scrollIntoView({behavior:'smooth'}); }
+      });
+    });
+  </script>
+</body>
+</html>

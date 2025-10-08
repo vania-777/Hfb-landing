@@ -1,0 +1,33 @@
+:root{
+  --bg-hero-start:#0a2c6e; --bg-hero-end:#5227a0;
+  --ink:#eaf0ff; --ink-soft:#cfd7f2;
+  --panel:#0d1330; --panel-2:#0b1026; --accent:#7aa6ff;
+  --container:1152px; --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#070b1a;color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+img{max-width:100%;height:auto;display:block}
+.container{max-width:var(--container);margin-inline:auto;padding:0 20px}
+.hero{background:radial-gradient(1200px 600px at 50% -20%, rgba(122,166,255,.25), transparent 60%), linear-gradient(160deg,var(--bg-hero-start),var(--bg-hero-end));padding:80px 0 96px;text-align:center;position:relative;overflow:hidden}
+.hero__logo{width:128px;height:auto;margin:0 auto 18px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35))}
+.hero__title{margin:0 0 6px;font-weight:700;font-size:clamp(28px,4vw,44px);letter-spacing:.2px}
+.hero__tagline{margin:0 0 22px;color:var(--ink-soft)}
+.btn{display:inline-block;padding:12px 18px;border-radius:999px;text-decoration:none}
+.btn--primary{background:#ffffff;color:#0d1330;font-weight:700}
+.vision{background:linear-gradient(180deg,#0b1026,#0a0f22);padding:70px 0}
+.vision .container{display:grid;gap:32px;grid-template-columns:1.1fr .9fr}
+.vision__media{background:linear-gradient(180deg,#0b112b,#0a0f22);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.vision__media img{border-radius:12px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.45))}
+.vision__copy h2{margin:0 0 10px}
+.vision__copy p{margin:0 0 12px;color:#d8defa}
+.pillars{background:#0a0f22;padding:70px 0;border-top:1px solid rgba(255,255,255,.06)}
+.pillars h2{text-align:center;margin:0 0 26px}
+.pillars__grid{display:grid;gap:18px;grid-template-columns:repeat(3,1fr)}
+.card{background:linear-gradient(180deg,#0f1636,#0b112b);padding:20px;border-radius:14px;border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow)}
+.card h3{margin:0 0 8px}
+.card p{margin:0;color:#d2d8f1}
+.site-footer{background:#070b1a;padding:32px 0;border-top:1px solid rgba(255,255,255,.06)}
+.site-footer__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:center}
+.site-footer a{color:var(--accent);text-decoration:none}
+.copy{text-align:right;color:#bfc7e7;font-size:14px}
+@media (max-width:900px){.vision .container{grid-template-columns:1fr}.pillars__grid{grid-template-columns:1fr}.site-footer__grid{grid-template-columns:1fr;gap:8px}.copy{text-align:left}}
