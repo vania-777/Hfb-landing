@@ -1,3 +1,2 @@
 # Security — Public Site (HFB)
-
-Email security@highfunctioningbrains.com for disclosures.
+For sensitive disclosures email security@highfunctioningbrains.com and vania@highfunctioningbrains.com.
