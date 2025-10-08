@@ -1,0 +1,17 @@
+:root{--bg1:#0a1b3f;--bg2:#2e0b52;--card:#121a2b;--muted:#94a3b8;--text:#e6ecff;--accent:#7c8cff;--pill:#1f2a44}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Inter,Arial;color:var(--text);
+background:radial-gradient(1200px 600px at 50% -10%,#183265 0%,transparent 60%),linear-gradient(180deg,var(--bg1),var(--bg2));line-height:1.6}
+.wrap{max-width:1100px;margin-inline:auto;padding:2.4rem 1.2rem}.hero{padding-block:4.5rem 3rem;text-align:center}
+.logo{width:120px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))}h1{font-size:2.2rem;margin:1rem 0 .25rem}
+.tag{opacity:.9;margin:.25rem 0 1rem;font-weight:500}.pills{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 1.2rem}
+.pills span{background:var(--pill);padding:.45rem .7rem;border-radius:999px;font-size:.86rem;border:1px solid #23304f}
+.cta-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.btn{padding:.75rem 1rem;border-radius:.6rem;text-decoration:none;font-weight:600;border:1px solid #2a3a68}
+.btn.primary{background:linear-gradient(180deg,#4f6cff,#6a49ff);color:white}.btn.ghost{background:transparent;color:var(--text)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.25)}main{padding-bottom:4rem}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;margin:1.2rem auto;padding:1.4rem 1.2rem;max-width:1000px}
+.card h2,.card h3{margin-top:.2rem}.card p{color:#d7dff7}.image-feature{display:grid;gap:1rem;grid-template-columns:1.1fr .9fr;align-items:center}
+.image-feature .image img{width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.image-feature figcaption{color:var(--muted);font-size:.9rem;margin-top:.35rem}.contact .cta-row{justify-content:flex-start}
+.site-footer{opacity:.7;text-align:center;padding:2rem 1rem}@media (max-width:880px){.image-feature{grid-template-columns:1fr}.hero{padding-block:3.6rem 2.2rem}}
