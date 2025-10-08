@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://highfunctioningbrains.com/</loc></url>
-  <url><loc>https://highfunctioningbrains.com/pages/investors.html</loc></url>
-  <url><loc>https://highfunctioningbrains.com/pages/families.html</loc></url>
-  <url><loc>https://highfunctioningbrains.com/pages/professionals.html</loc></url>
-  <url><loc>https://highfunctioningbrains.com/pages/about.html</loc></url>
-  <url><loc>https://highfunctioningbrains.com/pages/privacy.html</loc></url>
-  <url><loc>https://highfunctioningbrains.com/pages/terms.html</loc></url>
+  <url><loc>/index.html</loc></url>
+  <url><loc>/privacy.html</loc></url>
+  <url><loc>/build.html</loc></url>
 </urlset>

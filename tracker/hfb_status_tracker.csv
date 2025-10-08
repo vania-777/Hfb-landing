@@ -1,0 +1,4 @@
+date,shipped,next_actions,notes
+2025-10-08,"Landing page v1 (index.html, styles, logo.svg); Placeholders for PDFs; Draft LinkedIn Post #2; Brand notes; Status tracker",Replace placeholder PDFs; Open waitlist section; Add analytics-free metrics; Prepare image assets for LinkedIn/IG,Manager: Vania. Keep Instagram in Persian; LinkedIn in English focusing on HFB.
+2025-10-08,"Landing v2: Waitlist (client-only), Investor Pack section, Collaborate CTA",Wire up real storage for waitlist; finalize PDFs; add 'build thread' page; add basic accessibility audit badges,No analytics/cookies. Keep English for site/LinkedIn; Persian for Instagram.
+2025-10-08,"Landing v3: Formspree-ready waitlist (placeholder endpoint), Build Thread page, LinkedIn banner PNG",Replace Formspree endpoint token; upload real PDFs; publish site; draft Instagram Persian post mirroring LinkedIn #2,Keep privacy-first; no analytics.

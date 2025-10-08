@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>HFB — Build Thread</title>
+  <link rel="stylesheet" href="assets/styles.css"/>
+  <style>
+    .timeline { border-left: 3px solid var(--ring); margin: 24px 0; padding-left: 14px; }
+    .tl-item { margin-bottom: 16px; }
+    .tl-date { font-weight: 600; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid var(--ring); vertical-align: top; }
+    th { text-align: left; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <img src="assets/logo.svg" alt="HFB logo" style="height:56px"/>
+    <div>
+      <h1>Build Thread</h1>
+      <div class="tagline">We build in the open — transparent, iterative, privacy-first.</div>
+      <a class="btn" href="index.html" style="margin-top:10px">← Back to Home</a>
+    </div>
+  </header>
+  <main class="section">
+    <p>This page reads our CSV tracker and renders a simple timeline and a full table of updates.</p>
+    <div id="timeline" class="timeline" aria-live="polite"></div>
+    <h2>Full Log</h2>
+    <div id="table"></div>
+  </main>
+  <script>
+    async function loadTracker() {
+      try {
+        const res = await fetch('tracker/hfb_status_tracker.csv', {cache: 'no-store'});
+        const text = await res.text();
+        const rows = text.trim().split(/\r?\n/).map(r => r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/));
+        if (rows.length < 2) return;
+        const headers = rows[0];
+        const data = rows.slice(1);
+        // Timeline (latest first)
+        const tl = document.getElementById('timeline');
+        data.slice().reverse().forEach(r => {
+          const [date, shipped, next, notes] = r;
+          const div = document.createElement('div');
+          div.className = 'tl-item';
+          div.innerHTML = `<div class="tl-date">${date}</div>
+            <div><strong>Shipped:</strong> ${shipped}</div>
+            <div><strong>Next:</strong> ${next}</div>
+            <div class="note"><strong>Notes:</strong> ${notes}</div>`;
+          tl.appendChild(div);
+        });
+        // Table
+        const tableWrap = document.getElementById('table');
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        thead.innerHTML = '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
+        table.appendChild(thead);
+        const tbody = document.createElement('tbody');
+        data.forEach(r => {
+          const tr = document.createElement('tr');
+          r.forEach(cell => {
+            const td = document.createElement('td');
+            td.textContent = cell;
+            tbody.appendChild(tr);
+            tr.appendChild(td);
+          });
+        });
+        table.appendChild(tbody);
+        tableWrap.appendChild(table);
+      } catch (e) {
+        document.getElementById('timeline').innerHTML = '<div class="note mono">Failed to load tracker.</div>';
+      }
+    }
+    loadTracker();
+  </script>
+</body>
+</html>
