@@ -9,10 +9,10 @@
     root.classList.remove('light','dark');
     root.classList.add(isLight?'dark':'light');
     localStorage.setItem('hfb-theme', isLight?'dark':'light');
-    document.getElementById('theme-label')?.replaceChildren(root.classList.contains('light') ? '🌞' : '🌙');
+    document.getElementById('theme-label')?.replaceChildren(root.classList.contains('light') ? 'Light' : 'Dark');
   };
   window.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('theme-label')?.replaceChildren(root.classList.contains('light') ? '🌞' : '🌙');
+    document.getElementById('theme-label')?.replaceChildren(root.classList.contains('light') ? 'Light' : 'Dark');
   });
   window.hfbLoadMarkdown = async function(id, url){
     try{

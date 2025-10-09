@@ -6,6 +6,12 @@
   --card:#0f172a; --border:#1e293b;
 }
 :root.light{
+  --fg:#0b1220; 
+  --bg:#eef2ff; 
+  --muted:#475569; 
+  --ring:#c7d2fe;
+  --card:#ffffff; 
+  --border:#dbeafe;
   --fg:#0b1220; --bg:#f8fafc; --muted:#475569; --ring:#cbd5e1;
   --card:#ffffff; --border:#e2e8f0;
 }
@@ -33,7 +39,7 @@ body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,s
 .core-wrap::before{content:"";position:absolute;inset:auto 0 0 0;margin:auto;width:60%;max-width:520px;height:50%;
   filter:blur(32px);background:radial-gradient(circle at 50% 60%, rgba(20,30,60,.55), transparent 70%);border-radius:30px;z-index:0}
 .core-image{display:block;position:relative;z-index:1;margin:0 auto;max-width:360px;width:33%;min-width:220px;
-  filter:drop-shadow(0 0 16px rgba(160,200,255,.5)) blur(.15px);mix-blend-mode:lighten;opacity:.97;border-radius:18px}
+  filter:drop-shadow(0 0 16px rgba(160,200,255,.5)) blur(0px);mix-blend-mode:lighten;opacity:.97;border-radius:18px}
 :root.light .core-image{filter:brightness(.78) contrast(1.15) drop-shadow(0 0 10px rgba(80,80,160,.25)) blur(.1px)}
 .core-caption{color:var(--muted);font-size:14px;margin-top:10px;text-align:center;max-width:70ch}
 
@@ -44,3 +50,22 @@ body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,s
 @keyframes fade{to{opacity:1;transform:none}}
 
 @media (max-width:760px){.title{font-size:30px}.grid-3{grid-template-columns:1fr}.core-image{width:60%}}
+
+/* v5.1.2 additions */
+.header img.logo {
+  height: 56px; width:auto; image-rendering:auto;
+}
+.center {text-align:center}
+.hero .cta {display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.cards {display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:10px}
+@media (max-width:860px){.cards{grid-template-columns:1fr}}
+.card.is-highlight {
+  border:1px solid var(--ring); border-radius:14px; padding:16px; background:var(--card);
+  box-shadow: 0 6px 16px color-mix(in oklab, var(--ring), transparent 80%);
+}
+.card h3{margin:4px 0 8px}
+.core-image{filter:none !important; mix-blend-mode:normal !important; border-radius:14px}
+.light .core-image{filter:none !important}
+.back {display:inline-block; margin:10px 0; border:1px solid var(--ring); padding:10px 14px; border-radius:12px; text-decoration:none; color:var(--fg)}
+.badge{display:inline-block; padding:6px 10px; border-radius:12px; border:1px solid var(--ring); background:var(--card)}
+.badge + .badge{margin-left:6px}
