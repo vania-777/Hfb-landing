@@ -1,0 +1,1 @@
+(function(){window.hfbLoadMarkdown=async function(id,u){const r=await fetch(u);const t=await r.text();document.getElementById(id).innerHTML='<pre>'+t+'</pre>';}})();

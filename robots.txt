@@ -1,3 +1,2 @@
 User-agent: *
 Allow: /
-Sitemap: https://vania-777.github.io/Hfb-landing/sitemap.xml
