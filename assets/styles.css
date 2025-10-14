@@ -1,69 +1,109 @@
 
+/* HFB — Calm Sky RF-520.4
+   Cache-busting version tag: RF-520.4_CalmSky
+   Notes:
+   - Transparent logos: no background behind .logo img
+   - Theme system: .theme-dark (default), .theme-calm (brighter variant)
+*/
+
 :root {
-  --bg: #0c1117;
-  --panel: #0f1621;
-  --text: #d6e1f0;
-  --muted: #9fb0c7;
-  --link: #86b7ff;
-  --accent: #3ea0ff;
-  --card: #111a27;
-  --card-border: #203047;
-  --glow: 0 0 28px rgba(62,160,255,.25);
+  --hfb-font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  --radius: 14px;
+
+  /* Dark (midnight) */
+  --bg: #0C1722;
+  --layer: #0F2030;
+  --muted: #94a3b8;
+  --text: #dbe7ff;
+
+  /* Brand gradient */
+  --brand-1: #3AA8FF;
+  --brand-2: #9B6BFF;
+
+  /* Accent and separators */
+  --line: rgba(255,255,255,.06);
+  --shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
 }
 
-:root[data-theme="light"] {
-  /* Calm Sky — bright but not white */
-  --bg: #e9f2ff;
-  --panel: #f1f6ff;
-  --text: #0c2540;
-  --muted: #3f5a82;
-  --link: #0b6bff;
-  --accent: #2488ff;
-  --card: #ffffff;
-  --card-border: #d6e6ff;
-  --glow: 0 0 22px rgba(36,136,255,.28);
+/* Calm (lighter) theme variables override */
+.theme-calm {
+  --bg: #EAF3FF;           /* sky */
+  --layer: #F4F8FF;        /* panel */
+  --text: #0C1722;         /* ink */
+  --muted: #3c516b;
+  --line: rgba(12,23,34,.08);
 }
 
-* { box-sizing: border-box; }
-html, body { height:100%; }
+/* Reset */
+html,body{padding:0;margin:0}
 body {
-  margin:0; font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
   background: var(--bg);
   color: var(--text);
-  transition: background .25s ease, color .25s ease;
+  font-family: var(--hfb-font);
+  -webkit-font-smoothing: antialiased;
+  line-height:1.6;
 }
 
-a{ color: var(--link); text-decoration: none; }
-a:hover{ text-decoration: underline; }
-.container { max-width: 1080px; margin: 0 auto; padding: 20px; }
-
-header { border-bottom: 1px solid var(--card-border); background: var(--panel); position: sticky; top:0; z-index:5; }
-.nav{ display:flex; align-items:center; gap:14px; }
-.brand-logo{ width:40px; height:40px; display:block; filter: drop-shadow(0 2px 6px rgba(0,0,0,.25)); }
-.site-title{ font-size: 28px; margin: 0; letter-spacing:.2px; }
-.site-title a{ color: var(--text); text-decoration:none; }
-.tagline{ color: var(--muted); margin: 4px 0 0 54px; }
-
-.theme-toggle{ margin-left:auto; display:flex; align-items:center; gap:10px; color:var(--muted); }
-.switch{ width:54px; height:28px; border-radius:999px; background: #2b3a52; position:relative; cursor:pointer; border:1px solid var(--card-border); }
-:root[data-theme="light"] .switch{ background:#b9d4ff; }
-.switch i{ position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; transition:left .2s ease; }
-:root[data-theme="light"] .switch i{ left:29px; }
-
-main .hero { margin:20px 0 10px; }
-.grid3 { display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; margin: 14px 0 22px; }
-.card{ background: var(--card); border:1px solid var(--card-border); border-radius:16px; padding:18px; box-shadow: var(--glow); }
-.card h3{ margin:0 0 6px; }
-
-.footer{ border-top: 1px solid var(--card-border); background: var(--panel); color:var(--muted); }
-
-/* Helpers */
-.btn{ display:inline-block; background: linear-gradient(90deg, #6ac0ff, #5f8cff); color:#fff; padding:10px 14px; border-radius:10px; border:0; text-decoration:none; }
-.breadcrumb{ color:var(--muted); margin-bottom:14px; }
-.back{ color:var(--link); }
-.center{ text-align:center; }
-
-@media (max-width: 900px){
-  .grid3{ grid-template-columns: 1fr; }
-  .tagline{ margin-left:0; }
+/* Layout helpers */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 20px 80px;
 }
+
+/* Header */
+.header {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:18px 20px 8px;
+  border-bottom:1px solid var(--line);
+  position: sticky; top:0; backdrop-filter: blur(8px);
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+}
+
+/* LOGO — ensure no white tile behind */
+.logo-wrap{
+  display:flex; align-items:center; gap:12px;
+}
+.logo-wrap img.logo {
+  width: 56px; height:auto; display:block;
+  background: transparent !important;
+  border-radius:12px; /* just to soften edges if any */
+}
+
+/* Title area */
+.title{font-weight:800; letter-spacing:.2px; font-size: clamp(22px, 4.2vw, 36px);}
+.tagline{opacity:.78; font-size:14px;}
+
+/* Theme switch (text-only, accessible) */
+.theme-switch {
+  margin-left:auto; display:flex; align-items:center; gap:8px;
+  font-size:14px; color: var(--muted);
+}
+.theme-switch button{
+  appearance:none; border:1px solid var(--line); background:var(--layer);
+  color: var(--text);
+  padding:7px 12px; border-radius:999px; cursor:pointer;
+  box-shadow: var(--shadow);
+}
+.theme-switch button:hover{opacity:.92}
+
+/* Cards */
+.grid{display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:18px; margin-top:24px;}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.card{
+  background: var(--layer);
+  padding:20px; border-radius: var(--radius);
+  border:1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.card h3{margin:4px 0 8px}
+.card p{margin:0; color:var(--muted)}
+
+/* Footer */
+.footer{display:flex; gap:26px; align-items:center; padding:28px 20px; border-top:1px solid var(--line); color:var(--muted)}
+
+/* Links */
+a{color: color-mix(in oklab, var(--brand-1) 70%, var(--brand-2) 30%); text-decoration: none}
+a:hover{text-decoration: underline}

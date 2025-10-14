@@ -1,26 +1,36 @@
 
-(function(){
-  const key = 'hfb-theme';
-  const saved = localStorage.getItem(key);
+// HFB Theme Controller — RF-520.4 Calm Sky
+(() => {
+  const KEY = "hfb-theme";
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   const root = document.documentElement;
-  if(saved){ root.setAttribute('data-theme', saved); }
-  else { root.setAttribute('data-theme','dark'); }
 
-  const sw = document.querySelector('.switch');
-  if(sw){
-    sw.addEventListener('click', () => {
-      const t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', t);
-      localStorage.setItem(key, t);
-    });
+  function apply(theme){
+    root.classList.remove('theme-calm','theme-dark');
+    root.classList.add(theme);
+    try{ localStorage.setItem(KEY, theme); }catch(e){}
+    // Update button label if present
+    const btn = document.getElementById('themeToggleBtn');
+    if(btn){
+      btn.textContent = (theme === 'theme-dark') ? 'Light' : 'Dark';
+      btn.setAttribute('aria-pressed', theme !== 'theme-dark');
+      btn.title = (theme === 'theme-dark') ? 'Switch to lighter theme' : 'Switch to dark theme';
+    }
   }
 
-  // simple soft back-to-home for anchors with data-soft
-  document.body.addEventListener('click', (e)=>{
-    const a = e.target.closest('a[data-soft="1"]');
-    if(a){
-      e.preventDefault();
-      window.location.href = a.getAttribute('href');
-    }
-  });
+  function current(){
+    try{
+      const v = localStorage.getItem(KEY);
+      if(v) return v;
+    }catch(e){}
+    return prefersDark ? 'theme-dark' : 'theme-calm';
+  }
+
+  // On load
+  apply(current());
+
+  // Wire button if exists
+  window.hfbToggleTheme = function(){
+    apply(root.classList.contains('theme-dark') ? 'theme-calm' : 'theme-dark');
+  };
 })();
