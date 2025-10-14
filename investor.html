@@ -1,39 +1,47 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>HFB — Investor</title>
-<link rel="icon" href="assets/favicon.png"/>
-<link rel="manifest" href="/manifest.webmanifest"/>
-<meta name="theme-color" content="#0B1220"/>
-<link rel="stylesheet" href="assets/styles.css?v=RF-520.1_SkyLaunch_Glow"/>
-<script src="assets/app.js" defer></script>
-</head><body class="page">
-<header class="header page">
-  <img class="logo" src="assets/logo.png" srcset="assets/logo@512.png 512w, assets/logo@1024.png 1024w"
-       sizes="(max-width:768px) 96px, 56px" alt="HFB logo"/>
-  <div class="grow">
-    <h1 class="title">High Functioning Brains (HFB)</h1>
-    <div class="tagline small">Empowering minds through science and compassion.</div>
-  </div>
-  <div class="theme-switch">
-    <div class="switch" onclick="hfbToggleTheme()"><div class="knob"></div></div>
-    <span id="theme-label" class="switch-label">Dark</span>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>HFB — Investor</title>
+  <link rel="icon" href="assets/logo.png" type="image/png"/>
+  <link rel="stylesheet" href="assets/styles.css"/>
+</head>
+<body>
+<header>
+  <div class="container">
+    <div class="nav">
+      <span class="logo-wrap"><img class="brand-logo" src="assets/logo.png" alt="HFB logo" width="44" height="44"></span>
+      <h1 class="site-title"><a href="/">High Functioning Brains (HFB)</a></h1>
+      <div class="theme-toggle">
+        <span>Dark</span>
+        <div class="switch" title="Toggle theme"><i></i></div>
+      </div>
+    </div>
+    <div class="tagline">Empowering minds through science and compassion.</div>
   </div>
 </header>
 
-<main class="section">
+<main class="container">
+  <div class="breadcrumb"><a href="/" data-soft="1">Home</a> • Investor</div>
   
-  <nav class="breadcrumbs">
-    <a href="index.html" data-soft="1">Home</a>
-    <span class="crumb-sep">›</span>
-    <span>Investor</span>
-  </nav>
-
-  <div class="cards">
-    <a class="card is-highlight" href="content/HFB_PitchDeck.pdf" target="_blank"><strong>Pitch Deck</strong><p>Overview & vision</p></a>
-    <a class="card" href="content/HFB_Proposal.pdf" target="_blank"><strong>Proposal</strong><p>Problem, solution, model</p></a>
-    <div class="card"><strong>Momentum</strong><p>Advisors (2 clinicians + 1 educator), Pilot waitlist open, Privacy by design</p></div>
-    <div class="card"><strong>Roadmap</strong><p>6‑month plan: MVP → pilot → revenue</p></div>
+<section class="grid">
+  <div class="card">
+    <h3>Deck</h3>
+    <p>Vision, problem, solution, traction</p>
   </div>
-  <p style="margin-top:16px"><a class="btn btn-soft" href="index.html" data-soft="1">← Back to Home</a></p>
+  <div class="card">
+    <h3>Roadmap</h3>
+    <p>RF-520 → MVP pilot → private beta</p>
+  </div>
+  <div class="card">
+    <h3>Advisors</h3>
+    <p>2 clinicians, 1 educator (pilot)</p>
+  </div>
+</section>
+
+  <div style="margin-top:18px"><a class="back" href="/" data-soft="1">← Back to Home</a></div>
 </main>
-</body></html>
+<script src="assets/app.js"></script>
+</body>
+</html>

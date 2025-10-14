@@ -1,24 +1,14 @@
 {
-  "name": "High Functioning Brains",
+  "name": "HFB",
   "short_name": "HFB",
-  "start_url": "/index.html",
+  "start_url": "/index.html?v=5203",
   "display": "standalone",
-  "background_color": "#0B1220",
-  "theme_color": "#0B1220",
+  "theme_color": "#0c1117",
+  "background_color": "#0c1117",
   "icons": [
     {
-      "src": "assets/logo@1024.png",
-      "sizes": "1024x1024",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/logo@512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
       "src": "assets/logo.png",
-      "sizes": "256x256",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
