@@ -1,27 +1,48 @@
-<!doctype html><html lang='en'><head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><title>HFB — Routines (MVP)</title><meta name='description' content='Simple daily checklists; stored locally on your device.'/><link rel='icon' href='assets/favicon.png'/><link rel='manifest' href='/manifest.webmanifest'/><meta name='theme-color' content='#0B1220'/><meta property='og:title' content='HFB — Routines (MVP)'/><meta property='og:description' content='Simple daily checklists; stored locally on your device.'/><meta property='og:url' content='https://highfunctioningbrains.com/routines.html'/><link rel='stylesheet' href='assets/styles.css'/><script src='assets/app.js' defer></script></head><body><header class='header'><img class='logo' src='assets/logo.png' srcset='assets/logo@512.png 512w, assets/logo@1024.png 1024w' sizes='(max-width:768px) 96px, 56px' alt='HFB logo'/><div class='grow'><h1 class='title'>High Functioning Brains (HFB)</h1><div class='tagline'>Empowering minds through science and compassion.</div></div><div class='theme-switch'><div class='switch' onclick='hfbToggleTheme()'><div class='knob'></div></div><span id='theme-label' class='switch-label'>Dark</span></div></header>
-<main class='section'>
-  <h2>Daily Routines (Local-only)</h2>
-  <p class='muted'>Your data stays on this device. Use the plus to add steps; check to complete. Refresh will keep your list.</p>
-  <div style='display:flex;gap:10px;margin:10px 0'>
-    <input id='newStep' class='input' placeholder='Add a step...'/>
-    <button class='primary' onclick='addStep()'>Add</button>
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>HFB — Routines (MVP)</title>
+<link rel="icon" href="assets/favicon.png"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#0B1220"/>
+<link rel="stylesheet" href="assets/styles.css?v=RF-519_ConsciousLaunch"/>
+<script src="assets/app.js" defer></script>
+</head><body class="page">
+<header class="header page">
+  <img class="logo" src="assets/logo.png" srcset="assets/logo@512.png 512w, assets/logo@1024.png 1024w"
+       sizes="(max-width:768px) 96px, 56px" alt="HFB logo"/>
+  <div class="grow">
+    <h1 class="title">High Functioning Brains (HFB)</h1>
+    <div class="tagline small">Empowering minds through science and compassion.</div>
   </div>
-  <ul id='list'></ul>
-  <p><a class='btn' href='index.html'>← Back to Home</a></p>
+  <div class="theme-switch">
+    <div class="switch" onclick="hfbToggleTheme()"><div class="knob"></div></div>
+    <span id="theme-label" class="switch-label">Dark</span>
+  </div>
+</header>
+
+<main class="section">
+  <h2>Daily Routines (Local-only)</h2>
+  <p class="muted">Your data stays on this device. Use the plus to add steps; check to complete.</p>
+  <div style="display:flex;gap:10px;margin:10px 0">
+    <input id="newStep" class="input" placeholder="Add a step..."/>
+    <button class="btn" onclick="addStep()">Add</button>
+  </div>
+  <ul id="list"></ul>
+  <p><a class="btn" href="index.html">← Back to Home</a></p>
 </main>
 <script>
- const KEY='hfb-routines-v1';
- const listEl=document.getElementById('list');
- function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){return[];}}
- function save(items){ localStorage.setItem(KEY, JSON.stringify(items)); }
- function render(){ listEl.innerHTML=''; load().forEach((it,i)=>{ 
-   const li=document.createElement('li'); 
-   li.innerHTML=`<label><input type='checkbox' ${it.done?'checked':''} onchange='toggle(${i})'> ${it.text}</label> <button class='btn' onclick='del(${i})'>×</button>`; 
-   listEl.appendChild(li);
- })}
- function addStep(){ const inp=document.getElementById('newStep'); const v=inp.value.trim(); if(!v) return; const items=load(); items.push({text:v,done:false}); save(items); inp.value=''; render(); }
- function toggle(i){ const items=load(); items[i].done=!items[i].done; save(items); render();}
- function del(i){ const items=load(); items.splice(i,1); save(items); render();}
- render();
+const KEY='hfb-routines-v1'; const listEl=document.getElementById('list');
+function load(){ try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){return[];}}
+function save(it){ localStorage.setItem(KEY, JSON.stringify(it)); }
+function render(){ listEl.innerHTML=''; load().forEach((it,i)=>{
+  const li=document.createElement('li');
+  li.innerHTML=`<label><input type='checkbox' ${'{'}it.done?'checked':''{'}'} onchange='toggle(${ '{'}i{'}' })'> ${'{'}it.text{'}'}</label> <button class='btn' onclick='del(${ '{'}i{'}' })'>×</button>`;
+  listEl.appendChild(li);
+});}
+function addStep(){ const inp=document.getElementById('newStep'); const v=inp.value.trim(); if(!v) return;
+  const items=load(); items.push({text:v,done:false}); save(items); inp.value=''; render(); }
+function toggle(i){ const items=load(); items[i].done=!items[i].done; save(items); render();}
+function del(i){ const items=load(); items.splice(i,1); save(items); render();}
+render();
 </script>
 </body></html>
