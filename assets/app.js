@@ -1,19 +1,26 @@
 
 (function(){
-  // Theme persistence
-  const root = document.documentElement;
   const key = 'hfb-theme';
-  function applyTheme(t){ root.classList.toggle('light', t==='light'); localStorage.setItem(key,t); }
-  const saved = localStorage.getItem(key) || 'dark';
-  applyTheme(saved);
-  const sw = document.querySelector('.switch'); if(sw){ sw.addEventListener('click', ()=>applyTheme(root.classList.contains('light')?'dark':'light')); }
+  const saved = localStorage.getItem(key);
+  const root = document.documentElement;
+  if(saved){ root.setAttribute('data-theme', saved); }
+  else { root.setAttribute('data-theme','dark'); }
 
-  // Soft back links
-  document.querySelectorAll('a[data-soft="1"]').forEach(a=>{
-    a.addEventListener('click', e=>{
-      const href = a.getAttribute('href');
-      if(href && href.startsWith('#')) return;
-      a.style.opacity = .6;
+  const sw = document.querySelector('.switch');
+  if(sw){
+    sw.addEventListener('click', () => {
+      const t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', t);
+      localStorage.setItem(key, t);
     });
+  }
+
+  // simple soft back-to-home for anchors with data-soft
+  document.body.addEventListener('click', (e)=>{
+    const a = e.target.closest('a[data-soft="1"]');
+    if(a){
+      e.preventDefault();
+      window.location.href = a.getAttribute('href');
+    }
   });
 })();
