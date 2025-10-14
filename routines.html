@@ -4,7 +4,7 @@
 <link rel="icon" href="assets/favicon.png"/>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#0B1220"/>
-<link rel="stylesheet" href="assets/styles.css?v=RF-519_ConsciousLaunch"/>
+<link rel="stylesheet" href="assets/styles.css?v=RF-520.1_SkyLaunch_Glow"/>
 <script src="assets/app.js" defer></script>
 </head><body class="page">
 <header class="header page">
@@ -21,6 +21,13 @@
 </header>
 
 <main class="section">
+  <nav class="breadcrumbs">
+    <a href="index.html" data-soft="1">Home</a>
+    <span class="crumb-sep">›</span>
+    <a href="product.html" data-soft="1">Product</a>
+    <span class="crumb-sep">›</span>
+    <span>Routines</span>
+  </nav>
   <h2>Daily Routines (Local-only)</h2>
   <p class="muted">Your data stays on this device. Use the plus to add steps; check to complete.</p>
   <div style="display:flex;gap:10px;margin:10px 0">
@@ -28,7 +35,7 @@
     <button class="btn" onclick="addStep()">Add</button>
   </div>
   <ul id="list"></ul>
-  <p><a class="btn" href="index.html">← Back to Home</a></p>
+  <p><a class="btn btn-soft" href="product.html" data-soft="1">← Back to Product</a></p>
 </main>
 <script>
 const KEY='hfb-routines-v1'; const listEl=document.getElementById('list');
@@ -36,7 +43,8 @@ function load(){ try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){
 function save(it){ localStorage.setItem(KEY, JSON.stringify(it)); }
 function render(){ listEl.innerHTML=''; load().forEach((it,i)=>{
   const li=document.createElement('li');
-  li.innerHTML=`<label><input type='checkbox' ${'{'}it.done?'checked':''{'}'} onchange='toggle(${ '{'}i{'}' })'> ${'{'}it.text{'}'}</label> <button class='btn' onclick='del(${ '{'}i{'}' })'>×</button>`;
+  li.innerHTML='<label><input type="checkbox" ' + (it.done?'checked':'') + ' onchange="toggle(' + i + ')"> ' + it.text + '</label> ' +
+               '<button class="btn" onclick="del(' + i + ')">×</button>';
   listEl.appendChild(li);
 });}
 function addStep(){ const inp=document.getElementById('newStep'); const v=inp.value.trim(); if(!v) return;
