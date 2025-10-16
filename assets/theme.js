@@ -1,21 +1,24 @@
 
 (function(){
   const root = document.documentElement;
-  const saved = localStorage.getItem('hfb-theme');
-  if(saved==='light') root.classList.add('light');
-  if(saved==='dark')  root.classList.add('dark');
-  function setTheme(mode){
-    root.classList.remove('light','dark');
-    if(mode) root.classList.add(mode);
-    localStorage.setItem('hfb-theme', mode||'');
-    document.getElementById('theme-label')?.replaceChildren(document.documentElement.classList.contains('light')?'🌞':'🌙');
+  const key = "hfb-theme";
+  const btn = document.getElementById("hfbThemeSwitch");
+  const label = document.getElementById("hfbThemeLabel");
+
+  function apply(mode){
+    root.setAttribute("data-theme", mode);
+    if(btn){ btn.classList.toggle("on", mode==="dim"); }
+    if(label){ label.textContent = mode==="dim" ? "Dim" : "Dark"; }
+    localStorage.setItem(key, mode);
   }
-  window.hfbToggleTheme = function(){
-    const isLight = root.classList.contains('light');
-    setTheme(isLight? 'dark':'light');
-  };
-  // init label
-  window.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('theme-label')?.replaceChildren(root.classList.contains('light')?'🌞':'🌙');
-  });
+
+  const saved = localStorage.getItem(key) || "dark";
+  apply(saved);
+
+  if(btn){
+    btn.addEventListener("click", ()=> {
+      const next = (root.getAttribute("data-theme")==="dark" ? "dim" : "dark");
+      apply(next);
+    });
+  }
 })();
