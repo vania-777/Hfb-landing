@@ -1,12 +1,14 @@
+/* HFB RF-530 — Theme + Reveal */
 (function(){
-  const root=document.documentElement;
-  const KEY='hfb-theme';
-  const btn=document.querySelector('[data-toggle-theme]');
-  const titleLink=document.querySelector('[data-home-link]');
-  const stored=localStorage.getItem(KEY);
-  if(stored){root.setAttribute('data-theme',stored);}
-  else if(window.matchMedia('(prefers-color-scheme: light)').matches){root.setAttribute('data-theme','light');}
-  else{root.setAttribute('data-theme','dark');}
-  if(btn){btn.addEventListener('click',function(){const next=(root.getAttribute('data-theme')==='light')?'dark':'light';root.setAttribute('data-theme',next);localStorage.setItem(KEY,next);});}
-  if(titleLink){titleLink.addEventListener('click',function(e){window.location.href='index.html';});}
+  const root=document.documentElement, KEY='hfb-theme';
+  const saved=localStorage.getItem(KEY)||'dark';
+  if(saved==='dim') root.setAttribute('data-theme','dim');
+  const btn=document.getElementById('hfbToggleTheme');
+  if(btn){ btn.addEventListener('click',()=>{
+    const next=root.getAttribute('data-theme')==='dim'?'dark':'dim';
+    if(next==='dim') root.setAttribute('data-theme','dim'); else root.removeAttribute('data-theme');
+    localStorage.setItem(KEY,next);
+  });}
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show');});},{threshold:.2});
+  document.querySelectorAll('.milestone').forEach(el=>io.observe(el));
 })();
