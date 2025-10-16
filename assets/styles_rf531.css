@@ -1,0 +1,30 @@
+/* HFB RF-531 — Investor Launch (extends RF-530) */
+:root{
+  --bg:#0b1422; --bg-soft:#0f1c2d; --glass:rgba(255,255,255,.06); --glass-border:rgba(255,255,255,.12);
+  --text:#e7eef8; --muted:#b8c6db; --brand:#6db8ff; --brand2:#7a62ff; --shadow:0 12px 32px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Inter,"SF Pro Text",Segoe UI,Roboto,Helvetica,Arial}
+a{color:#9fc5ff;text-decoration:none}a:hover{text-decoration:underline}
+.container{max-width:1120px;margin:0 auto;padding:24px 20px}
+.header{display:flex;align-items:center;gap:14px;padding:14px 0 10px;border-bottom:1px solid var(--glass-border)}
+.brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none}
+.logo{width:56px;height:56px;display:block;background:transparent !important;object-fit:contain}
+.title{margin:0;font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1.12}
+.tagline{margin-top:4px;color:var(--muted);font-size:14px}
+.header .grow{flex:1}
+.section{padding:18px 0 28px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:900px){.grid-2{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)), var(--bg-soft);
+  border:1px solid var(--glass-border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.h1{font-size:28px;font-weight:800;margin:6px 0 14px}
+.h2{font-size:20px;font-weight:700;margin:8px 0 10px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0}
+.kpi{background:var(--bg-soft);border:1px solid var(--glass-border);border-radius:12px;padding:12px;text-align:center}
+.kpi .v{font-size:22px;font-weight:800}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.button{display:inline-block;background:linear-gradient(90deg, var(--brand), var(--brand2));color:#fff;
+  padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700;box-shadow:var(--shadow)}
+.small{color:var(--muted);font-size:14px}
+.footer{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:28px;color:var(--muted);border-top:1px solid var(--glass-border);padding-top:16px}
