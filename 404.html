@@ -1,34 +1,29 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>HFB — 404</title>
-  <meta name="description" content="Tools for neurodivergent growth — privacy-first, evidence-led."/>
-  <link rel="icon" href="assets/logo.png" type="image/png"/>
-  <link rel="stylesheet" href="assets/styles.css"/>
-</head>
-<body>
-<header>
-  <div class="container">
-    <div class="nav">
-      <img class="brand-logo" src="assets/logo.png" alt="HFB logo">
-      <h1 class="site-title"><a href="/">High Functioning Brains (HFB)</a></h1>
-      <div class="theme-toggle"><span>Dark</span><div class="switch" title="Toggle theme"><i></i></div></div>
+<!doctype html><html lang="en">
+<head><title>404 — HFB</title><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/styles.css?v=RF-524">
+<link rel="stylesheet" href="assets/styles.patch.css?v=RF-524">
+<script src="assets/app.js?v=RF-524" defer></script>
+<script src="assets/page.patch.js?v=RF-524" defer></script></head>
+<body><div class="container">
+<header class="header">
+  <a class="brand" href="index.html" aria-label="HFB — Home">
+    <img src="assets/logo-hfb-original@1x.png" srcset="assets/logo-hfb-original@1x.png 1x, assets/logo-hfb-original@2x.png 2x" alt="HFB logo">
+    <div>
+      <h1 class="title">High Functioning Brains (HFB)</h1>
+      <div class="tagline">Empowering minds through science and compassion.</div>
     </div>
-    <div class="tagline">Empowering minds through science and compassion.</div>
+  </a>
+  <div class="theme-switch">
+    <div class="switch" onclick="hfbToggleTheme()"><div class="knob"></div></div>
+    <span id="theme-label" class="switch-label">Dark</span>
   </div>
 </header>
-<main class="container">
-<div class="breadcrumb"><a href="/" data-soft="1">Home</a> • 404</div>
-<section class='card center'><p>Not found.</p></section>
-<div style="margin-top:16px"><a class="back" href="/" data-soft="1">← Back to Home</a></div>
+<main class="section center">
+  <h2>404 — Not Found</h2>
+  <p class="small">The page you’re looking for doesn’t exist.</p>
+  <p><a class="back" href="index.html">← Back to Home</a></p>
 </main>
-<footer class="footer">
-  <div class="container" style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;">
-    <div style="display:flex;gap:26px;"><a href="press-kit.html">Press Kit</a><a href="docs.html">Docs</a><a href="privacy.html">Privacy</a></div>
-    <div>© 2025 HFB</div>
-  </div>
-</footer>
-<script src="assets/app.js"></script>
-</body></html>
+<div class="footer">© 2025 HFB · RF-524</div>
+</div></body></html>

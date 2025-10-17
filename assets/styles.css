@@ -1,1 +1,39 @@
-Placeholder for styles.css
+
+:root{
+  --bg:#0b1526; --text:#dbe8ff; --muted:#93a4bf; --accent:#6aa9ff;
+  --card:#0f1d33; --border:rgba(148,163,184,.18);
+}
+[data-theme="light"]{
+  --bg:#f7fbff; --text:#0f1b2e; --muted:#495e7b; --accent:#2b6cb0;
+  --card:#ffffff; --border:rgba(15,27,46,.15);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+.container{max-width:1100px;margin:0 auto;padding:20px 16px}
+.header{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.header .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.header .brand img{display:block;width:64px;height:auto}
+@media (min-width:768px){ .header .brand img{width:72px} }
+.title{margin:0;font-size:clamp(22px,4vw,36px)}
+.tagline{opacity:.85}
+.theme-switch{margin-left:auto;display:flex;align-items:center;gap:8px}
+.switch{width:42px;height:22px;border-radius:999px;position:relative;border:1px solid var(--border);background:#1f2937;cursor:pointer}
+[data-theme="light"] .switch{background:#e2e8f0}
+.knob{position:absolute;top:1px;left:1px;width:18px;height:18px;border-radius:999px;background:#bfdbfe;transition:all .2s}
+[data-theme="light"] .knob{left:calc(100% - 19px);background:#334155}
+.switch-label{color:var(--muted)}
+.section{padding:18px 0}
+.center{text-align:center}
+.cards{display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.cards{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);padding:18px;border-radius:14px}
+.card h3{margin:0 0 6px}
+.small{color:var(--muted)}
+.footer{border-top:1px solid var(--border);margin-top:24px;padding:16px;color:var(--muted)}
+.hero-visual{display:flex;justify-content:center;margin:24px 0}
+.hero-visual img{width:33%;max-width:480px;height:auto;display:block;border-radius:10px}
+.list{display:grid;gap:14px}
+.item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.breadcrumbs{font-size:.95rem;color:var(--muted);margin:8px 0 16px}
+.back{display:inline-flex;gap:6px;align-items:center}
