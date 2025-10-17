@@ -1,2 +1,9 @@
-# HFB RF-520.1_SkyLaunch_Glow
-Built: 2025-10-14T07:55:59.604273Z
+# HFB RF-521_Full
+- Unified header (logo/title clickable → Home).
+- Theme switch: Dark ↔ Dim ↔ Light (persistent).
+- Transparent SVG logo (no white background).
+- Pages: Home, Product, About (Conscious Core + Timeline), Investor, Docs, Press Kit, Privacy.
+- SEO: robots.txt + sitemap.xml.
+- PWA basics: manifest + sw.js.
+- Cache-busting via ?v=RF-521_Full in asset links.
+Deploy by uploading all files to GitHub Pages (keep your CNAME if present).

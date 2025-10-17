@@ -1,14 +1,7 @@
-/* HFB RF-530 — Theme + Reveal */
 (function(){
-  const root=document.documentElement, KEY='hfb-theme';
-  const saved=localStorage.getItem(KEY)||'dark';
-  if(saved==='dim') root.setAttribute('data-theme','dim');
-  const btn=document.getElementById('hfbToggleTheme');
-  if(btn){ btn.addEventListener('click',()=>{
-    const next=root.getAttribute('data-theme')==='dim'?'dark':'dim';
-    if(next==='dim') root.setAttribute('data-theme','dim'); else root.removeAttribute('data-theme');
-    localStorage.setItem(KEY,next);
-  });}
-  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show');});},{threshold:.2});
-  document.querySelectorAll('.milestone').forEach(el=>io.observe(el));
+  const KEY='hfb:theme'; const root=document.documentElement;
+  root.setAttribute('data-theme', localStorage.getItem(KEY)||'dark');
+  function setLabel(){ const el=document.getElementById('theme-label'); if(!el) return; const t=root.getAttribute('data-theme'); el.textContent=t[0].toUpperCase()+t.slice(1); }
+  window.hfbToggleTheme=function(){ const t=root.getAttribute('data-theme'); const next=t==='dark'?'dim':(t==='dim'?'light':'dark'); root.setAttribute('data-theme',next); localStorage.setItem(KEY,next); setLabel(); };
+  document.addEventListener('DOMContentLoaded',()=>{ setLabel(); const goHome=()=>location.href='index.html?v=RF-521'; document.querySelectorAll('.logo-wrap,.title').forEach(n=>n.addEventListener('click',goHome)); });
 })();

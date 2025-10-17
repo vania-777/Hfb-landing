@@ -1,15 +1,15 @@
 {
-  "name": "High Functioning Brains (HFB)",
+  "name": "High Functioning Brains",
   "short_name": "HFB",
-  "start_url": "/index.html?v=5204",
+  "start_url": "index.html",
   "display": "standalone",
-  "theme_color": "#0c1117",
-  "background_color": "#0c1117",
+  "background_color": "#0b1623",
+  "theme_color": "#081220",
   "icons": [
     {
-      "src": "assets/logo.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }
