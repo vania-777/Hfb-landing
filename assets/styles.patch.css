@@ -1,0 +1,4 @@
+/* --- RF-521a Patch: CC sizing + center --- */
+.hero.center { display:flex; justify-content:center; }
+.symbol.small { display:block; margin:18px auto; width:33%; min-width:220px; max-width:440px; }
+@media (max-width: 880px){ .symbol.small { width:60%; max-width:420px; } }
