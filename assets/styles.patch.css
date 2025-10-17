@@ -1,0 +1,6 @@
+/* HFB RF-521a — assets/styles.patch.css */ 
+.header .logo, .logo { display:inline-flex; align-items:center; gap:.75rem; }
+.header .logo img, img.logo { max-height:56px; width:auto; height:auto; image-rendering:-webkit-optimize-contrast; }
+@media (max-width:640px){ .header .logo img, img.logo { max-height:44px; } }
+.cc-wrap { display:flex; justify-content:center; margin:1.25rem 0; }
+.cc-wrap img { width:min(420px,33vw); height:auto; border-radius:8px; display:block; }
