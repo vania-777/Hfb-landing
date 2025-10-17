@@ -1,0 +1,56 @@
+/* HFB RF-523 Full Patch — styles.patch.css
+   Purpose: unify header logo, center Conscious Core image, keep layout intact.
+*/
+
+/* 1) Header logo sizing & alignment */
+.header .logo img,
+img.hfb-logo {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+/* If header container exists, ensure spacing */
+.header .logo { display:flex; align-items:center; gap:12px; }
+
+/* 2) Conscious Core hero image — center & 1/3 width on large screens */
+.hfb-conscious-hero,
+img[alt*="Conscious Core"] {
+  display:block;
+  margin: 24px auto;
+  max-width: 33%;
+  height: auto;
+  image-rendering:auto;
+  filter: none;
+}
+
+/* On narrow screens, allow larger size */
+@media (max-width: 640px) {
+  .hfb-conscious-hero,
+  img[alt*="Conscious Core"] {
+    max-width: 66%;
+  }
+}
+
+/* 3) Ensure main content has padding even if legacy pages lose CSS */
+main.section, .section { padding: 16px; }
+
+/* 4) Make breadcrumb/back links readable and aligned */
+nav.breadcrumbs a { text-decoration: none; }
+nav.breadcrumbs { margin: 8px 0 16px; }
+
+/* 5) Cards on product & investor pages */
+.cards, .card-list { gap: 16px; }
+.card, .tile {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+/* Dark/Light subtle tweak (works with data-theme toggler if present) */
+:root[data-theme="light"] .card, :root[data-theme="light"] .tile {
+  background: rgba(0,0,0,0.02);
+  border-color: rgba(0,0,0,0.06);
+}
