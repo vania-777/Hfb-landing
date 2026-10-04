@@ -1,15 +1,22 @@
 {
-  "name": "High Functioning Brains",
+  "name": "High Functioning Brains (HFB)",
   "short_name": "HFB",
-  "start_url": "index.html",
+  "description": "Calm, accessible tools for neurodivergent people, families, and professionals.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0b1623",
-  "theme_color": "#081220",
+  "background_color": "#080c22",
+  "theme_color": "#080c22",
   "icons": [
     {
-      "src": "assets/logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "assets/logo-hfb-original@1x.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo-hfb-original@2x.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
