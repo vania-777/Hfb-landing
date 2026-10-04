@@ -217,7 +217,7 @@
      audio/<lang>/<key>.mp3 with keys: question, celebrate, name_<id>, yes_<id>, is_<id>.
      Same path as Choice & Reward: one shared <audio> element, src + play() run
      synchronously inside the tap handler (iOS rule). speechSynthesis is only a fallback. */
-  var ASSET_VER = '20261004-1'; // bump when clips change (cache-busting)
+  var ASSET_VER = '20261004-2'; // bump when clips change (cache-busting)
   var player = null;
   try { if (typeof Audio !== 'undefined') { player = new Audio(); player.preload = 'auto'; } } catch (e) { player = null; }
   var playToken = 0;
@@ -447,33 +447,87 @@
   }
 
   /* ---------- Helpers ---------- */
+  /* ---------- Randomness (unpredictable order; no fixed sequences) ----------
+     - crypto-seeded random numbers when available
+     - Fisher–Yates shuffle
+     - pickWeighted: random pick that favours items not seen recently/often (balanced, never a cycle)
+     - placeTarget: random slot for the right answer, never the same slot more than 2 rounds in a
+       row, and slots balanced over time; the other cards are shuffled into the remaining slots */
+  function rnd() {
+    try { var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return Math.random(); }
+  }
+  function randInt(n) { return Math.floor(rnd() * n); }
   function shuffle(a) {
-    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; }
+    for (var i = a.length - 1; i > 0; i--) { var j = randInt(i + 1); var x = a[i]; a[i] = a[j]; a[j] = x; }
     return a;
   }
-  function rand(n) { return Math.floor(Math.random() * n); }
+  function pickWeighted(items, weightOf) {
+    var w = items.map(function (it) { return Math.max(0.0001, weightOf(it)); });
+    var total = w.reduce(function (s, x) { return s + x; }, 0), r = rnd() * total;
+    for (var i = 0; i < items.length; i++) { r -= w[i]; if (r < 0) return items[i]; }
+    return items[items.length - 1];
+  }
+  var RAND_KEY = 'hfb-fe-rand'; // { last: target id, pos: { n: { counts: [], recent: [] } } }
+  var randMem = (function () { try { return JSON.parse(localStorage.getItem(RAND_KEY)) || {}; } catch (e) { return {}; } })();
+  if (!randMem.pos || typeof randMem.pos !== 'object') randMem.pos = {};
+  function saveRandMem() { try { localStorage.setItem(RAND_KEY, JSON.stringify(randMem)); } catch (e) {} }
+  function placeTarget(target, others) {
+    var n = others.length + 1;
+    var mem = randMem.pos[n] = randMem.pos[n] || { counts: [], recent: [] };
+    var slots = [];
+    for (var s = 0; s < n; s++) { slots.push(s); mem.counts[s] = mem.counts[s] || 0; }
+    var r = mem.recent;
+    if (r.length >= 2 && r[r.length - 1] === r[r.length - 2]) {
+      slots = slots.filter(function (x) { return x !== r[r.length - 1]; }); // no 3rd time in a row
+    }
+    var min = Math.min.apply(null, mem.counts.slice(0, n));
+    var slot = pickWeighted(slots, function (x) { return 1 / (1 + 0.5 * (mem.counts[x] - min)); }); // gently balanced over time
+    mem.counts[slot]++;
+    r.push(slot); if (r.length > 6) r.shift();
+    saveRandMem();
+    var cards = shuffle(others.slice());
+    cards.splice(slot, 0, target);
+    return cards;
+  }
+  function rand(n) { return randInt(n); }
   function persistSettings() { save('hfb-fe-settings', state.settings); }
   function persistStars() { save('hfb-fe-stars', state.stars); }
   var timer = null;
   function clearTimer() { clearTimeout(timer); timer = null; }
 
   /* ---------- Actions (mutate state → render) ---------- */
+  // Random question order: never the same feeling twice in a row (with only 2 feelings on,
+  // at most twice in a row — strict alternation would be a learnable pattern), favouring
+  // feelings not asked recently/often. The right answer's slot is randomized by placeTarget().
+  var asked = { count: {}, last: {}, recent: randMem.last ? [randMem.last] : [] };
   function makeRound() {
     var pool = state.settings.emotions;
     var prev = state.round;
-    var choices = pool.filter(function (id) { return !prev || id !== prev.emotion; });
-    var emotion = choices[rand(choices.length)];
+    var n0 = prev ? prev.n + 1 : 1, r = asked.recent, last = r[r.length - 1];
+    var run2 = r.length >= 2 && r[r.length - 1] === r[r.length - 2];
+    var choices = pool.filter(function (id) { return pool.length > 2 ? id !== last : !(run2 && id === last); });
+    if (!choices.length) choices = pool.slice();
+    var minC = Math.min.apply(null, choices.map(function (id) { return asked.count[id] || 0; }));
+    var emotion = pickWeighted(choices, function (id) {
+      var since = asked.last[id] == null ? pool.length : n0 - asked.last[id];
+      var w = Math.min(since, pool.length) / (1 + (asked.count[id] || 0) - minC);
+      return id === last ? w * 0.5 : w;
+    });
+    asked.count[emotion] = (asked.count[emotion] || 0) + 1;
+    asked.last[emotion] = n0;
+    r.push(emotion); if (r.length > 4) r.shift();
+    randMem.last = emotion; saveRandMem();
     var skin = rand(SKINS.length);
     if (prev && skin === prev.skin) skin = (skin + 1 + rand(SKINS.length - 1)) % SKINS.length;
     var n = Math.min(state.settings.count, pool.length);
-    var others = shuffle(pool.filter(function (id) { return id !== emotion; })).slice(0, n - 1);
+    var others = shuffle(pool.filter(function (id) { return id !== emotion; })).slice(0, n - 1); // random distractors
     return {
       n: prev ? prev.n + 1 : 1,
       emotion: emotion,
       skin: skin,
       hair: rand(HAIRS.length),
       style: STYLES[rand(STYLES.length)],
-      options: shuffle(others.concat([emotion]))
+      options: placeTarget(emotion, others)
     };
   }
 

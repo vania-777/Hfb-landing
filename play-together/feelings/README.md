@@ -76,3 +76,12 @@ as in Choice & Reward) can sync rounds and answers later. There is no networking
 
 **Keyboard:** Tab/Enter/Space everywhere; keys 1–4 (or ۱–۴) pick an answer; Esc closes the
 celebration.
+
+- **Random, unpredictable order:** targets are picked at random. The same target never comes
+  twice in a row, items not asked recently or often are favoured, and there is no fixed cycle
+  or category rotation. The right answer's position is shuffled every round (Fisher–Yates): it
+  never lands in the same slot more than 2 rounds in a row, and slots stay balanced over time.
+  Distractors are drawn at random each round. The last target is remembered across sessions,
+  so a new session doesn't start where the old one ended.
+  With only 2 feelings turned on, the same feeling may come at most twice in a row, because
+  strict alternation would itself be a pattern.

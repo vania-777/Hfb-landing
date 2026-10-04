@@ -73,6 +73,15 @@ python3 -m http.server 8080
   category (4 cards). Five stars bring a calm "Level up!" screen with *Next level* or *Repeat
   this level*. The Adult panel has a level picker (it replaced the card-count control),
   and the level is saved. In live mode, the adult's device sets the level and the target.
+- **Random, unpredictable order:** targets are picked at random. The same target never comes
+  twice in a row, items not asked recently or often are favoured, and there is no fixed cycle
+  or category rotation. The right answer's position is shuffled every round (Fisher–Yates): it
+  never lands in the same slot more than 2 rounds in a row, and slots stay balanced over time.
+  Distractors are drawn at random each round. The last target is remembered across sessions,
+  so a new session doesn't start where the old one ended.
+  Free-choice sets and categories are random too. Missed targets come back after a
+  randomized 2–4 rounds, then 4–6. In live mode the adult's device makes the random choices
+  and syncs them, so both screens match.
 - **Team framing:** the adult and child are one team. The page shows shared team stars
   ("ستاره‌های تیم ما" / "Our team stars"), two avatars (🧑‍🏫 + 🧒), and team praise after each
   choice ("آفرین به تیم ما! یه ستاره گرفتیم." / "Great teamwork! We got a star!").

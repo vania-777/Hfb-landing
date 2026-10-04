@@ -269,7 +269,9 @@
     retry: false,   // this target was missed before and is being repeated
     correct: null,  // null (free choice) | true | false
     missed: {},     // id -> { due: roundNo, step } (spaced repetition of missed targets)
-    seen: {}        // id -> times asked in this level
+    seen: {},       // id -> times asked in this level
+    lastShown: {},  // id -> roundNo when it was last the target / on screen
+    lastCat: null
   };
 
   /* ---------- DOM ---------- */
@@ -319,7 +321,7 @@
      One shared <audio> element, so a new clip always stops the previous one; once it has
      played from a tap, iOS also lets it play the (delayed) celebration line.
      speechSynthesis is only a fallback when a clip fails to load. */
-  var ASSET_VER = '20261004-4'; // bump when clips change (cache-busting)
+  var ASSET_VER = '20261004-5'; // bump when clips change (cache-busting)
   var player = null;
   try { if (typeof Audio !== 'undefined') { player = new Audio(); player.preload = 'auto'; } } catch (e) { player = null; }
   var playToken = 0;
@@ -445,9 +447,47 @@
   }
 
   /* ---------- Rendering ---------- */
+  /* ---------- Randomness (unpredictable order; no fixed sequences) ----------
+     - crypto-seeded random numbers when available
+     - Fisher–Yates shuffle
+     - pickWeighted: random pick that favours items not seen recently/often (balanced, never a cycle)
+     - placeTarget: random slot for the right answer, never the same slot more than 2 rounds in a
+       row, and slots balanced over time; the other cards are shuffled into the remaining slots */
+  function rnd() {
+    try { var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return Math.random(); }
+  }
+  function randInt(n) { return Math.floor(rnd() * n); }
   function shuffle(a) {
-    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; }
+    for (var i = a.length - 1; i > 0; i--) { var j = randInt(i + 1); var x = a[i]; a[i] = a[j]; a[j] = x; }
     return a;
+  }
+  function pickWeighted(items, weightOf) {
+    var w = items.map(function (it) { return Math.max(0.0001, weightOf(it)); });
+    var total = w.reduce(function (s, x) { return s + x; }, 0), r = rnd() * total;
+    for (var i = 0; i < items.length; i++) { r -= w[i]; if (r < 0) return items[i]; }
+    return items[items.length - 1];
+  }
+  var RAND_KEY = 'hfb-cr-rand'; // { last: target id, pos: { n: { counts: [], recent: [] } } }
+  var randMem = (function () { try { return JSON.parse(localStorage.getItem(RAND_KEY)) || {}; } catch (e) { return {}; } })();
+  if (!randMem.pos || typeof randMem.pos !== 'object') randMem.pos = {};
+  function saveRandMem() { try { localStorage.setItem(RAND_KEY, JSON.stringify(randMem)); } catch (e) {} }
+  function placeTarget(target, others) {
+    var n = others.length + 1;
+    var mem = randMem.pos[n] = randMem.pos[n] || { counts: [], recent: [] };
+    var slots = [];
+    for (var s = 0; s < n; s++) { slots.push(s); mem.counts[s] = mem.counts[s] || 0; }
+    var r = mem.recent;
+    if (r.length >= 2 && r[r.length - 1] === r[r.length - 2]) {
+      slots = slots.filter(function (x) { return x !== r[r.length - 1]; }); // no 3rd time in a row
+    }
+    var min = Math.min.apply(null, mem.counts.slice(0, n));
+    var slot = pickWeighted(slots, function (x) { return 1 / (1 + 0.5 * (mem.counts[x] - min)); }); // gently balanced over time
+    mem.counts[slot]++;
+    r.push(slot); if (r.length > 6) r.shift();
+    saveRandMem();
+    var cards = shuffle(others.slice());
+    cards.splice(slot, 0, target);
+    return cards;
   }
   function itemName(item) { return item[state.lang === 'fa' ? 'fa' : 'en']; }
 
@@ -479,32 +519,60 @@
     else speak(ask.text, btn, ask.key);
   }
 
-  // "Find it" levels: choose the target. Missed targets come back after a short gap
-  // (2 rounds, then once more 4 rounds later); otherwise the least-practised item.
+  // "Find it" levels: choose the target at random — never the same target twice in a row,
+  // favouring items not asked recently/often (balanced, but no fixed order). Missed targets
+  // come back after a randomized short gap (see choose()).
   function pickTarget() {
-    var cats = settings.cats, upcoming = state.roundNo + 1, lastId = state.target ? state.target.id : null;
+    var cats = settings.cats, upcoming = state.roundNo + 1;
+    var lastId = state.target ? state.target.id : (randMem.last || null); // also across sessions
     var similar = lvl().mode === 'similar';
     var usable = function (id) { return cats.indexOf(catOf(id)) >= 0 && (!similar || similarGroup(id)); };
     var due = Object.keys(state.missed).filter(function (id) {
       return state.missed[id].due <= upcoming && id !== lastId && usable(id);
-    }).sort(function (a, b) { return state.missed[a].due - state.missed[b].due; });
-    if (due.length) return { item: findItem(due[0]), retry: true };
-    var cat = cats[state.catIndex % cats.length];
-    state.catIndex++;
-    var pool = ITEMS[cat].filter(function (it) { return it.id !== lastId && usable(it.id); });
-    if (!pool.length) pool = ITEMS[cat].filter(function (it) { return usable(it.id); });
-    shuffle(pool);
-    pool.sort(function (a, b) { return (state.seen[a.id] || 0) - (state.seen[b.id] || 0); });
-    return { item: pool[0], retry: false };
+    });
+    if (due.length) return { item: findItem(due[randInt(due.length)]), retry: true };
+    var pool = [];
+    cats.forEach(function (c) { ITEMS[c].forEach(function (it) { if (usable(it.id) && it.id !== lastId) pool.push(it); }); });
+    if (!pool.length) cats.forEach(function (c) { ITEMS[c].forEach(function (it) { if (usable(it.id)) pool.push(it); }); });
+    var minSeen = Math.min.apply(null, pool.map(function (it) { return state.seen[it.id] || 0; }));
+    var item = pickWeighted(pool, function (it) {
+      var since = state.lastShown[it.id] == null ? pool.length : upcoming - state.lastShown[it.id];
+      return Math.min(since, pool.length) / (1 + (state.seen[it.id] || 0) - minSeen);
+    });
+    return { item: item, retry: false };
   }
+  // Random distractors from the target's category (level 7: its look-alikes first, in random
+  // order), then a random slot for the target with no long streaks (placeTarget).
   function cardsFor(target, n) {
     var cat = catOf(target.id);
     var others = shuffle(ITEMS[cat].filter(function (it) { return it.id !== target.id; }));
     if (lvl().mode === 'similar') {
       var g = similarGroup(target.id) || [];
-      others.sort(function (a, b) { return (g.indexOf(b.id) >= 0) - (g.indexOf(a.id) >= 0); }); // look-alikes first
+      var mates = others.filter(function (it) { return g.indexOf(it.id) >= 0; });
+      var rest = others.filter(function (it) { return g.indexOf(it.id) < 0; });
+      others = mates.concat(rest);
     }
-    return shuffle(others.slice(0, n - 1).concat([target]));
+    return placeTarget(target, others.slice(0, n - 1));
+  }
+  // Free choice: a random category (a fixed rotation would be learnable) and a random set.
+  function freeSet(n) {
+    var cats = settings.cats;
+    var cat = pickWeighted(cats, function (c) { return cats.length > 1 && c === state.lastCat ? 0.4 : 1; });
+    state.lastCat = cat;
+    var upcoming = state.roundNo + 1, items = ITEMS[cat], prevKey = state.lastIds.slice().sort().join();
+    var set = null;
+    for (var tries = 0; tries < 6; tries++) {
+      var pool = items.slice(); set = [];
+      while (set.length < n && pool.length) {
+        var it = pickWeighted(pool, function (x) {
+          var since = state.lastShown[x.id] == null ? 4 : upcoming - state.lastShown[x.id];
+          return Math.min(since, 4); // prefer cards not just shown
+        });
+        set.push(it); pool.splice(pool.indexOf(it), 1);
+      }
+      if (set.map(function (x) { return x.id; }).sort().join() !== prevKey) break; // not the same set again
+    }
+    return shuffle(set);
   }
 
   function newRound(opts) {
@@ -516,19 +584,16 @@
       state.target = pick.item; state.retry = pick.retry;
       state.seen[state.target.id] = (state.seen[state.target.id] || 0) + 1;
       state.current = cardsFor(state.target, n);
+      randMem.last = state.target.id; saveRandMem();
     } else {
       state.target = null; state.retry = false;
-      var cats = settings.cats;
-      var cat = cats[state.catIndex % cats.length];
-      state.catIndex++;
-      // Prefer items not shown last round so pairs feel fresh.
-      var pool = ITEMS[cat].filter(function (it) { return state.lastIds.indexOf(it.id) < 0; });
-      if (pool.length < n) pool = ITEMS[cat].slice();
-      state.current = shuffle(pool.slice()).slice(0, n);
+      state.current = freeSet(n);
     }
     state.lastIds = state.current.map(function (i) { return i.id; });
     state.chosen = null; state.correct = null;
     state.roundNo++;
+    if (state.target) state.lastShown[state.target.id] = state.roundNo;
+    else state.current.forEach(function (it) { state.lastShown[it.id] = state.roundNo; });
     el.feedback.hidden = true;
     renderChoices();
     if (opts && opts.say && isFind()) speakQuestion(null, true);
@@ -631,8 +696,9 @@
 
     if (find) {
       var id = state.target.id, m = state.missed[id];
-      if (!state.correct) state.missed[id] = { due: state.roundNo + 2, step: 0 }; // repeat soon
-      else if (m && m.step === 0) state.missed[id] = { due: state.roundNo + 4, step: 1 }; // once more, later
+      // Spaced repetition with a randomized gap, so the repeat can't be predicted.
+      if (!state.correct) state.missed[id] = { due: state.roundNo + 2 + randInt(3), step: 0 }; // 2–4 rounds later
+      else if (m && m.step === 0) state.missed[id] = { due: state.roundNo + 4 + randInt(3), step: 1 }; // once more, 4–6 later
       else if (m) delete state.missed[id];
     }
     if (earned && state.stars >= GOAL) {
@@ -690,7 +756,7 @@
     closeCelebration();
     state.level = n; settings.level = n; persist();
     state.stars = 0; save('hfb-cr-stars', 0);
-    state.missed = {}; state.seen = {}; state.target = null;
+    state.missed = {}; state.seen = {}; state.lastShown = {}; state.target = null;
     renderLevel(); renderStars(-1); applySettings();
     newRound({ say: true });
   }
