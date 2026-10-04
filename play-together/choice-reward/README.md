@@ -64,6 +64,15 @@ python3 -m http.server 8080
   Tahoma, then sans-serif. To always use Vazirmatn, self-host the font file and add an
   `@font-face` rule in `styles.css`. Do not load it from a CDN, so the game keeps
   working offline.
+- **Levels:** levels 1–3 are free choice with 2, 3 and 4 cards, and any pick earns a star.
+  Levels 4–6 are "find it" with 2, 3 and 4 cards: the game asks «سیب کدومه؟» / "Which one is
+  the apple?". A right pick earns a star and praise. A wrong pick gets no red and no X: the
+  right card is gently ringed, its name is said («سیب این‌جاست.»), and that target comes back
+  2 rounds later (after "Let's try again"), then once more 4 rounds after that. Targets
+  otherwise rotate by least practised. Level 7 is "find it" among look-alikes from the same
+  category (4 cards). Five stars bring a calm "Level up!" screen with *Next level* or *Repeat
+  this level*. The Adult panel has a level picker (it replaced the card-count control),
+  and the level is saved. In live mode, the adult's device sets the level and the target.
 - **Team framing:** the adult and child are one team. The page shows shared team stars
   ("ستاره‌های تیم ما" / "Our team stars"), two avatars (🧑‍🏫 + 🧒), and team praise after each
   choice ("آفرین به تیم ما! یه ستاره گرفتیم." / "Great teamwork! We got a star!").

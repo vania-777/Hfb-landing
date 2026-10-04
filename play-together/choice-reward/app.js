@@ -12,33 +12,48 @@
       { id: 'apple', e: '🍎', fa: 'سیب', en: 'Apple', enS: 'the apple' },
       { id: 'cookie', e: '🍪', fa: 'کلوچه', en: 'Cookie', enS: 'the cookie' },
       { id: 'banana', e: '🍌', fa: 'موز', en: 'Banana', enS: 'the banana' },
-      { id: 'grapes', e: '🍇', fa: 'انگور', en: 'Grapes', enS: 'the grapes' },
+      { id: 'grapes', e: '🍇', fa: 'انگور', en: 'Grapes', enS: 'the grapes', enPl: true },
       { id: 'strawberry', e: '🍓', fa: 'توت‌فرنگی', en: 'Strawberry', enS: 'the strawberry' },
       { id: 'watermelon', e: '🍉', fa: 'هندوانه', en: 'Watermelon', enS: 'the watermelon' },
-      { id: 'juice', e: '🧃', fa: 'آبمیوه', en: 'Juice', enS: 'juice' },
-      { id: 'milk', e: '🥛', fa: 'شیر', en: 'Milk', enS: 'milk' }
+      { id: 'juice', e: '🧃', fa: 'آبمیوه', en: 'Juice', enS: 'juice', enF: 'the juice' },
+      { id: 'milk', e: '🥛', fa: 'شیر', en: 'Milk', enS: 'milk', enF: 'the milk' }
     ],
     toys: [
       { id: 'teddy', e: '🧸', fa: 'خرس عروسکی', en: 'Teddy', enS: 'the teddy' },
       { id: 'car', e: '🚗', fa: 'ماشین', en: 'Car', enS: 'the car' },
       { id: 'ball', e: '⚽', fa: 'توپ', en: 'Ball', enS: 'the ball' },
       { id: 'puzzle', e: '🧩', fa: 'پازل', en: 'Puzzle', enS: 'the puzzle' },
-      { id: 'blocks', e: '🧱', fa: 'بلوک‌ها', en: 'Blocks', enS: 'the blocks' },
+      { id: 'blocks', e: '🧱', fa: 'بلوک‌ها', en: 'Blocks', enS: 'the blocks', enPl: true, faPl: true },
       { id: 'kite', e: '🪁', fa: 'بادبادک', en: 'Kite', enS: 'the kite' },
       { id: 'robot', e: '🤖', fa: 'ربات', en: 'Robot', enS: 'the robot' },
       { id: 'train', e: '🚂', fa: 'قطار', en: 'Train', enS: 'the train' }
     ],
     activities: [
-      { id: 'music', e: '🎵', fa: 'موسیقی', en: 'Music', enS: 'music' },
-      { id: 'bubbles', e: '🫧', fa: 'حباب', en: 'Bubbles', enS: 'bubbles' },
-      { id: 'drawing', e: '🎨', fa: 'نقاشی', en: 'Drawing', enS: 'drawing' },
-      { id: 'book', e: '📖', fa: 'کتاب', en: 'Book', enS: 'a book' },
+      { id: 'music', e: '🎵', fa: 'موسیقی', en: 'Music', enS: 'music', enF: 'the music' },
+      { id: 'bubbles', e: '🫧', fa: 'حباب', en: 'Bubbles', enS: 'bubbles', enF: 'the bubbles', enPl: true },
+      { id: 'drawing', e: '🎨', fa: 'نقاشی', en: 'Drawing', enS: 'drawing', enF: 'the drawing' },
+      { id: 'book', e: '📖', fa: 'کتاب', en: 'Book', enS: 'a book', enF: 'the book' },
       { id: 'dance', e: '💃', fa: 'رقص', en: 'Dancing', enS: 'dancing' },
-      { id: 'hug', e: '🤗', fa: 'بغل', en: 'Hug', enS: 'a hug' },
+      { id: 'hug', e: '🤗', fa: 'بغل', en: 'Hug', enS: 'a hug', enF: 'the hug' },
       { id: 'swing', e: '🌳', fa: 'پارک', en: 'Park', enS: 'the park' },
       { id: 'clap', e: '👏', fa: 'دست زدن', en: 'Clapping', enS: 'clapping' }
     ]
   };
+
+  /* Levels: 1–3 free choice (2/3/4 cards); 4–6 "find the named card" (2/3/4 cards);
+     7 = find it among look-alikes from the same category (4 cards). */
+  var LEVELS = [null,
+    { mode: 'free', n: 2 }, { mode: 'free', n: 3 }, { mode: 'free', n: 4 },
+    { mode: 'find', n: 2 }, { mode: 'find', n: 3 }, { mode: 'find', n: 4 },
+    { mode: 'similar', n: 4 }
+  ];
+  var MAX_LEVEL = LEVELS.length - 1;
+  // Look-alike groups (same category) used by level 7.
+  var SIMILAR = [
+    ['apple', 'strawberry', 'watermelon'], ['juice', 'milk'], ['banana', 'grapes'],
+    ['car', 'train'], ['teddy', 'robot'], ['blocks', 'puzzle'], ['ball', 'kite'],
+    ['music', 'dance', 'clap'], ['drawing', 'book'], ['hug', 'swing']
+  ];
 
   var STR = {
     fa: {
@@ -47,6 +62,22 @@
       title: 'انتخاب و پاداش',
       prompt: 'کدوم رو می‌خوای؟',
       chose: function (x) { return 'تو ' + x + ' رو انتخاب کردی!'; },
+      ask: function (it) { return it.fa + (it.faPl ? ' کدومن؟' : ' کدومه؟'); },
+      found: function (it) { return 'آره! ' + it.fa + ' رو پیدا کردی!'; },
+      here: function (it) { return it.fa + (it.faPl ? ' این‌جان.' : ' این‌جاست.'); },
+      tryAgain: 'یه بار دیگه امتحان کنیم.',
+      letsPlay: 'بیا با هم بازی کنیم!',
+      levelUp: 'مرحلهٔ بعد!',
+      levelUpSay: 'آفرین! بریم مرحلهٔ بعد!',
+      allDone: 'همهٔ مرحله‌ها تمام شد!',
+      nextLevel: 'مرحلهٔ بعد',
+      repeatLevel: 'دوباره همین مرحله',
+      levelLabel: function (n) { return 'مرحلهٔ ' + toFaDigits(n); },
+      mode_free: 'انتخاب آزاد',
+      mode_find: 'پیدا کن',
+      mode_similar: 'پیدا کن: شبیه هم',
+      levelLegend: 'مرحله',
+      levelHint: '۱ تا ۳: انتخاب آزاد (۲، ۳، ۴ کارت) · ۴ تا ۶: کارتی که گفته می‌شود را پیدا کن (۲، ۳، ۴ کارت) · ۷: کارت‌های شبیه هم. با ۵ ستاره، مرحلهٔ بعد باز می‌شود.',
       readAloud: 'بلند خواندن',
       readItem: function (x) { return 'بلند خواندن: ' + x; },
       next: 'بعدی',
@@ -115,6 +146,22 @@
       title: 'Choice & Reward',
       prompt: 'Which one do you want?',
       chose: function (x) { return 'You chose ' + x + '!'; },
+      ask: function (it) { var x = it.enF || it.enS; return it.enPl ? 'Where are ' + x + '?' : 'Which one is ' + x + '?'; },
+      found: function (it) { return 'Yes! You found ' + (it.enF || it.enS) + '!'; },
+      here: function (it) { var x = it.enF || it.enS; return (it.enPl ? 'Here are ' : 'Here is ') + x + '.'; },
+      tryAgain: 'Let\'s try again.',
+      letsPlay: 'Let\'s play together!',
+      levelUp: 'Level up!',
+      levelUpSay: 'Level up! On to the next level!',
+      allDone: 'All levels done!',
+      nextLevel: 'Next level',
+      repeatLevel: 'Repeat this level',
+      levelLabel: function (n) { return 'Level ' + n; },
+      mode_free: 'Free choice',
+      mode_find: 'Find it',
+      mode_similar: 'Find it: look-alikes',
+      levelLegend: 'Level',
+      levelHint: '1–3: free choice (2, 3, 4 cards) · 4–6: find the card that is named (2, 3, 4 cards) · 7: look-alike cards. 5 stars opens the next level.',
       readAloud: 'Read aloud',
       readItem: function (x) { return 'Read aloud: ' + x; },
       next: 'Next',
@@ -195,13 +242,15 @@
 
   var reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   var defaults = {
-    count: 2,
+    level: 1,
     cats: ['food', 'toys', 'activities'],
     sound: true,
     motion: !(reduceMQ && reduceMQ.matches)
   };
   var settings = Object.assign({}, defaults, load('hfb-cr-settings', {}));
-  if ([2, 3, 4].indexOf(settings.count) < 0) settings.count = 2;
+  settings.level = parseInt(settings.level, 10);
+  if (!(settings.level >= 1 && settings.level <= MAX_LEVEL)) settings.level = 1;
+  delete settings.count; // the level now sets the number of cards
   settings.cats = (settings.cats || []).filter(function (c) { return ITEMS[c]; });
   if (!settings.cats.length) settings.cats = defaults.cats.slice();
 
@@ -214,7 +263,13 @@
     lastIds: [],
     catIndex: 0,
     advanceTimer: null,
-    roundNo: 0
+    roundNo: 0,
+    level: settings.level,
+    target: null,   // "find it" levels: the item the child should find
+    retry: false,   // this target was missed before and is being repeated
+    correct: null,  // null (free choice) | true | false
+    missed: {},     // id -> { due: roundNo, step } (spaced repetition of missed targets)
+    seen: {}        // id -> times asked in this level
   };
 
   /* ---------- DOM ---------- */
@@ -264,7 +319,7 @@
      One shared <audio> element, so a new clip always stops the previous one; once it has
      played from a tap, iOS also lets it play the (delayed) celebration line.
      speechSynthesis is only a fallback when a clip fails to load. */
-  var ASSET_VER = '20261004-3'; // bump when clips change (cache-busting)
+  var ASSET_VER = '20261004-4'; // bump when clips change (cache-busting)
   var player = null;
   try { if (typeof Audio !== 'undefined') { player = new Audio(); player.preload = 'auto'; } } catch (e) { player = null; }
   var playToken = 0;
@@ -348,6 +403,24 @@
     speakSynth(next ? text + ' ' + next.text : text, btn);
   }
 
+  /* Soft, neutral "let's look together" cue for a wrong pick: one quiet low note. No buzzer. */
+  function softCue() {
+    if (!settings.sound) return;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      audioCtx = audioCtx || new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var o = audioCtx.createOscillator(), g = audioCtx.createGain(), t0 = audioCtx.currentTime + 0.02;
+      o.type = 'sine'; o.frequency.value = 392;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.035, t0 + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.45);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t0); o.stop(t0 + 0.5);
+    } catch (e) {}
+  }
+
   /* Soft two-note chime for the reward (Web Audio, generated — no files). */
   var audioCtx = null;
   function chime(big) {
@@ -378,34 +451,110 @@
   }
   function itemName(item) { return item[state.lang === 'fa' ? 'fa' : 'en']; }
 
-  function newRound() {
-    clearTimeout(state.advanceTimer);
-    if (isLiveChild()) return; // in live mode the adult's device deals the cards
-    var cats = settings.cats;
+  /* ---------- Levels ---------- */
+  function lvl() { return LEVELS[state.level] || LEVELS[1]; }
+  function isFind() { return lvl().mode !== 'free'; }
+  function catOf(id) {
+    var found = null;
+    Object.keys(ITEMS).forEach(function (c) { ITEMS[c].forEach(function (it) { if (it.id === id) found = c; }); });
+    return found;
+  }
+  function similarGroup(id) {
+    for (var i = 0; i < SIMILAR.length; i++) if (SIMILAR[i].indexOf(id) >= 0) return SIMILAR[i];
+    return null;
+  }
+  function renderLevel() {
+    $('levelNum').textContent = t('levelLabel')(state.level);
+    $('levelMode').textContent = t('mode_' + lvl().mode);
+  }
+  function renderPrompt() {
+    $('promptText').textContent = state.target ? t('ask')(state.target) : t('prompt');
+  }
+  // Say the question. On a repeated (missed) target, "Let's try again." comes first.
+  function speakQuestion(btn, withRetryCue) {
+    btn = btn || $('speakPrompt');
+    if (!state.target) { speak(t('prompt'), btn, 'prompt'); return; }
+    var ask = { text: t('ask')(state.target), key: 'ask_' + state.target.id };
+    if (withRetryCue && state.retry) speak(t('tryAgain'), btn, 'try_again', ask);
+    else speak(ask.text, btn, ask.key);
+  }
+
+  // "Find it" levels: choose the target. Missed targets come back after a short gap
+  // (2 rounds, then once more 4 rounds later); otherwise the least-practised item.
+  function pickTarget() {
+    var cats = settings.cats, upcoming = state.roundNo + 1, lastId = state.target ? state.target.id : null;
+    var similar = lvl().mode === 'similar';
+    var usable = function (id) { return cats.indexOf(catOf(id)) >= 0 && (!similar || similarGroup(id)); };
+    var due = Object.keys(state.missed).filter(function (id) {
+      return state.missed[id].due <= upcoming && id !== lastId && usable(id);
+    }).sort(function (a, b) { return state.missed[a].due - state.missed[b].due; });
+    if (due.length) return { item: findItem(due[0]), retry: true };
     var cat = cats[state.catIndex % cats.length];
     state.catIndex++;
-    // Prefer items not shown last round so pairs feel fresh.
-    var pool = ITEMS[cat].filter(function (it) { return state.lastIds.indexOf(it.id) < 0; });
-    if (pool.length < settings.count) pool = ITEMS[cat].slice();
-    state.current = shuffle(pool.slice()).slice(0, settings.count);
+    var pool = ITEMS[cat].filter(function (it) { return it.id !== lastId && usable(it.id); });
+    if (!pool.length) pool = ITEMS[cat].filter(function (it) { return usable(it.id); });
+    shuffle(pool);
+    pool.sort(function (a, b) { return (state.seen[a.id] || 0) - (state.seen[b.id] || 0); });
+    return { item: pool[0], retry: false };
+  }
+  function cardsFor(target, n) {
+    var cat = catOf(target.id);
+    var others = shuffle(ITEMS[cat].filter(function (it) { return it.id !== target.id; }));
+    if (lvl().mode === 'similar') {
+      var g = similarGroup(target.id) || [];
+      others.sort(function (a, b) { return (g.indexOf(b.id) >= 0) - (g.indexOf(a.id) >= 0); }); // look-alikes first
+    }
+    return shuffle(others.slice(0, n - 1).concat([target]));
+  }
+
+  function newRound(opts) {
+    clearTimeout(state.advanceTimer);
+    if (isLiveChild()) return; // in live mode the adult's device deals the cards
+    var n = lvl().n;
+    if (isFind()) {
+      var pick = pickTarget();
+      state.target = pick.item; state.retry = pick.retry;
+      state.seen[state.target.id] = (state.seen[state.target.id] || 0) + 1;
+      state.current = cardsFor(state.target, n);
+    } else {
+      state.target = null; state.retry = false;
+      var cats = settings.cats;
+      var cat = cats[state.catIndex % cats.length];
+      state.catIndex++;
+      // Prefer items not shown last round so pairs feel fresh.
+      var pool = ITEMS[cat].filter(function (it) { return state.lastIds.indexOf(it.id) < 0; });
+      if (pool.length < n) pool = ITEMS[cat].slice();
+      state.current = shuffle(pool.slice()).slice(0, n);
+    }
     state.lastIds = state.current.map(function (i) { return i.id; });
-    state.chosen = null;
+    state.chosen = null; state.correct = null;
     state.roundNo++;
     el.feedback.hidden = true;
     renderChoices();
+    if (opts && opts.say && isFind()) speakQuestion(null, true);
     sendState();
   }
+  function nextRoundSay() { newRound({ say: true }); }
 
   function renderChoices() {
     var box = el.choices;
     box.innerHTML = '';
     box.dataset.count = String(state.current.length);
     box.classList.toggle('answered', !!state.chosen);
+    renderPrompt();
     state.current.forEach(function (item, idx) {
       var name = itemName(item);
       var wrap = document.createElement('div');
       wrap.className = 'card';
-      if (state.chosen) wrap.classList.add(state.chosen.id === item.id ? 'chosen' : 'not-chosen');
+      if (state.chosen) {
+        var picked = state.chosen.id === item.id;
+        if (state.correct === false) {
+          // Wrong pick: no red, no X — gently show the right card; the pick just fades.
+          wrap.classList.add(item.id === state.target.id ? 'reveal' : (picked ? 'picked-wrong' : 'not-chosen'));
+        } else {
+          wrap.classList.add(picked ? 'chosen' : 'not-chosen');
+        }
+      }
 
       var main = document.createElement('button');
       main.type = 'button';
@@ -439,37 +588,57 @@
     if (!state.chosen) return '';
     return t('chose')(state.lang === 'fa' ? state.chosen.fa : state.chosen.enS);
   }
+  function feedbackSentence() {
+    if (!state.chosen) return '';
+    if (state.correct === true) return t('found')(state.target);
+    if (state.correct === false) return t('here')(state.target);
+    return chosenSentence();
+  }
+  function feedbackKey() {
+    if (!state.chosen) return '';
+    if (state.correct === true) return 'found_' + state.target.id;
+    if (state.correct === false) return 'here_' + state.target.id;
+    return 'chose_' + state.chosen.id;
+  }
 
-  function chosenKey() { return state.chosen ? 'chose_' + state.chosen.id : ''; }
-
-  // Show the choice, say "You chose X!" + the team praise line, chime. (No star logic here.)
-  function showChoice(item) {
-    state.chosen = item;
+  // Show the result and say it (synchronously, inside the tap). No star logic here.
+  function showResult() {
+    var wrong = state.correct === false;
     renderChoices();
-    el.feedbackEmoji.textContent = item.e;
-    el.feedbackText.textContent = chosenSentence();
+    el.feedbackEmoji.textContent = (wrong ? state.target : state.chosen).e;
+    el.feedbackText.textContent = feedbackSentence();
+    el.feedbackTeam.hidden = wrong;
     el.feedback.hidden = false;
-    speak(chosenSentence(), $('speakFeedback'), chosenKey(), { text: t('teamStar'), key: 'team_star' }); // synchronous, inside the tap
-    setTimeout(function () { chime(false); }, 250);
+    speak(feedbackSentence(), $('speakFeedback'), feedbackKey(), wrong ? null : { text: t('teamStar'), key: 'team_star' });
+    if (wrong) softCue(); else setTimeout(function () { chime(false); }, 250);
   }
 
   function choose(item) {
-    if (state.chosen) return; // one choice per round, predictable
-    showChoice(item);
-
-    // Calm reward: one more star for the team.
-    state.stars = Math.min(GOAL, state.stars + 1);
-    if (!isLiveChild()) save('hfb-cr-stars', state.stars);
-    renderStars(state.stars - 1);
+    if (state.chosen || !el.celebrate.hidden) return; // one pick per round, predictable
+    var find = !!state.target;
+    state.chosen = item;
+    state.correct = find ? item.id === state.target.id : null;
+    showResult();
+    var earned = !find || state.correct;
+    if (earned) {
+      state.stars = Math.min(GOAL, state.stars + 1); // one more star for the team
+      if (!isLiveChild()) save('hfb-cr-stars', state.stars);
+      renderStars(state.stars - 1);
+    }
     el.nextBtn.focus({ preventScroll: true });
 
     if (isLiveChild()) { send({ t: 'choose', id: item.id }); return; } // the adult's device keeps score and moves on
 
-    var reachedGoal = state.stars >= GOAL;
-    if (reachedGoal) {
-      state.advanceTimer = setTimeout(showCelebration, 2600);
+    if (find) {
+      var id = state.target.id, m = state.missed[id];
+      if (!state.correct) state.missed[id] = { due: state.roundNo + 2, step: 0 }; // repeat soon
+      else if (m && m.step === 0) state.missed[id] = { due: state.roundNo + 4, step: 1 }; // once more, later
+      else if (m) delete state.missed[id];
+    }
+    if (earned && state.stars >= GOAL) {
+      state.advanceTimer = setTimeout(showCelebration, 3000);
     } else {
-      state.advanceTimer = setTimeout(newRound, 6000); // gentle auto-advance (after the praise line); "Next" skips the wait
+      state.advanceTimer = setTimeout(nextRoundSay, earned ? 6000 : 5000); // gentle auto-advance; "Next" skips the wait
     }
     sendState();
   }
@@ -487,28 +656,58 @@
     el.starCount.textContent = t('starCount')(state.stars);
   }
 
+  function renderCelebrationButtons() {
+    var more = state.level < MAX_LEVEL;
+    $('levelUpText').textContent = more ? t('levelUp') : t('allDone');
+    $('nextLevelBtn').hidden = !more;
+    $('nextLevelText').textContent = t('nextLevel');
+    $('playAgainText').textContent = more ? t('repeatLevel') : t('playAgain');
+    el.playAgain.classList.toggle('primary', !more);
+  }
   var lastFocus = null;
   function showCelebration() {
     clearTimeout(state.advanceTimer);
     lastFocus = document.activeElement;
+    renderCelebrationButtons();
     el.celebrate.hidden = false;
     $('main').setAttribute('aria-hidden', 'true');
     chime(true);
-    setTimeout(function () { speak(t('celebrateSay'), $('speakCelebrate'), 'celebrate'); }, 400);
-    el.playAgain.focus({ preventScroll: true });
+    var more = state.level < MAX_LEVEL;
+    setTimeout(function () {
+      speak(t('celebrateSay'), $('speakCelebrate'), 'celebrate', more ? { text: t('levelUpSay'), key: 'level_up' } : null);
+    }, 400);
+    (more ? $('nextLevelBtn') : el.playAgain).focus({ preventScroll: true });
     sendState();
   }
   function closeCelebration() {
     el.celebrate.hidden = true;
     $('main').removeAttribute('aria-hidden');
   }
+  // Start a level (from the level-up screen or the Adult panel's level picker).
+  function setLevel(n) {
+    n = Math.max(1, Math.min(MAX_LEVEL, n | 0));
+    if (isLiveChild()) return;
+    closeCelebration();
+    state.level = n; settings.level = n; persist();
+    state.stars = 0; save('hfb-cr-stars', 0);
+    state.missed = {}; state.seen = {}; state.target = null;
+    renderLevel(); renderStars(-1); applySettings();
+    newRound({ say: true });
+  }
+  function nextLevel() {
+    if (isLiveChild()) { send({ t: 'nextLevel' }); return; }
+    setLevel(state.level + 1);
+    var first = el.choices.querySelector('.card-main');
+    if (first) first.focus({ preventScroll: true });
+  }
+  // "Repeat this level" / "Play again".
   function hideCelebration() {
     if (isLiveChild()) { send({ t: 'again' }); return; }
     closeCelebration();
     state.stars = 0;
     save('hfb-cr-stars', 0);
     renderStars(-1);
-    newRound();
+    newRound({ say: true });
     var first = el.choices.querySelector('.card-main');
     if (first) first.focus({ preventScroll: true });
   }
@@ -552,9 +751,10 @@
   function sendState() {
     if (live.role !== 'host' || !live.connected) return;
     send({
-      t: 'state', round: state.roundNo,
+      t: 'state', round: state.roundNo, level: state.level,
       ids: state.current.map(function (i) { return i.id; }),
-      chosen: state.chosen ? state.chosen.id : null,
+      target: state.target ? state.target.id : null, retry: !!state.retry,
+      chosen: state.chosen ? state.chosen.id : null, correct: state.correct,
       stars: state.stars, celebrate: !el.celebrate.hidden
     });
   }
@@ -562,19 +762,27 @@
   function applyRemoteState(m) {
     if (!m || !Array.isArray(m.ids)) return;
     clearTimeout(state.advanceTimer);
-    if (m.round !== state.roundNo) {
+    var lv = m.level | 0;
+    if (lv >= 1 && lv <= MAX_LEVEL && lv !== state.level) { state.level = lv; renderLevel(); }
+    var fresh = m.round !== state.roundNo;
+    if (fresh) {
       state.roundNo = m.round;
       state.current = m.ids.map(findItem).filter(Boolean);
       state.lastIds = m.ids.slice();
-      state.chosen = null;
+      state.target = m.target ? findItem(m.target) : null;
+      state.retry = !!m.retry;
+      state.chosen = null; state.correct = null;
       el.feedback.hidden = true;
       renderChoices();
     }
     var before = state.stars;
     state.stars = Math.max(0, Math.min(GOAL, m.stars | 0));
-    if (m.chosen && (!state.chosen || state.chosen.id !== m.chosen)) {
+    var mc = (m.correct === true || m.correct === false) ? m.correct : null;
+    if (m.chosen && (!state.chosen || state.chosen.id !== m.chosen || state.correct !== mc)) {
       var it = findItem(m.chosen);
-      if (it) showChoice(it); // the teammate chose: show + say it here too
+      if (it) { state.chosen = it; state.correct = mc; showResult(); } // the teammate picked: show + say it here too
+    } else if (fresh && state.target && !m.celebrate) {
+      speakQuestion(null, true); // new "find it" question from the adult's device
     }
     renderStars(state.stars > before ? state.stars - 1 : -1);
     if (m.celebrate && el.celebrate.hidden) showCelebration();
@@ -716,6 +924,7 @@
       if (it && !state.chosen && el.celebrate.hidden) choose(it); else sendState();
     } else if (m.t === 'next') { goNext(); }
     else if (m.t === 'again') { if (!el.celebrate.hidden) hideCelebration(); }
+    else if (m.t === 'nextLevel') { if (!el.celebrate.hidden) nextLevel(); }
     else if (m.t === 'reset') { resetStars(); }
   }
   function attachConn(conn) {
@@ -832,7 +1041,7 @@
     tb.start.hidden = true;
     $('main').removeAttribute('aria-hidden');
     primeAudio();
-    speak(t('prompt'), $('speakPrompt'), 'prompt'); // also unlocks game audio on iOS
+    speak(t('letsPlay'), null, 'lets_play'); // also unlocks game audio on iOS
     var micP = askMic(); // inside the tap
     setStatus('connecting');
     updateTeamUI();
@@ -882,7 +1091,9 @@
     applyTheme(); // refresh theme label in the new language
     renderChoices();
     renderStars(-1);
-    if (state.chosen) el.feedbackText.textContent = chosenSentence();
+    if (state.chosen) el.feedbackText.textContent = feedbackSentence();
+    renderLevel();
+    if (!el.celebrate.hidden) renderCelebrationButtons();
     root.classList.toggle('no-speech', !synth && !player);
     updateVoiceStatus();
     updateTeamUI();
@@ -904,7 +1115,7 @@
     root.classList.toggle('sound-off', !settings.sound);
     el.sound.checked = !!settings.sound;
     el.motion.checked = !!settings.motion;
-    el.form.querySelectorAll('input[name="count"]').forEach(function (r) { r.checked = Number(r.value) === settings.count; });
+    el.form.querySelectorAll('input[name="level"]').forEach(function (r) { r.checked = Number(r.value) === state.level; });
     el.form.querySelectorAll('input[name="cat"]').forEach(function (c) { c.checked = settings.cats.indexOf(c.value) >= 0; });
   }
   function persist() { save('hfb-cr-settings', settings); }
@@ -921,12 +1132,12 @@
     saveRaw('hfb-theme', state.theme);
     applyTheme();
   });
-  $('speakPrompt').addEventListener('click', function () { speak(t('prompt'), this, 'prompt'); });
-  $('speakFeedback').addEventListener('click', function () { speak(chosenSentence(), this, chosenKey()); });
+  $('speakPrompt').addEventListener('click', function () { speakQuestion(this, false); });
+  $('speakFeedback').addEventListener('click', function () { speak(feedbackSentence(), this, feedbackKey()); });
   $('speakCelebrate').addEventListener('click', function () { speak(t('celebrateSay'), this, 'celebrate'); });
   function goNext() {
     if (state.stars >= GOAL) { showCelebration(); return; }
-    newRound();
+    newRound({ say: true });
     var first = el.choices.querySelector('.card-main');
     if (first) first.focus({ preventScroll: true });
   }
@@ -935,6 +1146,7 @@
     goNext();
   });
   el.playAgain.addEventListener('click', hideCelebration);
+  $('nextLevelBtn').addEventListener('click', nextLevel);
 
   el.adultBtn.addEventListener('click', function () {
     applySettings();
@@ -948,15 +1160,14 @@
 
   el.form.addEventListener('change', function (e) {
     var tg = e.target;
-    if (tg.name === 'count') {
-      settings.count = Number(tg.value);
-      persist(); newRound();
+    if (tg.name === 'level') {
+      setLevel(Number(tg.value)); // the therapist can jump to any level (also live)
     } else if (tg.name === 'cat') {
       var on = Array.prototype.filter.call(el.form.querySelectorAll('input[name="cat"]'), function (c) { return c.checked; })
         .map(function (c) { return c.value; });
       if (!on.length) { tg.checked = true; el.catHint.classList.add('warn'); return; }
       settings.cats = on; state.catIndex = 0;
-      persist(); newRound();
+      persist(); newRound({ say: true });
     } else if (tg === el.sound) {
       settings.sound = tg.checked;
       if (!settings.sound) stopSpeech();

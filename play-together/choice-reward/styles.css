@@ -604,3 +604,26 @@ html.role-child .together-actions { display: none; }
 .together-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
 .start-btn { min-height: 72px; padding: 0 36px; font-size: 1.35rem; }
 .start-hint { max-width: 32ch; margin: 14px auto 0; }
+
+/* ---------- Levels ---------- */
+.level-chip {
+  margin: -6px auto 0;
+  display: inline-flex; align-self: center; align-items: center; gap: 8px;
+  padding: 4px 14px; border-radius: 999px;
+  border: 1px solid var(--glass-border); background: var(--glass);
+  font-size: .98rem; font-weight: 700; color: var(--text-soft);
+}
+.level-chip #levelNum { color: var(--text); }
+.level-sep { opacity: .6; }
+.seg-levels { flex-wrap: wrap; }
+.seg-levels label { flex: 1 0 12%; }
+.level-up { margin: -8px 0 18px; font-size: clamp(1.2rem, 4.8vw, 1.5rem); font-weight: 800; color: var(--text); }
+.level-up[hidden] { display: none; }
+/* "Find it" levels — wrong answer: no red, no X. The right card is gently shown, the pick fades. */
+.card.reveal .card-main {
+  border-color: transparent;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-1) 80%, transparent), 0 0 0 8px color-mix(in srgb, var(--accent-2) 30%, transparent), var(--shadow);
+}
+.card.picked-wrong .card-main { opacity: .5; }
+html.motion .card.reveal .card-main { transform: scale(1.03); }
+@media (forced-colors: active) { .card.reveal .card-main { outline: 4px solid Highlight; } }

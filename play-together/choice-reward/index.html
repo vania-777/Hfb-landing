@@ -18,7 +18,7 @@
     })();
   </script>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles.css?v=20261004-3">
+  <link rel="stylesheet" href="styles.css?v=20261004-4">
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="skip">پرش به بازی</a>
@@ -48,6 +48,7 @@
     <h1 class="game-title">
       <span data-i18n="title">انتخاب و پاداش</span>
     </h1>
+    <p class="level-chip" id="levelChip"><span id="levelNum">مرحلهٔ ۱</span><span class="level-sep" aria-hidden="true">·</span><span id="levelMode">انتخاب آزاد</span></p>
 
     <!-- Live two-player team bar (shown only in live mode) -->
     <section id="teamBar" class="team-bar glass" hidden>
@@ -115,11 +116,13 @@
       </div>
       <h2 id="celebrateTitle" class="celebrate-title" data-i18n="celebrateTitle">آفرین به تیم ما! ۵ ستاره!</h2>
       <p class="celebrate-sub" data-i18n="celebrateSub">با هم انتخاب‌های خیلی خوبی کردیم.</p>
+      <p class="level-up" id="levelUpText">مرحلهٔ بعد!</p>
       <div class="celebrate-actions">
         <button type="button" class="speak-btn" id="speakCelebrate" data-i18n-aria="readAloud" aria-label="بلند خواندن">
           <span aria-hidden="true">🔊</span>
         </button>
-        <button type="button" id="playAgainBtn" class="pill-btn primary"><span data-i18n="playAgain">دوباره بازی کنیم</span></button>
+        <button type="button" id="nextLevelBtn" class="pill-btn primary"><span id="nextLevelText">مرحلهٔ بعد</span> <span aria-hidden="true" class="dir-arrow">›</span></button>
+        <button type="button" id="playAgainBtn" class="pill-btn"><span id="playAgainText">دوباره همین مرحله</span></button>
       </div>
     </div>
   </div>
@@ -145,12 +148,17 @@
       </div>
 
       <fieldset class="field">
-        <legend data-i18n="optCount">تعداد گزینه‌ها</legend>
-        <div class="seg">
-          <label><input type="radio" name="count" value="2" checked> <span>2</span></label>
-          <label><input type="radio" name="count" value="3"> <span>3</span></label>
-          <label><input type="radio" name="count" value="4"> <span>4</span></label>
+        <legend data-i18n="levelLegend">مرحله</legend>
+        <div class="seg seg-levels">
+          <label><input type="radio" name="level" value="1" checked> <span>1</span></label>
+          <label><input type="radio" name="level" value="2"> <span>2</span></label>
+          <label><input type="radio" name="level" value="3"> <span>3</span></label>
+          <label><input type="radio" name="level" value="4"> <span>4</span></label>
+          <label><input type="radio" name="level" value="5"> <span>5</span></label>
+          <label><input type="radio" name="level" value="6"> <span>6</span></label>
+          <label><input type="radio" name="level" value="7"> <span>7</span></label>
         </div>
+        <p class="hint" data-i18n="levelHint">۱ تا ۳: انتخاب آزاد (۲، ۳، ۴ کارت) · ۴ تا ۶: کارتی که گفته می‌شود را پیدا کن (۲، ۳، ۴ کارت) · ۷: کارت‌های شبیه هم. با ۵ ستاره، مرحلهٔ بعد باز می‌شود.</p>
       </fieldset>
 
       <fieldset class="field">
@@ -191,6 +199,6 @@
     <p lang="en" dir="ltr">Prototype — not a clinical tool.</p>
   </footer>
 
-  <script src="app.js?v=20261004-3"></script>
+  <script src="app.js?v=20261004-4"></script>
 </body>
 </html>
