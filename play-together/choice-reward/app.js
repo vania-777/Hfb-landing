@@ -77,6 +77,7 @@
       noSpeech: 'این مرورگر بلندخوانی ندارد؛ متن روی صفحه نمایش داده می‌شود.',
       noVoice: 'صدای فارسی روی این دستگاه پیدا نشد؛ مرورگر ممکن است با صدای پیش‌فرض بخواند یا ساکت بماند.',
       voiceOk: function (n) { return 'صدای بلندخوانی: ' + n; },
+      voiceClips: 'صدای بلندخوانی: فایل‌های صوتی فارسی (روی همهٔ دستگاه‌ها، از جمله آیفون).',
       langBtn: 'Switch to English',
       langBtnText: 'EN',
       theme: { dark: 'پوسته: تیره (برای تغییر بزنید)', dim: 'پوسته: نیمه‌روشن (برای تغییر بزنید)', light: 'پوسته: روشن (برای تغییر بزنید)' },
@@ -192,13 +193,87 @@
   }
   function updateVoiceStatus() {
     if (!el.voiceStatus) return;
+    if (state.lang === 'fa' && player) { el.voiceStatus.textContent = t('voiceClips'); return; }
     if (!synth) { el.voiceStatus.textContent = t('noSpeech'); return; }
     var v = pickVoice(state.lang);
     el.voiceStatus.textContent = v ? t('voiceOk')(v.name) : t('noVoice');
   }
+
+  /* ---------- Persian read-aloud: pre-recorded MP3 clips ----------
+     iOS (and many desktops) have no fa-IR speechSynthesis voice, so every Persian
+     phrase the game speaks has a clip in audio/fa/. English keeps using speechSynthesis.
+     If a clip is missing or fails to load, we fall back to speechSynthesis. */
+  var FA_AUDIO_DIR = 'audio/fa/';
+  var faClips = {}; // exact Persian text -> clip file name (without .mp3)
+  Object.keys(ITEMS).forEach(function (cat) {
+    ITEMS[cat].forEach(function (it) {
+      faClips[it.fa] = 'item_' + it.id;
+      faClips[STR.fa.chose(it.fa)] = 'chose_' + it.id;
+    });
+  });
+  faClips[STR.fa.prompt] = 'prompt';
+  faClips[STR.fa.celebrateSay] = 'celebrate';
+
+  // One shared <audio> element: a new clip always replaces (stops) the previous one,
+  // and once it has played inside a tap, iOS lets it play later clips (e.g. celebration).
+  var player = null;
+  try { if (typeof Audio !== 'undefined') { player = new Audio(); player.preload = 'auto'; } } catch (e) { player = null; }
+  var SILENT_WAV = 'data:audio/wav;base64,UklGRnQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
+  var audioUnlocked = false;
+  var playToken = 0;
+  function noop() {}
+  // iOS autoplay rule: unlock the shared element on the very first user gesture.
+  function unlockAudio() {
+    if (audioUnlocked || !player) return;
+    try {
+      var src = player.getAttribute('src');
+      if (player.paused && (!src || src === SILENT_WAV)) {
+        player.src = SILENT_WAV;
+        var p = player.play();
+        if (p && p.then) p.then(function () { audioUnlocked = true; }, noop);
+      }
+    } catch (e) {}
+  }
+  ['touchend', 'pointerup', 'click', 'keydown'].forEach(function (type) {
+    document.addEventListener(type, unlockAudio, true);
+  });
+
   var speakingBtn = null;
-  function speak(text, btn) {
-    if (!synth || !settings.sound || !text) return;
+  function setSpeaking(btn) {
+    if (speakingBtn) speakingBtn.classList.remove('speaking');
+    speakingBtn = btn || null;
+    if (btn) btn.classList.add('speaking');
+  }
+  function stopSpeech() {
+    playToken++;
+    if (player) { try { player.pause(); } catch (e) {} }
+    if (synth) { try { synth.cancel(); } catch (e) {} }
+    if (speakingBtn) { speakingBtn.classList.remove('speaking'); speakingBtn = null; }
+  }
+  function playClip(name, text, btn) {
+    var my = ++playToken;
+    setSpeaking(btn);
+    var done = function () { if (my === playToken && btn) btn.classList.remove('speaking'); };
+    var fallback = function () {
+      if (my !== playToken) return; // superseded by a newer clip
+      playToken++;
+      speakSynth(text, btn);
+    };
+    player.onended = done;
+    player.onerror = fallback;
+    try {
+      player.src = FA_AUDIO_DIR + name + '.mp3';
+      var p = player.play();
+      if (p && p.then) p.then(function () { audioUnlocked = true; }, function (e) {
+        var n = e && e.name;
+        if (n === 'AbortError') return;          // replaced by a newer clip
+        if (n === 'NotAllowedError') { done(); return; } // autoplay blocked: tap 🔊 to hear it
+        fallback();                               // e.g. NotSupportedError (missing/broken file)
+      });
+    } catch (e) { fallback(); }
+  }
+  function speakSynth(text, btn) {
+    if (!synth) { if (btn) btn.classList.remove('speaking'); return; }
     try {
       synth.cancel();
       var u = new SpeechSynthesisUtterance(text);
@@ -208,12 +283,17 @@
       u.rate = 0.9;   // a little slower, calmer
       u.pitch = 1;
       u.volume = 1;
-      if (speakingBtn) speakingBtn.classList.remove('speaking');
-      if (btn) { speakingBtn = btn; btn.classList.add('speaking'); }
+      setSpeaking(btn);
       var done = function () { if (btn) btn.classList.remove('speaking'); };
       u.onend = done; u.onerror = done;
       synth.speak(u);
     } catch (e) { /* fail silently: text is always on screen */ }
+  }
+  function speak(text, btn) {
+    if (!settings.sound || !text) return;
+    stopSpeech(); // a new line always stops the previous one
+    if (state.lang === 'fa' && player && faClips[text]) { playClip(faClips[text], text, btn); return; }
+    speakSynth(text, btn);
   }
 
   /* Soft two-note chime for the reward (Web Audio, generated — no files). */
@@ -385,6 +465,7 @@
     renderChoices();
     renderStars(-1);
     if (state.chosen) el.feedbackText.textContent = chosenSentence();
+    root.classList.toggle('no-speech', !synth && !(L === 'fa' && player));
     updateVoiceStatus();
   }
 
@@ -413,7 +494,7 @@
   el.langBtn.addEventListener('click', function () {
     state.lang = state.lang === 'fa' ? 'en' : 'fa';
     saveRaw('hfb-lang', state.lang);
-    if (synth) synth.cancel();
+    stopSpeech();
     applyLang();
   });
   el.themeBtn.addEventListener('click', function () {
@@ -455,7 +536,7 @@
       persist(); newRound();
     } else if (tg === el.sound) {
       settings.sound = tg.checked;
-      if (!settings.sound && synth) synth.cancel();
+      if (!settings.sound) stopSpeech();
       persist(); applySettings();
     } else if (tg === el.motion) {
       settings.motion = tg.checked;
@@ -496,8 +577,7 @@
   }
 
   /* ---------- Init ---------- */
-  if (!synth) root.classList.add('no-speech');
-  else {
+  if (synth) {
     refreshVoices();
     if (typeof synth.addEventListener === 'function') synth.addEventListener('voiceschanged', refreshVoices);
     else synth.onvoiceschanged = refreshVoices;

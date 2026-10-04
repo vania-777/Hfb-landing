@@ -14,6 +14,7 @@ choice-reward/
 ├── index.html      page markup
 ├── styles.css      themes (dark / dim / light), layout, gentle motion
 ├── app.js          game logic, read-aloud, settings (no dependencies)
+├── audio/fa/       pre-recorded Persian read-aloud clips (MP3)
 ├── assets/         put logo-hfb-original@1x.png and @2x.png here
 └── screenshots/    preview images (not needed on the live site)
 ```
@@ -43,10 +44,14 @@ python3 -m http.server 8080
 
 ## Notes
 
-- **Read-Aloud** uses the browser's built-in Web Speech API (`speechSynthesis`) with an
-  `fa-IR` or `en-US` voice. Many desktop browsers have no Persian voice. In that case the
-  Adult panel says so, and the text stays on screen. If the browser has no speech support,
-  the speaker buttons are hidden.
+- **Read-Aloud — Persian** plays pre-recorded MP3 clips from `audio/fa/` (one per phrase:
+  `item_<id>.mp3`, `chose_<id>.mp3`, `prompt.mp3`, `celebrate.mp3`), because iOS and many
+  desktop browsers have no `fa-IR` speech voice. Clips were generated with edge-tts, voice
+  `fa-IR-DilaraNeural`, rate -10%. If you add or rename a Persian phrase or item in `app.js`,
+  generate a matching clip; if a clip is missing, the game falls back to `speechSynthesis`.
+- **Read-Aloud — English** uses the browser's built-in Web Speech API (`speechSynthesis`)
+  with an `en-US` voice. If the browser has no speech support, the English speaker buttons
+  are hidden.
 - **Saved in localStorage:** `hfb-theme` (dark/dim/light, shared with other HFB pages),
   `hfb-lang` (fa/en), `hfb-cr-settings`, `hfb-cr-stars`. Nothing is sent anywhere.
 - **Keyboard:** Tab/Enter/Space work everywhere. Keys 1–4 (or ۱–۴) pick a card. Esc closes
