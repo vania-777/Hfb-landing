@@ -14,7 +14,7 @@ choice-reward/
 ├── index.html      page markup
 ├── styles.css      themes (dark / dim / light), layout, gentle motion
 ├── app.js          game logic, read-aloud, settings (no dependencies)
-├── audio/fa/       pre-recorded Persian read-aloud clips (MP3)
+├── audio/fa|en/    pre-recorded read-aloud clips (MP3)
 ├── assets/         put logo-hfb-original@1x.png and @2x.png here
 └── screenshots/    preview images (not needed on the live site)
 ```
@@ -44,14 +44,15 @@ python3 -m http.server 8080
 
 ## Notes
 
-- **Read-Aloud — Persian** plays pre-recorded MP3 clips from `audio/fa/` (one per phrase:
-  `item_<id>.mp3`, `chose_<id>.mp3`, `prompt.mp3`, `celebrate.mp3`), because iOS and many
-  desktop browsers have no `fa-IR` speech voice. Clips were generated with edge-tts, voice
-  `fa-IR-DilaraNeural`, rate -10%. If you add or rename a Persian phrase or item in `app.js`,
-  generate a matching clip; if a clip is missing, the game falls back to `speechSynthesis`.
-- **Read-Aloud — English** uses the browser's built-in Web Speech API (`speechSynthesis`)
-  with an `en-US` voice. If the browser has no speech support, the English speaker buttons
-  are hidden.
+- **Read-Aloud** plays pre-recorded MP3 clips for both languages, from `audio/fa/` and
+  `audio/en/` (one per phrase: `item_<id>.mp3`, `chose_<id>.mp3`, `prompt.mp3`,
+  `celebrate.mp3`). iOS has no `fa-IR` speech voice and its built-in English voices sound
+  robotic. The clips were made with edge-tts: Persian `fa-IR-DilaraNeural` (rate -10%),
+  English `en-US-AvaMultilingualNeural` (rate -8%). Playback runs synchronously inside the
+  tap handler (`audio.src = url; audio.play()`), as iOS requires. If you add or rename an item
+  or phrase in `app.js`, generate matching clips and bump `ASSET_VER` in `app.js` and the
+  `?v=` in `index.html`. If a clip fails to load, the game falls back to `speechSynthesis`,
+  and the Adult panel shows the playback error.
 - **Saved in localStorage:** `hfb-theme` (dark/dim/light, shared with other HFB pages),
   `hfb-lang` (fa/en), `hfb-cr-settings`, `hfb-cr-stars`. Nothing is sent anywhere.
 - **Keyboard:** Tab/Enter/Space work everywhere. Keys 1–4 (or ۱–۴) pick a card. Esc closes

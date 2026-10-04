@@ -77,7 +77,8 @@
       noSpeech: 'این مرورگر بلندخوانی ندارد؛ متن روی صفحه نمایش داده می‌شود.',
       noVoice: 'صدای فارسی روی این دستگاه پیدا نشد؛ مرورگر ممکن است با صدای پیش‌فرض بخواند یا ساکت بماند.',
       voiceOk: function (n) { return 'صدای بلندخوانی: ' + n; },
-      voiceClips: 'صدای بلندخوانی: فایل‌های صوتی فارسی (روی همهٔ دستگاه‌ها، از جمله آیفون).',
+      voiceClips: 'صدای بلندخوانی: فایل‌های صوتی ضبط‌شده (روی همهٔ دستگاه‌ها، از جمله آیفون).',
+      audioErr: 'خطای پخش صدا: ',
       langBtn: 'Switch to English',
       langBtnText: 'EN',
       theme: { dark: 'پوسته: تیره (برای تغییر بزنید)', dim: 'پوسته: نیمه‌روشن (برای تغییر بزنید)', light: 'پوسته: روشن (برای تغییر بزنید)' },
@@ -119,6 +120,8 @@
       noSpeech: 'Read-aloud is not available in this browser; text stays on screen.',
       noVoice: 'No English voice found on this device; the browser may use a default voice or stay silent.',
       voiceOk: function (n) { return 'Read-aloud voice: ' + n; },
+      voiceClips: 'Read-aloud voice: recorded audio clips (works on all devices, including iPhone).',
+      audioErr: 'Audio playback error: ',
       langBtn: 'تغییر به فارسی',
       langBtnText: 'فا',
       theme: { dark: 'Theme: dark (tap to change)', dim: 'Theme: dim (tap to change)', light: 'Theme: light (tap to change)' },
@@ -191,52 +194,30 @@
     return voices.find(function (v) { return norm(v) === exact; }) ||
            voices.find(function (v) { return norm(v).indexOf(want) === 0; }) || null;
   }
+  var lastAudioErr = '';
   function updateVoiceStatus() {
     if (!el.voiceStatus) return;
-    if (state.lang === 'fa' && player) { el.voiceStatus.textContent = t('voiceClips'); return; }
+    var err = lastAudioErr ? ' ' + t('audioErr') + lastAudioErr : '';
+    if (player) { el.voiceStatus.textContent = t('voiceClips') + err; return; }
     if (!synth) { el.voiceStatus.textContent = t('noSpeech'); return; }
     var v = pickVoice(state.lang);
     el.voiceStatus.textContent = v ? t('voiceOk')(v.name) : t('noVoice');
   }
 
-  /* ---------- Persian read-aloud: pre-recorded MP3 clips ----------
-     iOS (and many desktops) have no fa-IR speechSynthesis voice, so every Persian
-     phrase the game speaks has a clip in audio/fa/. English keeps using speechSynthesis.
-     If a clip is missing or fails to load, we fall back to speechSynthesis. */
-  var FA_AUDIO_DIR = 'audio/fa/';
-  var faClips = {}; // exact Persian text -> clip file name (without .mp3)
-  Object.keys(ITEMS).forEach(function (cat) {
-    ITEMS[cat].forEach(function (it) {
-      faClips[it.fa] = 'item_' + it.id;
-      faClips[STR.fa.chose(it.fa)] = 'chose_' + it.id;
-    });
-  });
-  faClips[STR.fa.prompt] = 'prompt';
-  faClips[STR.fa.celebrateSay] = 'celebrate';
-
-  // One shared <audio> element: a new clip always replaces (stops) the previous one,
-  // and once it has played inside a tap, iOS lets it play later clips (e.g. celebration).
+  /* ---------- Read-aloud: pre-recorded MP3 clips (fa + en) ----------
+     iOS has no fa-IR speechSynthesis voice and its English voices sound robotic, so every
+     phrase the game speaks is a clip in audio/<lang>/<key>.mp3:
+       item_<id>, chose_<id>, prompt, celebrate.
+     Dead-simple path, run synchronously inside the tap handler (iOS autoplay rule):
+       player.src = url; player.play();
+     One shared <audio> element, so a new clip always stops the previous one; once it has
+     played from a tap, iOS also lets it play the (delayed) celebration line.
+     speechSynthesis is only a fallback when a clip fails to load. */
+  var ASSET_VER = '20261004-2'; // bump when clips change (cache-busting)
   var player = null;
   try { if (typeof Audio !== 'undefined') { player = new Audio(); player.preload = 'auto'; } } catch (e) { player = null; }
-  var SILENT_WAV = 'data:audio/wav;base64,UklGRnQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
-  var audioUnlocked = false;
   var playToken = 0;
-  function noop() {}
-  // iOS autoplay rule: unlock the shared element on the very first user gesture.
-  function unlockAudio() {
-    if (audioUnlocked || !player) return;
-    try {
-      var src = player.getAttribute('src');
-      if (player.paused && (!src || src === SILENT_WAV)) {
-        player.src = SILENT_WAV;
-        var p = player.play();
-        if (p && p.then) p.then(function () { audioUnlocked = true; }, noop);
-      }
-    } catch (e) {}
-  }
-  ['touchend', 'pointerup', 'click', 'keydown'].forEach(function (type) {
-    document.addEventListener(type, unlockAudio, true);
-  });
+  function clipUrl(key) { return 'audio/' + state.lang + '/' + key + '.mp3?v=' + ASSET_VER; }
 
   var speakingBtn = null;
   function setSpeaking(btn) {
@@ -247,30 +228,35 @@
   function stopSpeech() {
     playToken++;
     if (player) { try { player.pause(); } catch (e) {} }
-    if (synth) { try { synth.cancel(); } catch (e) {} }
+    if (synth && (synth.speaking || synth.pending)) { try { synth.cancel(); } catch (e) {} }
     if (speakingBtn) { speakingBtn.classList.remove('speaking'); speakingBtn = null; }
   }
-  function playClip(name, text, btn) {
+  function audioFailed(msg) {
+    lastAudioErr = msg;
+    updateVoiceStatus();
+    try { console.warn('[choice-reward] audio: ' + msg); } catch (e) {}
+  }
+  function playClip(key, text, btn) {
     var my = ++playToken;
+    var url = clipUrl(key);
     setSpeaking(btn);
-    var done = function () { if (my === playToken && btn) btn.classList.remove('speaking'); };
-    var fallback = function () {
-      if (my !== playToken) return; // superseded by a newer clip
+    var fallback = function (why) {
+      if (my !== playToken) return; // a newer clip took over
       playToken++;
+      audioFailed(why + ' (' + url + ')');
       speakSynth(text, btn);
     };
-    player.onended = done;
-    player.onerror = fallback;
-    try {
-      player.src = FA_AUDIO_DIR + name + '.mp3';
-      var p = player.play();
-      if (p && p.then) p.then(function () { audioUnlocked = true; }, function (e) {
-        var n = e && e.name;
-        if (n === 'AbortError') return;          // replaced by a newer clip
-        if (n === 'NotAllowedError') { done(); return; } // autoplay blocked: tap 🔊 to hear it
-        fallback();                               // e.g. NotSupportedError (missing/broken file)
-      });
-    } catch (e) { fallback(); }
+    player.onended = function () { if (my === playToken && btn) btn.classList.remove('speaking'); };
+    player.onerror = function () { fallback('load error ' + ((player.error && player.error.code) || '')); };
+    player.src = url;
+    var p;
+    try { p = player.play(); } catch (e) { fallback(e && e.name || 'play() threw'); return; }
+    if (p && p.then) p.then(function () { if (lastAudioErr) { lastAudioErr = ''; updateVoiceStatus(); } }, function (e) {
+      if (my !== playToken) return; // superseded: expected
+      var n = (e && e.name) || 'play() rejected';
+      if (n === 'NotAllowedError') { audioFailed(n); if (btn) btn.classList.remove('speaking'); return; } // tap 🔊 to hear it
+      fallback(n);
+    });
   }
   function speakSynth(text, btn) {
     if (!synth) { if (btn) btn.classList.remove('speaking'); return; }
@@ -289,10 +275,11 @@
       synth.speak(u);
     } catch (e) { /* fail silently: text is always on screen */ }
   }
-  function speak(text, btn) {
+  // Call directly from a tap/click handler (no await / setTimeout before it).
+  function speak(text, btn, key) {
     if (!settings.sound || !text) return;
     stopSpeech(); // a new line always stops the previous one
-    if (state.lang === 'fa' && player && faClips[text]) { playClip(faClips[text], text, btn); return; }
+    if (player && key) { playClip(key, text, btn); return; }
     speakSynth(text, btn);
   }
 
@@ -373,7 +360,7 @@
       sp.className = 'speak-btn';
       sp.setAttribute('aria-label', t('readItem')(name));
       sp.innerHTML = '<span aria-hidden="true">🔊</span>';
-      sp.addEventListener('click', function (ev) { ev.stopPropagation(); speak(name, sp); });
+      sp.addEventListener('click', function (ev) { ev.stopPropagation(); speak(name, sp, 'item_' + item.id); });
 
       wrap.appendChild(main); wrap.appendChild(num); wrap.appendChild(sp);
       box.appendChild(wrap);
@@ -385,6 +372,8 @@
     return t('chose')(state.lang === 'fa' ? state.chosen.fa : state.chosen.enS);
   }
 
+  function chosenKey() { return state.chosen ? 'chose_' + state.chosen.id : ''; }
+
   function choose(item) {
     if (state.chosen) return; // one choice per round, predictable
     state.chosen = item;
@@ -392,7 +381,7 @@
     el.feedbackEmoji.textContent = item.e;
     el.feedbackText.textContent = chosenSentence();
     el.feedback.hidden = false;
-    speak(chosenSentence(), $('speakFeedback'));
+    speak(chosenSentence(), $('speakFeedback'), chosenKey()); // synchronous, inside the tap
 
     // Calm reward: add a star.
     state.stars = Math.min(GOAL, state.stars + 1);
@@ -429,7 +418,7 @@
     el.celebrate.hidden = false;
     $('main').setAttribute('aria-hidden', 'true');
     chime(true);
-    setTimeout(function () { speak(t('celebrateSay'), $('speakCelebrate')); }, 400);
+    setTimeout(function () { speak(t('celebrateSay'), $('speakCelebrate'), 'celebrate'); }, 400);
     el.playAgain.focus({ preventScroll: true });
   }
   function hideCelebration() {
@@ -465,7 +454,7 @@
     renderChoices();
     renderStars(-1);
     if (state.chosen) el.feedbackText.textContent = chosenSentence();
-    root.classList.toggle('no-speech', !synth && !(L === 'fa' && player));
+    root.classList.toggle('no-speech', !synth && !player);
     updateVoiceStatus();
   }
 
@@ -502,9 +491,9 @@
     saveRaw('hfb-theme', state.theme);
     applyTheme();
   });
-  $('speakPrompt').addEventListener('click', function () { speak(t('prompt'), this); });
-  $('speakFeedback').addEventListener('click', function () { speak(chosenSentence(), this); });
-  $('speakCelebrate').addEventListener('click', function () { speak(t('celebrateSay'), this); });
+  $('speakPrompt').addEventListener('click', function () { speak(t('prompt'), this, 'prompt'); });
+  $('speakFeedback').addEventListener('click', function () { speak(chosenSentence(), this, chosenKey()); });
+  $('speakCelebrate').addEventListener('click', function () { speak(t('celebrateSay'), this, 'celebrate'); });
   el.nextBtn.addEventListener('click', function () {
     if (state.stars >= GOAL) { showCelebration(); return; }
     newRound();
