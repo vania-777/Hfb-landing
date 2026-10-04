@@ -31,6 +31,52 @@
   var EMO = {};
   EMOTIONS.forEach(function (x) { EMO[x.id] = x; });
 
+  /* Levels: 1–3 faces (2/3/4 choices); 4–6 situations (2/3/4 choices). */
+  var LEVELS = [null,
+    { kind: 'face', n: 2 }, { kind: 'face', n: 3 }, { kind: 'face', n: 4 },
+    { kind: 'sit', n: 2 }, { kind: 'sit', n: 3 }, { kind: 'sit', n: 4 }
+  ];
+  var MAX_LEVEL = LEVELS.length - 1;
+
+  /* Situations: ONE clearly correct feeling each. `avoid` lists feelings that could also fit,
+     so they are never used as distractors (distractors stay clearly wrong).
+     g: 'm' / 'f' only changes the English pronoun and the drawing (Persian has no gendered pronoun). */
+  var SITUATIONS = [
+    { id: 'gift',      emo: 'happy',     g: 'f', avoid: ['surprised', 'calm'],
+      fa: 'برای تولدش کادو گرفت.', en: 'She got a present for her birthday.' },
+    { id: 'icecream',  emo: 'sad',       g: 'm', avoid: ['angry', 'surprised'],
+      fa: 'بستنی‌اش افتاد زمین.', en: 'His ice cream fell on the ground.' },
+    { id: 'dog',       emo: 'scared',    g: 'f', avoid: ['surprised', 'sad'],
+      fa: 'یه سگ بزرگ داره براش پارس می‌کنه.', en: 'A big dog is barking at her.' },
+    { id: 'toy',       emo: 'angry',     g: 'm', avoid: ['sad', 'surprised'],
+      fa: 'دوستش اسباب‌بازی‌اش رو به زور ازش گرفت.', en: 'His friend grabbed his toy away from him.' },
+    { id: 'hug',       emo: 'happy',     g: 'f', avoid: ['calm', 'surprised'],
+      fa: 'مامانش محکم بغلش کرد.', en: 'Her mom gave her a big hug.' },
+    { id: 'party',     emo: 'surprised', g: 'm', avoid: ['happy', 'scared'],
+      fa: 'یهو همه داد زدن: سورپرایز!', en: 'Everyone jumped out and shouted, "Surprise!"' },
+    { id: 'sleepy',    emo: 'tired',     g: 'f', avoid: ['calm', 'sad'],
+      fa: 'بعد از یه روز طولانی، هی خمیازه می‌کشه.', en: 'After a long day, she keeps yawning.' },
+    { id: 'bath',      emo: 'calm',      g: 'm', avoid: ['happy', 'tired'],
+      fa: 'توی وان آب گرم، آروم دراز کشیده.', en: 'He is lying quietly in a warm bath.' },
+    { id: 'balloon',   emo: 'sad',       g: 'f', avoid: ['surprised', 'angry', 'scared'],
+      fa: 'بادکنکش از دستش در رفت و رفت هوا.', en: 'Her balloon slipped away and flew up into the sky.' },
+    { id: 'thunder',   emo: 'scared',    g: 'm', avoid: ['surprised', 'sad'],
+      fa: 'شب، صدای رعد و برق خیلی بلندی اومد.', en: 'At night, there was a very loud crash of thunder.' },
+    { id: 'tower',     emo: 'angry',     g: 'f', avoid: ['sad', 'surprised'],
+      fa: 'یکی عمداً برجش رو خراب کرد.', en: 'Someone knocked down her block tower on purpose.' },
+    { id: 'jackbox',   emo: 'surprised', g: 'm', avoid: ['scared', 'happy'],
+      fa: 'یهو یه عروسک از توی جعبه پرید بیرون.', en: 'A toy suddenly popped out of the box.' },
+    { id: 'trash',     emo: 'disgusted', g: 'f', avoid: ['angry', 'sad'],
+      fa: 'سطل آشغال خیلی بوی بد میده.', en: 'The trash can smells really bad.' },
+    { id: 'reading',   emo: 'calm',      g: 'f', avoid: ['happy', 'tired'],
+      fa: 'زیر درخت، آروم کتاب می‌خونه.', en: 'She is quietly reading a book under a tree.' },
+    { id: 'swing',     emo: 'happy',     g: 'm', avoid: ['calm', 'surprised', 'tired'],
+      fa: 'توی پارک داره تاب‌بازی می‌کنه.', en: 'He is playing on the swings at the park.' }
+  ];
+  var SIT = {};
+  SITUATIONS.forEach(function (x) { SIT[x.id] = x; });
+  function shortFa(m) { return m.faS.replace(/^این /, ''); } // 'این غمگینه.' -> 'غمگینه.'
+
   var STR = {
     fa: {
       skip: 'پرش به بازی',
@@ -41,6 +87,22 @@
       faceBtn: 'چهره. برای شنیدن اسم حس بزنید.',
       yes: function (m) { return 'آفرین! ' + m.faS; },
       is: function (m) { return m.faS; },
+      sitSay: function (x) { return x.fa + ' چه حسی داره؟'; },
+      sitYes: function (x) { return 'آفرین! ' + shortFa(EMO[x.emo]); },
+      sitIs: function (x) { return 'اون ' + shortFa(EMO[x.emo]); },
+      sceneHint: 'روی تصویر بزن تا دوباره بشنوی.',
+      sceneBtn: 'تصویر موقعیت. برای شنیدن دوباره بزنید.',
+      tryAgain: 'یه بار دیگه امتحان کنیم.',
+      levelUp: 'مرحلهٔ بعد!',
+      levelUpSay: 'آفرین! بریم مرحلهٔ بعد!',
+      allDone: 'همهٔ مرحله‌ها تمام شد!',
+      nextLevel: 'مرحلهٔ بعد',
+      repeatLevel: 'دوباره همین مرحله',
+      levelLabel: function (n) { return 'مرحلهٔ ' + toFaDigits(n); },
+      kind_face: 'چهره‌ها',
+      kind_sit: 'موقعیت‌ها',
+      levelLegend: 'مرحله',
+      levelHint: '۱ تا ۳: چهره‌ها (۲، ۳، ۴ گزینه) · ۴ تا ۶: موقعیت‌ها، کودک حسِ آدمِ توی تصویر را پیدا می‌کند (۲، ۳، ۴ گزینه). با ۵ ستاره، مرحلهٔ بعد باز می‌شود.',
       readAloud: 'بلند خواندن',
       next: 'بعدی',
       stars: 'ستاره‌های من',
@@ -55,7 +117,7 @@
       close: 'بستن',
       optCount: 'تعداد گزینه‌ها',
       emotionsLegend: 'حس‌ها',
-      emoHint: 'حداقل دو حس باید روشن بماند.',
+      emoHint: 'حداقل دو حس باید روشن بماند. (برای مرحله‌های چهره)',
       promptLegend: 'کمک (پرامپت)',
       errorless: 'یادگیری بدون خطا: جواب درست آرام می‌تپد',
       errorlessHint: 'برای شروع یک حس تازه مفید است. وقتی کودک آماده شد، خاموشش کنید.',
@@ -86,6 +148,22 @@
       faceBtn: 'Face. Tap to hear the feeling.',
       yes: function (m) { return 'Yes! This face is ' + m.enS + '.'; },
       is: function (m) { return 'This face is ' + m.enS + '.'; },
+      sitSay: function (x) { return x.en + ' How does ' + (x.g === 'f' ? 'she' : 'he') + ' feel?'; },
+      sitYes: function (x) { return 'Yes! ' + (x.g === 'f' ? 'She' : 'He') + ' feels ' + EMO[x.emo].enS + '.'; },
+      sitIs: function (x) { return (x.g === 'f' ? 'She' : 'He') + ' feels ' + EMO[x.emo].enS + '.'; },
+      sceneHint: 'Tap the picture to hear it again.',
+      sceneBtn: 'Picture of the situation. Tap to hear it again.',
+      tryAgain: 'Let\'s try again.',
+      levelUp: 'Level up!',
+      levelUpSay: 'Level up! On to the next level!',
+      allDone: 'All levels done!',
+      nextLevel: 'Next level',
+      repeatLevel: 'Repeat this level',
+      levelLabel: function (n) { return 'Level ' + n; },
+      kind_face: 'Faces',
+      kind_sit: 'Situations',
+      levelLegend: 'Level',
+      levelHint: '1–3: faces (2, 3, 4 choices) · 4–6: situations, where the child finds how the person in the picture feels (2, 3, 4 choices). 5 stars opens the next level.',
       readAloud: 'Read aloud',
       next: 'Next',
       stars: 'My stars',
@@ -100,7 +178,7 @@
       close: 'Close',
       optCount: 'Number of choices',
       emotionsLegend: 'Feelings',
-      emoHint: 'At least two feelings must stay on.',
+      emoHint: 'At least two feelings must stay on. (For the face levels.)',
       promptLegend: 'Prompting',
       errorless: 'Errorless learning: the right answer gently pulses',
       errorlessHint: 'Helpful when teaching a new feeling. Turn it off when the child is ready.',
@@ -140,6 +218,7 @@
 
   var reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   var DEFAULTS = {
+    level: 1,
     count: 2,
     emotions: EMOTIONS.filter(function (x) { return x.on; }).map(function (x) { return x.id; }),
     errorless: false,
@@ -147,8 +226,12 @@
     motion: !(reduceMQ && reduceMQ.matches)
   };
   function cleanSettings(s) {
-    s = Object.assign({}, DEFAULTS, s || {});
-    if ([2, 3, 4].indexOf(s.count) < 0) s.count = 2;
+    var had = s || {};
+    s = Object.assign({}, DEFAULTS, had);
+    // Older saves only had `count` (2/3/4 faces) → face level 1/2/3.
+    if (had.level == null && [2, 3, 4].indexOf(had.count) >= 0) s.level = had.count - 1;
+    s.level = Math.max(1, Math.min(MAX_LEVEL, parseInt(s.level, 10) || 1));
+    s.count = LEVELS[s.level].n; // derived from the level
     s.emotions = (s.emotions || []).filter(function (id) { return EMO[id]; });
     if (s.emotions.length < 2) s.emotions = DEFAULTS.emotions.slice();
     s.errorless = !!s.errorless; s.sound = !!s.sound; s.motion = !!s.motion;
@@ -161,7 +244,7 @@
     theme: (function () { var t = loadRaw('hfb-theme'); return (t === 'dark' || t === 'dim' || t === 'light') ? t : 'dark'; })(),
     settings: cleanSettings(load('hfb-fe-settings', {})),
     stars: Math.max(0, Math.min(GOAL, parseInt(load('hfb-fe-stars', 0), 10) || 0)),
-    round: null,        // { n, emotion, skin, hair, style, options: [ids] }
+    round: null,        // { n, kind: 'face'|'sit', sit?: id, retry?: bool, emotion, skin, hair, style, options: [ids] }
     answer: null,       // null | { pick: id, correct: bool }
     celebrating: false,
     justFilled: -1      // index of the star that was just earned (for a gentle pop)
@@ -180,6 +263,9 @@
     answers: $('answers'), feedback: $('feedback'), feedbackText: $('feedbackText'), feedbackEmoji: $('feedbackEmoji'),
     nextBtn: $('nextBtn'), stars: $('stars'), starCount: $('starCount'),
     celebrate: $('celebrate'), playAgain: $('playAgainBtn'), main: $('main'),
+    levelNum: $('levelNum'), levelMode: $('levelMode'), levelUpText: $('levelUpText'),
+    nextLevel: $('nextLevelBtn'), nextLevelText: $('nextLevelText'), playAgainText: $('playAgainText'),
+    promptText: $('promptText'), faceHint: $('faceHint'),
     langBtn: $('langBtn'), langBtnText: $('langBtnText'), themeBtn: $('themeBtn'), themeIcon: $('themeIcon'),
     adultBtn: $('adultBtn'), panel: $('adultPanel'), form: $('adultForm'), emoChecks: $('emoChecks'), emoHint: $('emoHint'),
     sound: $('soundToggle'), motion: $('motionToggle'), errorless: $('errorlessToggle'),
@@ -214,10 +300,11 @@
   }
 
   /* ---------- Read-aloud: pre-recorded MP3 clips (fa + en) ----------
-     audio/<lang>/<key>.mp3 with keys: question, celebrate, name_<id>, yes_<id>, is_<id>.
+     audio/<lang>/<key>.mp3 with keys: question, celebrate, level_up, try_again, name_<id>, yes_<id>, is_<id>,
+     and per situation sit_<id> (scene + question), sityes_<id> (right), sitis_<id> (gentle answer).
      Same path as Choice & Reward: one shared <audio> element, src + play() run
      synchronously inside the tap handler (iOS rule). speechSynthesis is only a fallback. */
-  var ASSET_VER = '20261004-2'; // bump when clips change (cache-busting)
+  var ASSET_VER = '20261004-3'; // bump when clips change (cache-busting)
   var player = null;
   try { if (typeof Audio !== 'undefined') { player = new Audio(); player.preload = 'auto'; } } catch (e) { player = null; }
   var playToken = 0;
@@ -240,7 +327,7 @@
     updateVoiceStatus();
     try { console.warn('[feelings] audio: ' + msg); } catch (e) {}
   }
-  function playClip(key, text, btn) {
+  function playClip(key, text, btn, next) {
     var my = ++playToken;
     var url = clipUrl(key);
     setSpeaking(btn);
@@ -248,9 +335,13 @@
       if (my !== playToken) return; // a newer clip took over
       playToken++;
       audioFailed(why + ' (' + url + ')');
-      speakSynth(text, btn);
+      speakSynth(text, btn, next);
     };
-    player.onended = function () { if (my === playToken && btn) btn.classList.remove('speaking'); };
+    player.onended = function () {
+      if (my !== playToken) return;
+      if (next) { next(); return; } // play the next clip in a sequence
+      if (btn) btn.classList.remove('speaking');
+    };
     player.onerror = function () { fallback('load error ' + ((player.error && player.error.code) || '')); };
     player.src = url;
     var p;
@@ -262,7 +353,7 @@
       fallback(n);
     });
   }
-  function speakSynth(text, btn) {
+  function speakSynth(text, btn, next) {
     if (!synth) { if (btn) btn.classList.remove('speaking'); return; }
     try {
       synth.cancel();
@@ -273,16 +364,24 @@
       u.rate = 0.9; u.pitch = 1; u.volume = 1;
       setSpeaking(btn);
       var done = function () { if (btn) btn.classList.remove('speaking'); };
-      u.onend = done; u.onerror = done;
+      u.onend = function () { if (next) next(); else done(); }; u.onerror = done;
       synth.speak(u);
     } catch (e) { /* text is always on screen */ }
   }
   // Call directly from a tap/click handler (no await / setTimeout before it).
-  function speak(text, btn, key) {
+  // `next` (optional) runs when this clip ends, e.g. "Let's try again" → the situation.
+  function speak(text, btn, key, next) {
     if (!state.settings.sound || !text) return;
     stopSpeech();
-    if (player && key) { playClip(key, text, btn); return; }
-    speakSynth(text, btn);
+    if (player && key) { playClip(key, text, btn, next); return; }
+    speakSynth(text, btn, next);
+  }
+  function chain(text, btn, key) { // a follow-up clip in a sequence (keeps the speaking ring)
+    return function () {
+      if (!state.settings.sound) return;
+      if (player && key) { playClip(key, text, btn); return; }
+      speakSynth(text, btn);
+    };
   }
 
   /* Generated tones (Web Audio, no files). The context is created/resumed inside the tap,
@@ -446,6 +545,243 @@
       '</svg>';
   }
 
+  /* ---------- Situation scenes (SVG, same cartoon style as the faces) ----------
+     The person in the scene shows a neutral face until the child answers, so the feeling is
+     found from the situation; after the answer the face shows the feeling. */
+  FEATURES.neutral = function () {
+    return bw('M62,90 Q74,86 86,90', 4.5) + bw('M114,90 Q126,86 138,90', 4.5) + dotEyes(7) + NOSE +
+      sw('M84,154 Q100,159 116,154', 5);
+  };
+  var SHIRTS = ['#ff9f68', '#6cc5ff', '#b28dff', '#7ed6a5', '#ffd166', '#ff8fb1'];
+  function headSVG(look, emotion, x, y, size) {
+    return faceSVG({ emotion: emotion || 'neutral', skin: look.skin, hair: look.hair, style: look.style })
+      .replace('<svg ', '<svg x="' + x + '" y="' + y + '" width="' + size + '" height="' + size + '" ');
+  }
+  function arm(sx, sy, ex, ey, shirt, skin) {
+    var cx = (sx + ex) / 2 + (ex < sx ? -6 : 6), cy = (sy + ey) / 2 + 4;
+    var d = 'M' + sx + ',' + sy + ' Q' + cx + ',' + cy + ' ' + ex + ',' + ey;
+    return '<path d="' + d + '" fill="none" stroke="' + INK + '" stroke-width="14" stroke-linecap="round"/>' +
+      '<path d="' + d + '" fill="none" stroke="' + shirt + '" stroke-width="9" stroke-linecap="round"/>' +
+      '<circle cx="' + ex + '" cy="' + ey + '" r="6.5" fill="' + skin + '" stroke="' + INK + '" stroke-width="2.5"/>';
+  }
+  var ARMS = { // hand positions [left, right] relative to the feet (0,0)
+    down: [[-32, -40], [32, -40]], front: [[-13, -54], [13, -54]], up: [[-40, -124], [40, -124]],
+    reachR: [[-32, -40], [38, -128]], reachFwdR: [[-32, -40], [44, -66]], yawn: [[-32, -40], [6, -98]],
+    nose: [[-32, -40], [4, -104]], book: [[-15, -48], [15, -48]], ropes: [[-30, -104], [30, -104]],
+    shout: [[-42, -118], [42, -118]], hold: [[-30, -42], [38, -60]]
+  };
+  // A child (or adult with s > 1). x,y = feet; o: { arms, sit, emotion, shirt, pants, hat, pj }
+  function kid(x, y, s, look, o) {
+    o = o || {};
+    var skin = SKINS[look.skin], shirt = o.shirt || look.shirt, pants = o.pants || '#4b5c9e';
+    var g = '<g transform="translate(' + x + ',' + y + ') scale(' + s + ')">';
+    if (o.sit) {
+      g += '<rect x="-20" y="-36" width="16" height="22" rx="7" fill="' + pants + '" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<rect x="4" y="-36" width="16" height="22" rx="7" fill="' + pants + '" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<ellipse cx="-12" cy="-12" rx="10" ry="6" fill="#3a2f4a"/><ellipse cx="12" cy="-12" rx="10" ry="6" fill="#3a2f4a"/>';
+    } else {
+      g += '<rect x="-18" y="-36" width="14" height="33" rx="6" fill="' + pants + '" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<rect x="4" y="-36" width="14" height="33" rx="6" fill="' + pants + '" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<ellipse cx="-12" cy="-3" rx="11" ry="5.5" fill="#3a2f4a"/><ellipse cx="12" cy="-3" rx="11" ry="5.5" fill="#3a2f4a"/>';
+    }
+    g += '<path d="M-24,-80 Q0,-88 24,-80 L29,-30 Q0,-24 -29,-30Z" fill="' + shirt + '" stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round"/>';
+    if (o.pj) g += '<circle cx="-10" cy="-62" r="3" fill="#fff" opacity=".8"/><circle cx="9" cy="-50" r="3" fill="#fff" opacity=".8"/><circle cx="-6" cy="-40" r="3" fill="#fff" opacity=".8"/><circle cx="12" cy="-70" r="3" fill="#fff" opacity=".8"/>';
+    var h = ARMS[o.arms || 'down'];
+    g += arm(-22, -76, h[0][0], h[0][1], shirt, skin) + arm(22, -76, h[1][0], h[1][1], shirt, skin);
+    g += headSVG(look, o.emotion, -40, -158, 80);
+    if (o.hat) g += '<path d="M-16,-146 L4,-196 L20,-142Z" fill="' + o.hat + '" stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round"/><circle cx="4" cy="-197" r="6" fill="#ffd166" stroke="' + INK + '" stroke-width="2"/>';
+    return g + '</g>';
+  }
+  function bgRoom(wall, floor) {
+    return '<rect width="320" height="220" fill="' + wall + '"/><rect y="168" width="320" height="52" fill="' + floor + '"/>' +
+      '<path d="M0,168 L320,168" stroke="' + INK + '" stroke-width="2" opacity=".25"/>';
+  }
+  function bgOut(sky, grass, sun) {
+    return '<rect width="320" height="220" fill="' + (sky || '#cdeaff') + '"/>' +
+      (sun === false ? '' : '<circle cx="280" cy="36" r="20" fill="#ffd166"/>') +
+      '<ellipse cx="70" cy="40" rx="30" ry="12" fill="#fff" opacity=".9"/><ellipse cx="92" cy="34" rx="20" ry="12" fill="#fff" opacity=".9"/>' +
+      '<path d="M0,170 Q80,158 160,168 T320,164 L320,220 L0,220Z" fill="' + (grass || '#a6dc8c') + '"/>';
+  }
+  function bunting(y) {
+    var c = ['#ff6f91', '#ffd166', '#6cc5ff', '#7ed6a5', '#b28dff'], out = '<path d="M0,' + y + ' Q160,' + (y + 26) + ' 320,' + y + '" fill="none" stroke="' + INK + '" stroke-width="2"/>';
+    for (var i = 0; i < 9; i++) {
+      var x = 16 + i * 36, yy = y + 26 * (1 - Math.pow((x - 160) / 160, 2)) * 0.5 + 4;
+      out += '<path d="M' + (x - 11) + ',' + yy + ' L' + (x + 11) + ',' + yy + ' L' + x + ',' + (yy + 20) + 'Z" fill="' + c[i % 5] + '" stroke="' + INK + '" stroke-width="1.5"/>';
+    }
+    return out;
+  }
+  function motion(x, y, dir) { // three short speed lines
+    var o = '';
+    for (var i = 0; i < 3; i++) o += '<path d="M' + x + ',' + (y + i * 12) + ' l' + (dir * 22) + ',0" stroke="' + INK + '" stroke-width="3" stroke-linecap="round" opacity=".45"/>';
+    return o;
+  }
+  function heart(x, y, r, c) {
+    return '<path d="M' + x + ',' + (y + r) + ' C' + (x - 2 * r) + ',' + (y - 0.2 * r) + ' ' + (x - r) + ',' + (y - 1.6 * r) + ' ' + x + ',' + (y - 0.6 * r) +
+      ' C' + (x + r) + ',' + (y - 1.6 * r) + ' ' + (x + 2 * r) + ',' + (y - 0.2 * r) + ' ' + x + ',' + (y + r) + 'Z" fill="' + (c || '#ff6f91') + '"/>';
+  }
+  var SCENES = {
+    gift: function (k, e) {
+      return bgRoom('#fde9f0', '#e8c9a8') + bunting(12) +
+        '<rect x="232" y="132" width="56" height="36" rx="4" fill="#fff3d6" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<rect x="232" y="132" width="56" height="10" fill="#ff8fb1"/><rect x="258" y="114" width="5" height="18" fill="#6cc5ff"/>' +
+        '<path d="M260.5,104 q6,6 0,11 q-6,-5 0,-11z" fill="#ffb84d"/>' +
+        kid(150, 210, 1, k, { arms: 'front', emotion: e, hat: '#6cc5ff' }) +
+        '<rect x="126" y="136" width="48" height="38" rx="5" fill="#ff6f91" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<rect x="146" y="136" width="8" height="38" fill="#ffd166"/><rect x="126" y="150" width="48" height="8" fill="#ffd166"/>' +
+        '<ellipse cx="141" cy="132" rx="11" ry="7" fill="#ffd166" stroke="' + INK + '" stroke-width="2"/><ellipse cx="159" cy="132" rx="11" ry="7" fill="#ffd166" stroke="' + INK + '" stroke-width="2"/>';
+    },
+    icecream: function (k, e) {
+      return bgOut() + '<path d="M0,196 L320,190" stroke="#d9c7a7" stroke-width="22"/>' +
+        kid(125, 205, 1, k, { arms: 'reachFwdR', emotion: e }) +
+        '<ellipse cx="228" cy="200" rx="28" ry="8" fill="#ffb3c7" stroke="' + INK + '" stroke-width="2"/>' +
+        '<circle cx="222" cy="192" r="14" fill="#ffb3c7" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<path d="M232,186 L262,176 L248,202Z" fill="#e0a458" stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+        '<path d="M240,186 L254,196 M247,182 L258,190" stroke="#a8742f" stroke-width="2"/>' +
+        '<path d="M200,150 l4,10 M214,140 l2,11 M228,148 l-2,10" stroke="' + INK + '" stroke-width="3" stroke-linecap="round" opacity=".45"/>';
+    },
+    dog: function (k, e) {
+      var B = '#b07a4a';
+      return bgOut() + kid(80, 205, 0.9, k, { arms: 'front', emotion: e }) +
+        
+        '<rect x="196" y="168" width="16" height="36" rx="7" fill="' + B + '" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<rect x="262" y="168" width="16" height="36" rx="7" fill="' + B + '" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<path d="M282,148 q26,-18 22,-40" fill="none" stroke="' + INK + '" stroke-width="12" stroke-linecap="round"/><path d="M282,148 q26,-18 22,-40" fill="none" stroke="' + B + '" stroke-width="7" stroke-linecap="round"/>' +
+        '<ellipse cx="238" cy="152" rx="54" ry="32" fill="' + B + '" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<circle cx="174" cy="112" r="36" fill="' + B + '" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<ellipse cx="200" cy="96" rx="12" ry="24" fill="#7a5030" stroke="' + INK + '" stroke-width="2.5" transform="rotate(-20 200 96)"/>' +
+        '<circle cx="162" cy="102" r="5" fill="' + INK + '"/><circle cx="184" cy="100" r="5" fill="' + INK + '"/>' +
+        '<ellipse cx="146" cy="116" rx="9" ry="7" fill="' + INK + '"/>' +
+        '<path d="M146,128 Q166,124 184,132 Q170,152 150,144Z" fill="#7a2f3f" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<path d="M152,129 l3,6 l3,-6 M170,128 l3,6 l3,-6" fill="#fff" stroke="#fff" stroke-width="1"/>' +
+        '<path d="M132,124 q-8,10 0,20 M122,116 q-14,18 0,36" fill="none" stroke="' + INK + '" stroke-width="3.5" stroke-linecap="round" opacity=".6"/>';
+    },
+    toy: function (k, e) {
+      var f = { skin: (k.skin + 2) % SKINS.length, hair: (k.hair + 3) % HAIRS.length, style: 'curly', shirt: '#7ed6a5' };
+      return bgRoom('#e9f4ff', '#d9b48f') + kid(95, 208, 0.95, k, { arms: 'reachFwdR', emotion: e }) +
+        kid(232, 208, 0.9, f, { arms: 'up' }) + motion(278, 120, 1) +
+        '<g transform="translate(268,72)"><circle cx="0" cy="0" r="15" fill="#c98b5f" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<circle cx="-12" cy="-12" r="7" fill="#c98b5f" stroke="' + INK + '" stroke-width="2.5"/><circle cx="12" cy="-12" r="7" fill="#c98b5f" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<circle cx="-5" cy="-2" r="2.5" fill="' + INK + '"/><circle cx="5" cy="-2" r="2.5" fill="' + INK + '"/><ellipse cx="0" cy="5" rx="5" ry="3.5" fill="#f3d1b0"/></g>';
+    },
+    hug: function (k, e) {
+      var m = { skin: k.skin, hair: (k.hair + 1) % HAIRS.length, style: 'long', shirt: '#b28dff' };
+      return bgRoom('#fff1e0', '#e3c29f') + heart(70, 50, 12) + heart(250, 40, 9, '#ff8fb1') + heart(270, 76, 6) +
+        kid(185, 212, 1.22, m, { arms: 'down', pants: '#6a5a8e' }) +
+        kid(132, 212, 0.88, k, { arms: 'front', emotion: e }) +
+        '<path d="M164,134 Q122,150 108,168" fill="none" stroke="' + INK + '" stroke-width="15" stroke-linecap="round"/><path d="M164,134 Q122,150 108,168" fill="none" stroke="#b28dff" stroke-width="10" stroke-linecap="round"/>' +
+        '<circle cx="108" cy="169" r="7.5" fill="' + SKINS[m.skin] + '" stroke="' + INK + '" stroke-width="2.5"/>';
+    },
+    party: function (k, e) {
+      var a = { skin: (k.skin + 3) % SKINS.length, hair: (k.hair + 2) % HAIRS.length, style: 'bun', shirt: '#ffd166' },
+          b = { skin: (k.skin + 1) % SKINS.length, hair: (k.hair + 4) % HAIRS.length, style: 'short', shirt: '#7ed6a5' };
+      var conf = '', cc = ['#ff6f91', '#ffd166', '#6cc5ff', '#7ed6a5', '#b28dff'];
+      for (var i = 0; i < 16; i++) conf += '<rect x="' + (12 + i * 19) + '" y="' + (40 + (i * 37) % 60) + '" width="6" height="10" rx="2" fill="' + cc[i % 5] + '" transform="rotate(' + (i * 40) + ' ' + (15 + i * 19) + ' ' + (45 + (i * 37) % 60) + ')"/>';
+      return bgRoom('#ece6ff', '#d9b48f') + bunting(8) + conf +
+        kid(58, 212, 0.82, a, { arms: 'shout', hat: '#ff6f91' }) + kid(262, 212, 0.82, b, { arms: 'shout', hat: '#6cc5ff' }) +
+        kid(160, 212, 0.95, k, { arms: 'down', emotion: e });
+    },
+    sleepy: function (k, e) {
+      return bgRoom('#4a5290', '#7d6aa8') +
+        '<rect x="22" y="26" width="86" height="70" rx="6" fill="#26305e" stroke="#e8e4ff" stroke-width="5"/>' +
+        '<path d="M86,46 a16,16 0 1 0 6,26 a12,12 0 1 1 -6,-26z" fill="#ffe08a"/>' +
+        '<circle cx="40" cy="44" r="2.5" fill="#fff"/><circle cx="58" cy="74" r="2" fill="#fff"/><circle cx="48" cy="60" r="1.6" fill="#fff"/>' +
+        '<rect x="200" y="118" width="110" height="52" rx="10" fill="#8a6bd1" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<rect x="208" y="104" width="40" height="22" rx="10" fill="#fff" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<rect x="196" y="96" width="10" height="84" rx="4" fill="#c98b5f" stroke="' + INK + '" stroke-width="2.5"/>' +
+        kid(140, 212, 0.98, k, { arms: 'yawn', emotion: e, shirt: '#9fb4ff', pants: '#9fb4ff', pj: true });
+    },
+    bath: function (k, e) {
+      var tiles = '';
+      for (var x = 0; x <= 320; x += 32) tiles += '<path d="M' + x + ',0 L' + x + ',220" stroke="#b9dcef" stroke-width="2"/>';
+      for (var y = 0; y <= 220; y += 32) tiles += '<path d="M0,' + y + ' L320,' + y + '" stroke="#b9dcef" stroke-width="2"/>';
+      return '<rect width="320" height="220" fill="#e3f5ff"/>' + tiles +
+        '<path d="M120,40 q8,-10 0,-20 M150,34 q8,-10 0,-20 M180,40 q8,-10 0,-20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>' +
+        kid(160, 198, 0.95, k, { arms: 'down', emotion: e, shirt: SKINS[k.skin], pants: SKINS[k.skin] }) +
+        '<path d="M40,140 L280,140 Q280,200 230,200 L90,200 Q40,200 40,140Z" fill="#ffffff" stroke="' + INK + '" stroke-width="3"/>' +
+        '<rect x="34" y="132" width="252" height="14" rx="7" fill="#f3f7fb" stroke="' + INK + '" stroke-width="3"/>' +
+        '<rect x="80" y="198" width="10" height="16" rx="3" fill="#c0c8d2"/><rect x="230" y="198" width="10" height="16" rx="3" fill="#c0c8d2"/>' +
+        '<circle cx="96" cy="130" r="14" fill="#fff" stroke="#9ccbe8" stroke-width="2"/><circle cx="114" cy="126" r="10" fill="#fff" stroke="#9ccbe8" stroke-width="2"/>' +
+        '<circle cx="210" cy="128" r="12" fill="#fff" stroke="#9ccbe8" stroke-width="2"/><circle cx="226" cy="130" r="9" fill="#fff" stroke="#9ccbe8" stroke-width="2"/>' +
+        '<g transform="translate(252,116)"><ellipse cx="0" cy="8" rx="16" ry="10" fill="#ffd166" stroke="' + INK + '" stroke-width="2.5"/><circle cx="8" cy="-6" r="9" fill="#ffd166" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<path d="M16,-6 l9,2 l-9,4z" fill="#ff9f43"/><circle cx="10" cy="-8" r="1.8" fill="' + INK + '"/></g>';
+    },
+    balloon: function (k, e) {
+      return bgOut() + kid(110, 205, 1, k, { arms: 'reachR', emotion: e }) +
+        '<path d="M232,78 q-10,16 4,30 q12,14 -2,30" fill="none" stroke="' + INK + '" stroke-width="2"/>' +
+        '<ellipse cx="236" cy="52" rx="22" ry="27" fill="#ff5d73" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<path d="M231,79 l5,-3 l5,3z" fill="#ff5d73" stroke="' + INK + '" stroke-width="2"/><ellipse cx="228" cy="42" rx="5" ry="8" fill="#fff" opacity=".5"/>' +
+        '<path d="M270,70 l10,-8 M268,88 l12,-2" stroke="' + INK + '" stroke-width="3" stroke-linecap="round" opacity=".45"/>';
+    },
+    thunder: function (k, e) {
+      var rain = '';
+      for (var i = 0; i < 10; i++) rain += '<path d="M' + (28 + i * 14) + ',' + (40 + (i % 3) * 14) + ' l-5,12" stroke="#9fc4ff" stroke-width="2.5" stroke-linecap="round"/>';
+      return '<rect width="320" height="220" fill="#353a6a"/><rect y="168" width="320" height="52" fill="#5a4f86"/>' +
+        '<rect x="18" y="20" width="160" height="104" rx="6" fill="#1b1f3f" stroke="#d9d6f5" stroke-width="5"/>' + rain +
+        '<path d="M108,28 L84,74 L102,74 L86,116 L130,64 L110,64 L126,28Z" fill="#ffe14d" stroke="#fff3a6" stroke-width="2"/>' +
+        '<path d="M150,40 l14,-6 M150,56 l16,0" stroke="#ffe14d" stroke-width="3" stroke-linecap="round"/>' +
+        '<rect x="176" y="146" width="136" height="40" rx="8" fill="#c98b5f" stroke="' + INK + '" stroke-width="2.5"/>' +
+        kid(240, 196, 0.85, k, { arms: 'front', emotion: e, shirt: '#9fb4ff', pants: '#9fb4ff', pj: true, sit: true }) +
+        '<path d="M182,150 Q240,132 306,150 L306,188 L182,188Z" fill="#7ea8ff" stroke="' + INK + '" stroke-width="2.5"/>';
+    },
+    tower: function (k, e) {
+      var f = { skin: (k.skin + 4) % SKINS.length, hair: (k.hair + 1) % HAIRS.length, style: 'short', shirt: '#ff9f68' };
+      var bl = [['#ff6f91', 196, 120, 20], ['#ffd166', 222, 92, -25], ['#6cc5ff', 186, 154, 10], ['#7ed6a5', 214, 148, 35], ['#b28dff', 240, 130, -10], ['#ff9f68', 206, 182, 0], ['#6cc5ff', 236, 186, 12]];
+      var blocks = bl.map(function (b) { return '<rect x="' + (b[1] - 13) + '" y="' + (b[2] - 13) + '" width="26" height="26" rx="4" fill="' + b[0] + '" stroke="' + INK + '" stroke-width="2.5" transform="rotate(' + b[3] + ' ' + b[1] + ' ' + b[2] + ')"/>'; }).join('');
+      return bgRoom('#eaf7e8', '#d9b48f') + kid(85, 208, 0.95, k, { arms: 'down', emotion: e }) + blocks +
+        '<path d="M200,92 l-6,-10 M220,70 l0,-12 M246,96 l8,-8" stroke="' + INK + '" stroke-width="3" stroke-linecap="round" opacity=".45"/>' +
+        kid(284, 208, 0.72, f, { arms: 'down' }) + motion(250, 100, -1);
+    },
+    jackbox: function (k, e) {
+      var spring = 'M226,150 l-12,-8 l24,-8 l-24,-8 l24,-8 l-24,-8 l12,-6';
+      return bgRoom('#fff4d6', '#d9b48f') + kid(95, 208, 0.95, k, { arms: 'down', emotion: e }) +
+        '<path d="' + spring + '" fill="none" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>' +
+        '<circle cx="226" cy="84" r="24" fill="#fde3cf" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<path d="M206,70 L226,30 L246,70Z" fill="#ff6f91" stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round"/><circle cx="226" cy="28" r="6" fill="#ffd166" stroke="' + INK + '" stroke-width="2"/>' +
+        '<circle cx="217" cy="82" r="3" fill="' + INK + '"/><circle cx="235" cy="82" r="3" fill="' + INK + '"/><circle cx="226" cy="91" r="6" fill="#ff5d5d"/>' +
+        sw('M214,98 Q226,106 238,98', 3) +
+        '<path d="M184,64 l-12,-6 M182,84 l-14,0 M268,64 l12,-6 M270,84 l14,0" stroke="' + INK + '" stroke-width="3" stroke-linecap="round" opacity=".5"/>' +
+        '<path d="M190,150 L262,150 L266,200 L186,200Z" fill="#6cc5ff" stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+        '<path d="M190,150 L160,128 L196,132Z" fill="#9fd9ff" stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+        '<path d="M216,166 l10,14 l10,-14z" fill="#ffd166"/>';
+    },
+    trash: function (k, e) {
+      var fly = function (x, y) { return '<circle cx="' + x + '" cy="' + y + '" r="3" fill="' + INK + '"/><ellipse cx="' + (x - 3) + '" cy="' + (y - 4) + '" rx="3" ry="2" fill="#fff" opacity=".8"/><ellipse cx="' + (x + 3) + '" cy="' + (y - 4) + '" rx="3" ry="2" fill="#fff" opacity=".8"/>'; };
+      return bgOut('#d6efe6', '#b5d99a', false) + '<path d="M0,196 L320,190" stroke="#d1c3a8" stroke-width="22"/>' +
+        kid(100, 205, 1, k, { arms: 'nose', emotion: e }) +
+        '<path d="M196,112 L264,112 L256,200 L204,200Z" fill="#8f9ba8" stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+        '<path d="M214,124 L218,188 M230,124 L230,188 M246,124 L242,188" stroke="#6f7a86" stroke-width="3"/>' +
+        '<rect x="188" y="100" width="84" height="14" rx="6" fill="#a7b2be" stroke="' + INK + '" stroke-width="2.5" transform="rotate(-8 230 107)"/>' +
+        '<path d="M208,90 q-8,-10 0,-20 q8,-10 0,-20 M230,86 q-8,-10 0,-20 q8,-10 0,-20 M252,90 q-8,-10 0,-20 q8,-10 0,-20" fill="none" stroke="#6bbf59" stroke-width="4" stroke-linecap="round"/>' +
+        fly(192, 60) + fly(270, 52) + fly(282, 96) +
+        '<path d="M206,198 l-8,6 l14,0z" fill="#9ccc65"/><ellipse cx="270" cy="200" rx="10" ry="4" fill="#c49a6c"/>';
+    },
+    reading: function (k, e) {
+      return bgOut() +
+        '<rect x="44" y="70" width="22" height="104" rx="6" fill="#9a6a3f" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<circle cx="34" cy="62" r="32" fill="#6cc070"/><circle cx="76" cy="56" r="34" fill="#7fd07f"/><circle cx="56" cy="30" r="28" fill="#8fda88"/>' +
+        kid(160, 200, 1, k, { arms: 'book', emotion: e, sit: true }) +
+        '<path d="M160,146 L132,138 L132,166 L160,174 L188,166 L188,138Z" fill="#ffffff" stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+        '<path d="M160,146 L160,174" stroke="' + INK + '" stroke-width="2"/><path d="M138,148 l16,4 M138,156 l16,4 M166,152 l16,-4 M166,160 l16,-4" stroke="#b9c2cc" stroke-width="2"/>' +
+        '<path d="M236,92 q6,-8 12,0 q6,-8 12,0 q-6,8 -12,4 q-6,4 -12,-4z" fill="#ff8fb1"/>' +
+        '<circle cx="250" cy="180" r="5" fill="#fff"/><circle cx="250" cy="180" r="2" fill="#ffd166"/><circle cx="276" cy="188" r="5" fill="#fff"/><circle cx="276" cy="188" r="2" fill="#ffd166"/>';
+    },
+    swing: function (k, e) {
+      return bgOut() +
+        '<path d="M70,200 L100,30 L130,200 M190,200 L220,30 L250,200" fill="none" stroke="#c0392b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M92,32 L228,32" stroke="#c0392b" stroke-width="9" stroke-linecap="round"/>' +
+        '<path d="M140,34 L136,148 M180,34 L184,148" stroke="#6f5a46" stroke-width="3"/>' +
+        kid(160, 172, 0.84, k, { arms: 'ropes', emotion: e, sit: true }) +
+        '<rect x="128" y="154" width="64" height="9" rx="4" fill="#9a6a3f" stroke="' + INK + '" stroke-width="2.5"/>' +
+        '<path d="M106,120 q-14,22 0,44 M214,120 q14,22 0,44" fill="none" stroke="' + INK + '" stroke-width="3" stroke-linecap="round" opacity=".4"/>';
+    }
+  };
+  function sceneSVG(r, answered) {
+    var x = SIT[r.sit];
+    var look = { skin: r.skin, hair: r.hair, style: r.style, shirt: SHIRTS[r.shirt || 0] };
+    return '<svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" focusable="false" preserveAspectRatio="xMidYMid slice">' +
+      SCENES[x.id](look, answered ? x.emo : 'neutral') + '</svg>';
+  }
+
   /* ---------- Helpers ---------- */
   /* ---------- Randomness (unpredictable order; no fixed sequences) ----------
      - crypto-seeded random numbers when available
@@ -501,6 +837,8 @@
   // feelings not asked recently/often. The right answer's slot is randomized by placeTarget().
   var asked = { count: {}, last: {}, recent: randMem.last ? [randMem.last] : [] };
   function makeRound() {
+    var lv = LEVELS[state.settings.level];
+    if (lv.kind === 'sit') return makeSitRound(lv.n);
     var pool = state.settings.emotions;
     var prev = state.round;
     var n0 = prev ? prev.n + 1 : 1, r = asked.recent, last = r[r.length - 1];
@@ -519,10 +857,11 @@
     randMem.last = emotion; saveRandMem();
     var skin = rand(SKINS.length);
     if (prev && skin === prev.skin) skin = (skin + 1 + rand(SKINS.length - 1)) % SKINS.length;
-    var n = Math.min(state.settings.count, pool.length);
+    var n = Math.min(lv.n, pool.length);
     var others = shuffle(pool.filter(function (id) { return id !== emotion; })).slice(0, n - 1); // random distractors
     return {
       n: prev ? prev.n + 1 : 1,
+      kind: 'face',
       emotion: emotion,
       skin: skin,
       hair: rand(HAIRS.length),
@@ -531,20 +870,78 @@
     };
   }
 
+  /* Situations: random order (never the same one twice in a row, favouring ones not seen
+     recently/often). A missed situation comes back after a random 2–4 rounds ("Let's try
+     again"); once it is answered right it comes back once more a bit later (4–6 rounds). */
+  var sitAsked = { count: {}, last: {}, recent: randMem.lastSit ? [randMem.lastSit] : [] };
+  var missed = {}; // id -> { due: round number, step: 0 | 1 }
+  function makeSitRound(nOpts) {
+    var prev = state.round, n0 = prev ? prev.n + 1 : 1;
+    var ids = SITUATIONS.map(function (x) { return x.id; });
+    var r = sitAsked.recent, last = r[r.length - 1];
+    var due = ids.filter(function (id) { return missed[id] && missed[id].due <= n0 && id !== last; })
+      .sort(function (a, b) { return missed[a].due - missed[b].due; });
+    var id, retry = false;
+    if (due.length) { id = due[0]; retry = true; }
+    else {
+      var choices = ids.filter(function (x) { return x !== last && !missed[x]; }); // missed ones wait for their turn
+      if (!choices.length) choices = ids.filter(function (x) { return x !== last; });
+      var minC = Math.min.apply(null, choices.map(function (x) { return sitAsked.count[x] || 0; }));
+      id = pickWeighted(choices, function (x) {
+        var since = sitAsked.last[x] == null ? ids.length : n0 - sitAsked.last[x];
+        return Math.min(since, ids.length) / (1 + (sitAsked.count[x] || 0) - minC);
+      });
+    }
+    sitAsked.count[id] = (sitAsked.count[id] || 0) + 1;
+    sitAsked.last[id] = n0;
+    r.push(id); if (r.length > 4) r.shift();
+    randMem.lastSit = id; saveRandMem();
+    var x = SIT[id];
+    var allowed = EMOTIONS.map(function (m) { return m.id; })
+      .filter(function (e) { return e !== x.emo && x.avoid.indexOf(e) < 0; }); // clearly wrong only
+    var others = shuffle(allowed).slice(0, nOpts - 1);
+    var skin = rand(SKINS.length);
+    if (prev && skin === prev.skin) skin = (skin + 1 + rand(SKINS.length - 1)) % SKINS.length;
+    var styles = x.g === 'f' ? ['long', 'bun'] : ['short', 'curly'];
+    return {
+      n: n0, kind: 'sit', sit: id, retry: retry,
+      emotion: x.emo,
+      skin: skin, hair: rand(HAIRS.length), style: styles[rand(2)], shirt: rand(SHIRTS.length),
+      options: placeTarget(x.emo, others)
+    };
+  }
+  function noteSitResult(r, correct) {
+    if (!r || r.kind !== 'sit') return;
+    var m = missed[r.sit];
+    if (!correct) missed[r.sit] = { due: r.n + 2 + randInt(3), step: 0 };        // back in 2–4 rounds
+    else if (m && m.step === 0 && r.retry) missed[r.sit] = { due: r.n + 4 + randInt(3), step: 1 }; // once more, later
+    else if (m && r.retry) delete missed[r.sit];
+  }
+  // Read the round aloud: the question (faces) or the situation sentence (+ "Let's try again" first on a retry).
+  function sayRound(btn, withRetryCue) {
+    var r = state.round; if (!r) return;
+    btn = btn || $('speakPrompt');
+    if (r.kind !== 'sit') { speak(t('question'), btn, 'question'); return; }
+    var x = SIT[r.sit], say = t('sitSay')(x);
+    if (withRetryCue && r.retry) speak(t('tryAgain'), btn, 'try_again', chain(say, btn, 'sit_' + x.id));
+    else speak(say, btn, 'sit_' + x.id);
+  }
+
   function newRound(opts) {
     clearTimer();
     state.round = makeRound();
     state.answer = null;
     render();
     emit('round', state.round);
-    if (opts && opts.say) speak(t('question'), $('speakPrompt'), 'question');
+    if (opts && opts.say) sayRound(null, true);
   }
 
   function answer(id) {
     if (state.answer || state.celebrating || !state.round) return;
-    var m = EMO[state.round.emotion];
+    var m = EMO[state.round.emotion], r0 = state.round;
     var correct = id === m.id;
     state.answer = { pick: id, correct: correct };
+    noteSitResult(r0, correct);
     if (correct) {
       state.stars = Math.min(GOAL, state.stars + 1);
       state.justFilled = state.stars - 1;
@@ -555,13 +952,31 @@
     emit('answer', state.answer);
 
     // Audio: synchronous, inside the tap.
-    if (correct) { speak(t('yes')(m), $('speakFeedback'), 'yes_' + m.id); chime(false, 0.15); }
-    else { softCue(); speak(t('is')(m), $('speakFeedback'), 'is_' + m.id); }
+    sayFeedback();
+    if (correct) chime(false, 0.15); else softCue();
 
     clearTimer();
     if (correct && state.stars >= GOAL) timer = setTimeout(showCelebration, 2800);
     else timer = setTimeout(function () { newRound({ say: true }); }, correct ? 4200 : 5000); // "Next" skips the wait
     el.nextBtn.focus({ preventScroll: true });
+  }
+
+  function sayFeedback(btn) {
+    var r = state.round, a = state.answer; if (!r || !a) return;
+    btn = btn || $('speakFeedback');
+    if (r.kind === 'sit') {
+      var x = SIT[r.sit];
+      if (a.correct) speak(t('sitYes')(x), btn, 'sityes_' + x.id);
+      else speak(t('sitIs')(x), btn, 'sitis_' + x.id);
+      return;
+    }
+    var m = EMO[r.emotion];
+    if (a.correct) speak(t('yes')(m), btn, 'yes_' + m.id);
+    else speak(t('is')(m), btn, 'is_' + m.id);
+  }
+  function celebrateSay(btn) {
+    if (state.settings.level < MAX_LEVEL) speak(t('levelUpSay'), btn, 'level_up');
+    else speak(t('celebrateSay'), btn, 'celebrate');
   }
 
   function next() {
@@ -579,8 +994,20 @@
     render();
     emit('celebrate', null);
     chime(true, 0);
-    setTimeout(function () { if (state.celebrating) speak(t('celebrateSay'), $('speakCelebrate'), 'celebrate'); }, 400);
-    el.playAgain.focus({ preventScroll: true });
+    setTimeout(function () { if (state.celebrating) celebrateSay($('speakCelebrate')); }, 400);
+    (state.settings.level < MAX_LEVEL ? el.nextLevel : el.playAgain).focus({ preventScroll: true });
+  }
+  // Celebration → "Next level" (or "Repeat this level" = closeCelebration).
+  function nextLevel() {
+    state.celebrating = false;
+    state.stars = 0; persistStars();
+    state.settings.level = Math.min(MAX_LEVEL, state.settings.level + 1);
+    state.settings = cleanSettings(state.settings);
+    persistSettings();
+    emit('level', state.settings.level);
+    newRound({ say: true });
+    var first = el.answers.querySelector('.answer');
+    if (first) first.focus({ preventScroll: true });
   }
   function closeCelebration() {
     state.celebrating = false;
@@ -596,12 +1023,14 @@
     emit('resetStars', null);
   }
   function setSetting(key, value) {
+    if (key === 'count') { key = 'level'; value = Math.max(1, Math.min(3, Number(value) - 1)); } // old API: 2/3/4 faces
+    if (key === 'level' && Number(value) !== state.settings.level) { state.stars = 0; persistStars(); }
     state.settings[key] = value;
     state.settings = cleanSettings(state.settings);
     persistSettings();
     if (key === 'sound' && !value) stopSpeech();
     emit('setting', { key: key, value: value });
-    if (key === 'count' || key === 'emotions') newRound(); else render();
+    if (key === 'level' || key === 'emotions') newRound(); else render();
   }
 
   /* ---------- Render: everything from `state` ---------- */
@@ -633,20 +1062,29 @@
     el.themeIcon.textContent = THEME_ICON[state.theme];
     el.themeBtn.setAttribute('aria-label', t('theme')[state.theme]);
     el.themeBtn.title = t('theme')[state.theme];
-    el.faceBtn.setAttribute('aria-label', t('faceBtn'));
+    var isSit = !!(r && r.kind === 'sit'), lv = s.level;
+    el.faceBtn.setAttribute('aria-label', isSit ? t('sceneBtn') : t('faceBtn'));
+    el.levelNum.textContent = t('levelLabel')(lv);
+    el.levelMode.textContent = t('kind_' + LEVELS[lv].kind);
+    el.promptText.textContent = isSit ? t('sitSay')(SIT[r.sit]) : t('question');
+    el.promptText.classList.toggle('sit', isSit);
+    el.faceHint.textContent = isSit ? t('sceneHint') : t('faceHint');
 
     if (r) {
-      // Face (redrawn only when the round changes)
-      var fk = r.n + ':' + r.emotion + ':' + r.skin + ':' + r.hair + ':' + r.style;
-      if (drawn.faceKey !== fk) { el.face.innerHTML = faceSVG(r); drawn.faceKey = fk; }
+      // Face or scene (redrawn only when the round changes; a scene also when it is answered)
+      var fk = r.n + ':' + r.emotion + ':' + r.skin + ':' + r.hair + ':' + r.style + (isSit ? ':' + r.sit + ':' + !!a : '');
+      if (drawn.faceKey !== fk) { el.face.innerHTML = isSit ? sceneSVG(r, !!a) : faceSVG(r); drawn.faceKey = fk; }
+      el.faceWrap.classList.toggle('scene', isSit);
       el.faceWrap.classList.toggle('glow', !!(a && a.correct));
       el.faceWrap.dataset.emotion = r.emotion;
+      if (isSit) el.faceWrap.dataset.sit = r.sit; else delete el.faceWrap.dataset.sit;
 
       // Answer buttons (rebuilt only when round or language changes; classes always updated)
-      var ak = r.n + ':' + L + ':' + r.options.join(',');
+      var ak = r.n + ':' + L + ':' + r.kind + ':' + r.options.join(',');
       if (drawn.answersKey !== ak) {
         el.answers.innerHTML = '';
         el.answers.dataset.count = String(r.options.length);
+        el.answers.classList.toggle('sit', isSit);
         r.options.forEach(function (id, idx) {
           var b = document.createElement('button');
           b.type = 'button';
@@ -655,7 +1093,10 @@
           b.setAttribute('aria-keyshortcuts', String(idx + 1));
           b.innerHTML = '<span class="answer-num" aria-hidden="true"></span><span class="answer-icon" aria-hidden="true"></span><span class="answer-label"></span><span class="answer-mark" aria-hidden="true"></span>';
           b.children[0].textContent = L === 'fa' ? toFaDigits(idx + 1) : String(idx + 1);
-          b.children[1].textContent = EMO[id].e;
+          if (isSit) { // a small cartoon face showing the feeling
+            b.children[1].className = 'answer-icon answer-face';
+            b.children[1].innerHTML = faceSVG({ emotion: id, skin: r.skin, hair: r.hair, style: r.style });
+          } else b.children[1].textContent = EMO[id].e;
           b.children[2].textContent = emoName(id);
           b.addEventListener('click', function () { answer(id); });
           el.answers.appendChild(b);
@@ -680,7 +1121,8 @@
         el.feedback.hidden = false;
         el.feedback.classList.toggle('is-correct', a.correct);
         el.feedbackEmoji.textContent = a.correct ? '⭐' : m.e;
-        el.feedbackText.textContent = a.correct ? t('yes')(m) : t('is')(m);
+        el.feedbackText.textContent = isSit ? (a.correct ? t('sitYes')(SIT[r.sit]) : t('sitIs')(SIT[r.sit]))
+                                            : (a.correct ? t('yes')(m) : t('is')(m));
       } else {
         el.feedback.hidden = true;
       }
@@ -700,6 +1142,12 @@
 
     // Celebration
     el.celebrate.hidden = !state.celebrating;
+    var more = lv < MAX_LEVEL;
+    el.levelUpText.textContent = more ? t('levelUp') + ' ' + t('levelLabel')(lv + 1) + ' · ' + t('kind_' + LEVELS[lv + 1].kind) : t('allDone');
+    el.nextLevel.hidden = !more;
+    el.nextLevelText.textContent = t('nextLevel');
+    el.playAgainText.textContent = more ? t('repeatLevel') : t('playAgain');
+    el.playAgain.classList.toggle('primary', !more);
     if (state.celebrating) el.main.setAttribute('aria-hidden', 'true'); else el.main.removeAttribute('aria-hidden');
 
     renderSettings();
@@ -711,7 +1159,7 @@
     el.sound.checked = !!s.sound;
     el.motion.checked = !!s.motion;
     el.errorless.checked = !!s.errorless;
-    el.form.querySelectorAll('input[name="count"]').forEach(function (r) { r.checked = Number(r.value) === s.count; });
+    el.form.querySelectorAll('input[name="level"]').forEach(function (r) { r.checked = Number(r.value) === s.level; });
     if (el.emoChecks.dataset.lang !== L) {
       el.emoChecks.innerHTML = '';
       EMOTIONS.forEach(function (m) {
@@ -744,20 +1192,19 @@
     saveRaw('hfb-theme', state.theme);
     render();
   });
-  $('speakPrompt').addEventListener('click', function () { speak(t('question'), this, 'question'); });
+  $('speakPrompt').addEventListener('click', function () { sayRound(this, false); });
   el.faceBtn.addEventListener('click', function () {
     if (!state.round) return;
+    if (state.round.kind === 'sit') { sayRound(el.faceBtn, false); emit('sceneTap', state.round.sit); return; }
     var id = state.round.emotion;
     speak(emoName(id), el.faceBtn, 'name_' + id);
     emit('faceTap', id);
   });
   $('speakFeedback').addEventListener('click', function () {
-    if (!state.answer) return;
-    var m = EMO[state.round.emotion];
-    if (state.answer.correct) speak(t('yes')(m), this, 'yes_' + m.id);
-    else speak(t('is')(m), this, 'is_' + m.id);
+    sayFeedback(this);
   });
-  $('speakCelebrate').addEventListener('click', function () { speak(t('celebrateSay'), this, 'celebrate'); });
+  $('speakCelebrate').addEventListener('click', function () { celebrateSay(this); });
+  el.nextLevel.addEventListener('click', nextLevel);
   el.nextBtn.addEventListener('click', next);
   el.playAgain.addEventListener('click', closeCelebration);
 
@@ -774,7 +1221,7 @@
 
   el.form.addEventListener('change', function (e) {
     var tg = e.target;
-    if (tg.name === 'count') setSetting('count', Number(tg.value));
+    if (tg.name === 'level') setSetting('level', Number(tg.value));
     else if (tg.name === 'emo') {
       var on = Array.prototype.filter.call(el.emoChecks.querySelectorAll('input[name="emo"]'), function (c) { return c.checked; })
         .map(function (c) { return c.value; });
@@ -794,7 +1241,7 @@
   // Keyboard: 1–4 (or Persian ۱–۴) pick an answer; Escape closes the celebration.
   document.addEventListener('keydown', function (e) {
     if (el.panel.open || e.altKey || e.ctrlKey || e.metaKey) return;
-    if (state.celebrating) { if (e.key === 'Escape') closeCelebration(); return; }
+    if (state.celebrating) { if (e.key === 'Escape') closeCelebration(); return; } // Escape = repeat this level
     var k = e.key.replace(/[۰-۹]/g, function (d) { return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); });
     var n = parseInt(k, 10);
     if (state.round && !state.answer && n >= 1 && n <= state.round.options.length) {
@@ -821,8 +1268,12 @@
     on: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
     render: render,
     actions: { newRound: newRound, answer: answer, next: next, showCelebration: showCelebration,
-               closeCelebration: closeCelebration, resetStars: resetStars, setSetting: setSetting },
+               closeCelebration: closeCelebration, nextLevel: nextLevel, resetStars: resetStars, setSetting: setSetting },
     faceSVG: faceSVG, // draw any face: faceSVG({ emotion, skin, hair, style })
+    LEVELS: LEVELS.slice(1),
+    SITUATIONS: SITUATIONS.map(function (x) { return { id: x.id, emo: x.emo, avoid: x.avoid.slice(), fa: x.fa, en: x.en }; }),
+    getMissed: function () { return JSON.parse(JSON.stringify(missed)); },
+    sceneSVG: function (r, answered) { return sceneSVG(r, answered); }, // r = { sit, skin, hair, style, shirt }
     EMOTIONS: EMOTIONS.map(function (m) { return m.id; })
   };
 

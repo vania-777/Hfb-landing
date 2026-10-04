@@ -577,3 +577,42 @@ html:not(.motion) *, html:not(.motion) *::before, html:not(.motion) *::after {
   .prompt { padding: 10px 14px; }
   .star-chart { padding: 10px 14px 12px; }
 }
+
+/* ---------- Levels ---------- */
+.level-chip {
+  margin: -6px auto 0;
+  display: inline-flex; align-self: center; align-items: center; gap: 8px;
+  padding: 4px 14px; border-radius: 999px;
+  border: 1px solid var(--glass-border); background: var(--glass);
+  font-size: .98rem; font-weight: 700; color: var(--text-soft);
+}
+.level-chip #levelNum { color: var(--text); }
+.level-sep { opacity: .6; }
+.seg-levels { flex-wrap: wrap; }
+.seg-levels label { flex: 1 0 12%; }
+.level-up { margin: -8px 0 18px; font-size: clamp(1.2rem, 4.8vw, 1.5rem); font-weight: 800; color: var(--text); }
+.level-up[hidden] { display: none; }
+
+/* ---------- Situation levels: a scene instead of a face; option buttons show small faces ---------- */
+.face-wrap.scene .face-btn {
+  width: min(92vw, 520px, calc(42vh * 320 / 220));
+  min-width: 0;
+  aspect-ratio: 320 / 220;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--glass);
+}
+.face-wrap.scene .face-btn .face svg { border-radius: inherit; }
+.face-wrap.scene.glow .face-btn {
+  box-shadow: 0 0 0 4px var(--accent-1), 0 0 0 9px color-mix(in srgb, #ffd166 40%, transparent), var(--shadow);
+}
+.answer-face { width: 52px; height: 52px; flex: none; display: block; }
+.answer-face svg { display: block; width: 100%; height: 100%; }
+.answers.sit .answer { gap: 8px; padding: 10px 12px; }
+.answers.sit[data-count="4"] .answer { flex-direction: column; gap: 4px; }
+.prompt-text.sit { font-size: clamp(1.15rem, 4.4vw, 1.6rem); line-height: 1.5; }
+@media (max-width: 480px) {
+  .answer-face { width: 46px; height: 46px; }
+  .answers.sit .answer { min-height: 70px; padding: 8px 10px; }
+}

@@ -19,7 +19,7 @@
     })();
   </script>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles.css?v=20261004-2">
+  <link rel="stylesheet" href="styles.css?v=20261004-3">
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="skip">پرش به بازی</a>
@@ -47,9 +47,10 @@
 
   <main id="main" class="stage" tabindex="-1">
     <h1 class="game-title"><span data-i18n="title">احساس‌ها چیه؟</span></h1>
+    <p class="level-chip" id="levelChip"><span id="levelNum">مرحلهٔ ۱</span><span class="level-sep" aria-hidden="true">·</span><span id="levelMode">چهره‌ها</span></p>
 
     <section class="prompt glass" aria-labelledby="promptText">
-      <p id="promptText" class="prompt-text" data-i18n="question">این چه حسیه؟</p>
+      <p id="promptText" class="prompt-text">این چه حسیه؟</p>
       <button type="button" class="speak-btn" id="speakPrompt" data-i18n-aria="readAloud" aria-label="بلند خواندن">
         <span aria-hidden="true">🔊</span>
       </button>
@@ -59,7 +60,7 @@
       <button type="button" id="faceBtn" class="face-btn" aria-describedby="faceHint">
         <span id="face" class="face" aria-hidden="true"><!-- SVG face rendered by app.js --></span>
       </button>
-      <p id="faceHint" class="face-hint" data-i18n="faceHint">روی چهره بزن تا اسم حس رو بشنوی.</p>
+      <p id="faceHint" class="face-hint">روی چهره بزن تا اسم حس رو بشنوی.</p>
     </section>
 
     <section id="answers" class="answers" data-count="2" role="group" aria-labelledby="promptText">
@@ -94,11 +95,13 @@
       </div>
       <h2 id="celebrateTitle" class="celebrate-title" data-i18n="celebrateTitle">آفرین! ۵ ستاره!</h2>
       <p class="celebrate-sub" data-i18n="celebrateSub">حس‌ها رو خیلی خوب شناختی.</p>
+      <p class="level-up" id="levelUpText">مرحلهٔ بعد!</p>
       <div class="celebrate-actions">
         <button type="button" class="speak-btn" id="speakCelebrate" data-i18n-aria="readAloud" aria-label="بلند خواندن">
           <span aria-hidden="true">🔊</span>
         </button>
-        <button type="button" id="playAgainBtn" class="pill-btn primary"><span data-i18n="playAgain">دوباره بازی کنیم</span></button>
+        <button type="button" id="nextLevelBtn" class="pill-btn primary"><span id="nextLevelText">مرحلهٔ بعد</span> <span aria-hidden="true" class="dir-arrow">›</span></button>
+        <button type="button" id="playAgainBtn" class="pill-btn"><span id="playAgainText">دوباره همین مرحله</span></button>
       </div>
     </div>
   </div>
@@ -112,12 +115,16 @@
       </div>
 
       <fieldset class="field">
-        <legend data-i18n="optCount">تعداد گزینه‌ها</legend>
-        <div class="seg">
-          <label><input type="radio" name="count" value="2" checked> <span>2</span></label>
-          <label><input type="radio" name="count" value="3"> <span>3</span></label>
-          <label><input type="radio" name="count" value="4"> <span>4</span></label>
+        <legend data-i18n="levelLegend">مرحله</legend>
+        <div class="seg seg-levels">
+          <label><input type="radio" name="level" value="1" checked> <span>1</span></label>
+          <label><input type="radio" name="level" value="2"> <span>2</span></label>
+          <label><input type="radio" name="level" value="3"> <span>3</span></label>
+          <label><input type="radio" name="level" value="4"> <span>4</span></label>
+          <label><input type="radio" name="level" value="5"> <span>5</span></label>
+          <label><input type="radio" name="level" value="6"> <span>6</span></label>
         </div>
+        <p class="hint" data-i18n="levelHint">۱ تا ۳: چهره‌ها (۲، ۳، ۴ گزینه) · ۴ تا ۶: موقعیت‌ها، کودک حسِ آدمِ توی تصویر را پیدا می‌کند (۲، ۳، ۴ گزینه). با ۵ ستاره، مرحلهٔ بعد باز می‌شود.</p>
       </fieldset>
 
       <fieldset class="field">
@@ -157,6 +164,6 @@
     <p lang="en" dir="ltr">Prototype — not a clinical tool.</p>
   </footer>
 
-  <script src="app.js?v=20261004-2"></script>
+  <script src="app.js?v=20261004-3"></script>
 </body>
 </html>
