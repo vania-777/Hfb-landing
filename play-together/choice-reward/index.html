@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>انتخاب و پاداش · Choice &amp; Reward — HFB Play Together</title>
+  <meta name="description" content="Choice &amp; Reward — a calm bilingual choice-making game for an adult and child to play together. Prototype.">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    /* Apply saved theme + language before first paint to avoid a flash. */
+    (function () {
+      try {
+        var t = localStorage.getItem('hfb-theme');
+        if (t === 'dark' || t === 'dim' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+        var l = localStorage.getItem('hfb-lang');
+        if (l === 'en') { document.documentElement.lang = 'en'; document.documentElement.dir = 'ltr'; }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">پرش به بازی</a>
+
+  <header class="site-header" role="banner">
+    <a class="brand" href="../../index.html" data-i18n-aria="homeLink" aria-label="صفحهٔ اصلی HFB">
+      <img class="brand-logo" src="../../assets/logo-hfb-original@1x.png"
+           srcset="../../assets/logo-hfb-original@1x.png 1x, ../../assets/logo-hfb-original@2x.png 2x"
+           alt="High Functioning Brains (HFB) logo" width="36" height="36"
+           onerror="this.hidden=true">
+      <span class="brand-text" dir="ltr">HFB · Play Together</span>
+    </a>
+    <div class="header-tools">
+      <button type="button" id="langBtn" class="tool-btn" aria-label="Switch to English">
+        <span aria-hidden="true" id="langBtnText">EN</span>
+      </button>
+      <button type="button" id="themeBtn" class="tool-btn" aria-label="پوسته: تیره">
+        <span aria-hidden="true" id="themeIcon">🌙</span>
+      </button>
+      <button type="button" id="adultBtn" class="tool-btn" aria-haspopup="dialog" aria-controls="adultPanel" aria-label="پنل بزرگسال">
+        <span aria-hidden="true">⚙️</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="stage" tabindex="-1">
+    <h1 class="game-title">
+      <span data-i18n="title">انتخاب و پاداش</span>
+    </h1>
+
+    <section class="prompt glass" aria-labelledby="promptText">
+      <p id="promptText" class="prompt-text" data-i18n="prompt">کدوم رو می‌خوای؟</p>
+      <button type="button" class="speak-btn" id="speakPrompt" data-i18n-aria="readAloud" aria-label="بلند خواندن">
+        <span aria-hidden="true">🔊</span>
+      </button>
+    </section>
+
+    <section id="choices" class="choices" data-count="2" role="group" aria-labelledby="promptText">
+      <!-- cards rendered by app.js -->
+    </section>
+
+    <section class="feedback" aria-live="polite" aria-atomic="true">
+      <div id="feedback" class="feedback-inner glass" hidden>
+        <span id="feedbackEmoji" class="feedback-emoji" aria-hidden="true"></span>
+        <p id="feedbackText" class="feedback-text"></p>
+        <button type="button" class="speak-btn" id="speakFeedback" data-i18n-aria="readAloud" aria-label="بلند خواندن">
+          <span aria-hidden="true">🔊</span>
+        </button>
+        <button type="button" id="nextBtn" class="pill-btn primary">
+          <span data-i18n="next">بعدی</span> <span aria-hidden="true" class="dir-arrow">›</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="star-chart glass" aria-labelledby="starLabel">
+      <h2 id="starLabel" class="star-label"><span data-i18n="stars">ستاره‌های من</span></h2>
+      <ol id="stars" class="stars" aria-describedby="starCount"></ol>
+      <p id="starCount" class="star-count"></p>
+    </section>
+  </main>
+
+  <!-- Celebration screen -->
+  <div id="celebrate" class="celebrate" role="dialog" aria-modal="true" aria-labelledby="celebrateTitle" hidden>
+    <div class="celebrate-card glass">
+      <div class="celebrate-stars" aria-hidden="true">
+        <span>⭐</span><span>⭐</span><span>🌟</span><span>⭐</span><span>⭐</span>
+      </div>
+      <h2 id="celebrateTitle" class="celebrate-title" data-i18n="celebrateTitle">آفرین! ۵ ستاره!</h2>
+      <p class="celebrate-sub" data-i18n="celebrateSub">انتخاب‌های خیلی خوبی کردی.</p>
+      <div class="celebrate-actions">
+        <button type="button" class="speak-btn" id="speakCelebrate" data-i18n-aria="readAloud" aria-label="بلند خواندن">
+          <span aria-hidden="true">🔊</span>
+        </button>
+        <button type="button" id="playAgainBtn" class="pill-btn primary"><span data-i18n="playAgain">دوباره بازی کنیم</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adult panel -->
+  <dialog id="adultPanel" class="adult-panel glass" aria-labelledby="adultTitle">
+    <form method="dialog" class="adult-form" id="adultForm">
+      <div class="panel-head">
+        <h2 id="adultTitle" data-i18n="adultTitle">پنل بزرگسال</h2>
+        <button type="submit" class="tool-btn" value="close" data-i18n-aria="close" aria-label="بستن"><span aria-hidden="true">✕</span></button>
+      </div>
+
+      <fieldset class="field">
+        <legend data-i18n="optCount">تعداد گزینه‌ها</legend>
+        <div class="seg">
+          <label><input type="radio" name="count" value="2" checked> <span>2</span></label>
+          <label><input type="radio" name="count" value="3"> <span>3</span></label>
+          <label><input type="radio" name="count" value="4"> <span>4</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend data-i18n="categories">دسته‌ها</legend>
+        <div class="checks">
+          <label><input type="checkbox" name="cat" value="food" checked> <span aria-hidden="true">🍎</span> <span data-i18n="cat_food">خوراکی</span></label>
+          <label><input type="checkbox" name="cat" value="toys" checked> <span aria-hidden="true">🧸</span> <span data-i18n="cat_toys">اسباب‌بازی</span></label>
+          <label><input type="checkbox" name="cat" value="activities" checked> <span aria-hidden="true">🎵</span> <span data-i18n="cat_activities">فعالیت</span></label>
+        </div>
+        <p class="hint" id="catHint" data-i18n="catHint">حداقل یک دسته باید روشن بماند.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend data-i18n="comfort">صدا و حرکت</legend>
+        <label class="switch"><input type="checkbox" id="soundToggle" checked> <span class="switch-ui" aria-hidden="true"></span> <span data-i18n="sound">صدا و بلندخوانی</span></label>
+        <label class="switch"><input type="checkbox" id="motionToggle" checked> <span class="switch-ui" aria-hidden="true"></span> <span data-i18n="motion">انیمیشن ملایم</span></label>
+        <p class="hint" id="voiceStatus"></p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend data-i18n="starsLegend">ستاره‌ها</legend>
+        <button type="button" id="resetStars" class="pill-btn"><span aria-hidden="true">↺</span> <span data-i18n="resetStars">صفر کردن ستاره‌ها</span></button>
+      </fieldset>
+
+      <div class="together glass-soft">
+        <h3><span aria-hidden="true">🤝</span> <span data-i18n="togetherTitle">حالت با هم</span></h3>
+        <p data-i18n="togetherText">برای بازی از راه دور، در تماس تصویری صفحه را به اشتراک بگذارید (همراه با صدای رایانه). کودک گزینه را نشان می‌دهد یا می‌گوید و شما برایش لمس می‌کنید؛ یا کنترل را به او بدهید. اتصال آنلاین لازم نیست.</p>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="site-footer" role="contentinfo">
+    <p lang="fa" dir="rtl">نمونهٔ اولیه — ابزار بالینی نیست.</p>
+    <p lang="en" dir="ltr">Prototype — not a clinical tool.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
