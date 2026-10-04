@@ -18,7 +18,7 @@
     })();
   </script>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles.css?v=20261004-2">
+  <link rel="stylesheet" href="styles.css?v=20261004-3">
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="skip">پرش به بازی</a>
@@ -49,6 +49,31 @@
       <span data-i18n="title">انتخاب و پاداش</span>
     </h1>
 
+    <!-- Live two-player team bar (shown only in live mode) -->
+    <section id="teamBar" class="team-bar glass" hidden>
+      <div class="team-pair" role="img" data-i18n-aria="teamAria" aria-label="تیم ما: بزرگسال و کودک، با هم">
+        <span class="avatar" id="avatarAdult"><span class="avatar-face" aria-hidden="true">🧑‍🏫</span><span class="mic-dot" id="micDotAdult"></span></span>
+        <span class="avatar" id="avatarChild"><span class="avatar-face" aria-hidden="true">🧒</span><span class="mic-dot" id="micDotChild"></span></span>
+      </div>
+      <p id="teamStatus" class="team-status" role="status" aria-live="polite"></p>
+      <div id="shareBox" class="share-box" hidden>
+        <label for="shareLink" class="share-label" data-i18n="shareLabel">این لینک را روی دستگاه کودک باز کنید:</label>
+        <div class="share-row">
+          <input id="shareLink" class="share-link" type="text" readonly dir="ltr">
+          <button type="button" id="copyLink" class="pill-btn"><span data-i18n="copy">کپی لینک</span></button>
+        </div>
+      </div>
+      <p id="micNote" class="team-note" hidden></p>
+      <div class="team-actions">
+        <button type="button" id="hearBtn" class="pill-btn" hidden><span aria-hidden="true">🔊</span> <span data-i18n="hearBtn">بزن تا صدای هم‌تیمی را بشنوی</span></button>
+        <button type="button" id="micBtn" class="mic-btn" aria-pressed="false" hidden>
+          <span class="mic-icon" id="micIcon" aria-hidden="true">🎙️</span>
+          <span class="mic-text" id="micText"></span>
+        </button>
+      </div>
+    </section>
+    <audio id="remoteAudio" playsinline autoplay></audio>
+
     <section class="prompt glass" aria-labelledby="promptText">
       <p id="promptText" class="prompt-text" data-i18n="prompt">کدوم رو می‌خوای؟</p>
       <button type="button" class="speak-btn" id="speakPrompt" data-i18n-aria="readAloud" aria-label="بلند خواندن">
@@ -64,6 +89,7 @@
       <div id="feedback" class="feedback-inner glass" hidden>
         <span id="feedbackEmoji" class="feedback-emoji" aria-hidden="true"></span>
         <p id="feedbackText" class="feedback-text"></p>
+        <p id="feedbackTeam" class="feedback-team" data-i18n="teamStar">آفرین به تیم ما! یه ستاره گرفتیم.</p>
         <button type="button" class="speak-btn" id="speakFeedback" data-i18n-aria="readAloud" aria-label="بلند خواندن">
           <span aria-hidden="true">🔊</span>
         </button>
@@ -74,7 +100,7 @@
     </section>
 
     <section class="star-chart glass" aria-labelledby="starLabel">
-      <h2 id="starLabel" class="star-label"><span data-i18n="stars">ستاره‌های من</span></h2>
+      <h2 id="starLabel" class="star-label"><span class="team-avatars" aria-hidden="true"><span class="avatar-mini">🧑‍🏫</span><span class="avatar-mini">🧒</span></span> <span data-i18n="stars">ستاره‌های تیم ما</span></h2>
       <ol id="stars" class="stars" aria-describedby="starCount"></ol>
       <p id="starCount" class="star-count"></p>
     </section>
@@ -83,17 +109,30 @@
   <!-- Celebration screen -->
   <div id="celebrate" class="celebrate" role="dialog" aria-modal="true" aria-labelledby="celebrateTitle" hidden>
     <div class="celebrate-card glass">
+      <div class="team-avatars big" aria-hidden="true"><span class="avatar-mini">🧑‍🏫</span><span class="avatar-mini">🧒</span></div>
       <div class="celebrate-stars" aria-hidden="true">
         <span>⭐</span><span>⭐</span><span>🌟</span><span>⭐</span><span>⭐</span>
       </div>
-      <h2 id="celebrateTitle" class="celebrate-title" data-i18n="celebrateTitle">آفرین! ۵ ستاره!</h2>
-      <p class="celebrate-sub" data-i18n="celebrateSub">انتخاب‌های خیلی خوبی کردی.</p>
+      <h2 id="celebrateTitle" class="celebrate-title" data-i18n="celebrateTitle">آفرین به تیم ما! ۵ ستاره!</h2>
+      <p class="celebrate-sub" data-i18n="celebrateSub">با هم انتخاب‌های خیلی خوبی کردیم.</p>
       <div class="celebrate-actions">
         <button type="button" class="speak-btn" id="speakCelebrate" data-i18n-aria="readAloud" aria-label="بلند خواندن">
           <span aria-hidden="true">🔊</span>
         </button>
         <button type="button" id="playAgainBtn" class="pill-btn primary"><span data-i18n="playAgain">دوباره بازی کنیم</span></button>
       </div>
+    </div>
+  </div>
+
+  <!-- Live mode, child side: "Tap to start" (the user gesture that unlocks audio + asks for the mic) -->
+  <div id="startOverlay" class="celebrate start-overlay" role="dialog" aria-modal="true" aria-labelledby="startTitle" hidden>
+    <div class="celebrate-card glass">
+      <div class="team-avatars big" aria-hidden="true"><span class="avatar-mini">🧑‍🏫</span><span class="avatar-mini">🧒</span></div>
+      <h2 id="startTitle" class="celebrate-title" data-i18n="tapStartTitle">بازی تیمی با صدا</h2>
+      <div class="celebrate-actions">
+        <button type="button" id="startBtn" class="pill-btn primary start-btn"><span aria-hidden="true">▶</span> <span data-i18n="tapStart">بزن تا شروع کنیم</span></button>
+      </div>
+      <p class="hint start-hint" data-i18n="tapStartHint">برای صحبت با هم‌تیمی، اجازهٔ میکروفون را بدهید. بدون میکروفون هم می‌شود بازی کرد.</p>
     </div>
   </div>
 
@@ -138,7 +177,11 @@
 
       <div class="together glass-soft">
         <h3><span aria-hidden="true">🤝</span> <span data-i18n="togetherTitle">حالت با هم</span></h3>
-        <p data-i18n="togetherText">برای بازی از راه دور، در تماس تصویری صفحه را به اشتراک بگذارید (همراه با صدای رایانه). کودک گزینه را نشان می‌دهد یا می‌گوید و شما برایش لمس می‌کنید؛ یا کنترل را به او بدهید. اتصال آنلاین لازم نیست.</p>
+        <p data-i18n="togetherText">بازی دونفره با صدا: دکمهٔ زیر را بزنید و لینک را برای دستگاه کودک بفرستید. شما و کودک یک تیم هستید: صدای همدیگر را می‌شنوید، کارت‌ها یکی است و ستاره‌ها مال تیم است. (یا در تماس تصویری صفحه را با صدای رایانه به اشتراک بگذارید.)</p>
+        <div class="together-actions">
+          <button type="button" id="liveStartBtn" class="pill-btn primary"><span aria-hidden="true">🎙️</span> <span data-i18n="liveStart">شروع بازی دونفره با صدا</span></button>
+          <button type="button" id="liveEndBtn" class="pill-btn" hidden><span data-i18n="liveEnd">پایان بازی دونفره</span></button>
+        </div>
       </div>
     </form>
   </dialog>
@@ -148,6 +191,6 @@
     <p lang="en" dir="ltr">Prototype — not a clinical tool.</p>
   </footer>
 
-  <script src="app.js?v=20261004-2"></script>
+  <script src="app.js?v=20261004-3"></script>
 </body>
 </html>

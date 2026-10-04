@@ -15,6 +15,7 @@ choice-reward/
 ├── styles.css      themes (dark / dim / light), layout, gentle motion
 ├── app.js          game logic, read-aloud, settings (no dependencies)
 ├── audio/fa|en/    pre-recorded read-aloud clips (MP3)
+├── vendor/         peerjs.min.js 1.5.5 (MIT) for the live two-player mode, loaded only when used
 ├── assets/         put logo-hfb-original@1x.png and @2x.png here
 └── screenshots/    preview images (not needed on the live site)
 ```
@@ -63,5 +64,17 @@ python3 -m http.server 8080
   Tahoma, then sans-serif. To always use Vazirmatn, self-host the font file and add an
   `@font-face` rule in `styles.css`. Do not load it from a CDN, so the game keeps
   working offline.
-- **Together mode:** share the screen on a video call and include computer audio. There
-  is no real-time networking.
+- **Team framing:** the adult and child are one team. The page shows shared team stars
+  ("ستاره‌های تیم ما" / "Our team stars"), two avatars (🧑‍🏫 + 🧒), and team praise after each
+  choice ("آفرین به تیم ما! یه ستاره گرفتیم." / "Great teamwork! We got a star!").
+- **Live two-player mode (voice):** in the Adult panel, tap *Start live two-player session*
+  and open the link (`?join=CODE`) on the child's device. The child taps *Tap to start*,
+  which unlocks audio on iOS and asks for the microphone. Both devices show the same cards
+  and team stars, and either player can tap. The adult's device deals the cards and keeps
+  the score. Voice is a PeerJS audio-only call (`echoCancellation`, `noiseSuppression`). The
+  adult side has a big mute/unmute button. The child side has a mic indicator plus a mute
+  button. The teammate's voice is lowered while a game clip plays (not on iOS, which ignores
+  media volume). If the mic is denied, the game keeps working without voice and shows a
+  friendly note. Signalling uses the free PeerJS cloud server (`0.peerjs.com`) and its default
+  STUN/TURN, so this mode needs internet and may not connect on very strict networks.
+  You can also still share the screen on a video call (include computer audio).
