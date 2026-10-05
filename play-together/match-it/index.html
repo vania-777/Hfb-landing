@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>چی به چی می‌خوره؟ · Match It — HFB Play Together</title>
+  <meta name="description" content="Match It (What goes together?) — a calm bilingual drag-to-match game with small animations, for an adult and child to play together. Prototype.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://highfunctioningbrains.com/play-together/match-it/">
+  <script>
+    /* Apply saved theme + language before first paint to avoid a flash. */
+    (function () {
+      try {
+        var t = localStorage.getItem('hfb-theme');
+        if (t === 'dark' || t === 'dim' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+        var l = localStorage.getItem('hfb-lang');
+        if (l === 'en') { document.documentElement.lang = 'en'; document.documentElement.dir = 'ltr'; }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css?v=20261005-1">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">پرش به بازی</a>
+
+  <header class="site-header" role="banner">
+    <a class="brand" href="../../index.html" data-i18n-aria="homeLink" aria-label="صفحهٔ اصلی HFB">
+      <img class="brand-logo" src="../../assets/logo-hfb-original@1x.png"
+           srcset="../../assets/logo-hfb-original@1x.png 1x, ../../assets/logo-hfb-original@2x.png 2x"
+           alt="High Functioning Brains (HFB) logo" width="36" height="36"
+           onerror="this.hidden=true">
+      <span class="brand-text" dir="ltr">HFB · Play Together</span>
+    </a>
+    <div class="header-tools">
+      <button type="button" id="langBtn" class="tool-btn" aria-label="Switch to English">
+        <span aria-hidden="true" id="langBtnText">EN</span>
+      </button>
+      <button type="button" id="themeBtn" class="tool-btn" aria-label="پوسته: تیره">
+        <span aria-hidden="true" id="themeIcon">🌙</span>
+      </button>
+      <button type="button" id="adultBtn" class="tool-btn" aria-haspopup="dialog" aria-controls="adultPanel" aria-label="پنل بزرگسال">
+        <span aria-hidden="true">⚙️</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="stage" tabindex="-1">
+    <h1 class="game-title"><span data-i18n="title">چی به چی می‌خوره؟</span></h1>
+    <p class="level-chip" id="levelChip"><span id="levelNum">مرحلهٔ ۱</span><span class="level-sep" aria-hidden="true">·</span><span id="levelMode">۲ کارت</span></p>
+
+    <section class="prompt glass" aria-labelledby="promptText">
+      <p id="promptText" class="prompt-text">لیوان به چی احتیاج داره؟</p>
+      <button type="button" class="speak-btn" id="speakPrompt" data-i18n-aria="readAloud" aria-label="بلند خواندن">
+        <span aria-hidden="true">🔊</span>
+      </button>
+    </section>
+
+    <section class="target-wrap">
+      <button type="button" id="target" class="target glass" aria-describedby="dropHint">
+        <span id="scene" class="scene-box"><!-- SVG scene rendered by app.js --></span>
+      </button>
+      <p id="dropHint" class="drop-hint" aria-live="polite"></p>
+    </section>
+
+    <section id="cards" class="cards" data-count="2" role="group" aria-labelledby="promptText">
+      <!-- item cards rendered by app.js -->
+    </section>
+
+    <section class="feedback" aria-live="polite" aria-atomic="true">
+      <div id="feedback" class="feedback-inner glass" hidden>
+        <span class="feedback-emoji" aria-hidden="true">⭐</span>
+        <p id="feedbackText" class="feedback-text"></p>
+        <button type="button" class="speak-btn" id="speakFeedback" data-i18n-aria="readAloud" aria-label="بلند خواندن">
+          <span aria-hidden="true">🔊</span>
+        </button>
+        <button type="button" id="nextBtn" class="pill-btn primary">
+          <span data-i18n="next">بعدی</span> <span aria-hidden="true" class="dir-arrow">›</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="star-chart glass" aria-labelledby="starLabel">
+      <h2 id="starLabel" class="star-label"><span data-i18n="stars">ستاره‌های من</span></h2>
+      <ol id="stars" class="stars" aria-describedby="starCount"></ol>
+      <p id="starCount" class="star-count"></p>
+    </section>
+  </main>
+
+  <!-- Celebration screen -->
+  <div id="celebrate" class="celebrate" role="dialog" aria-modal="true" aria-labelledby="celebrateTitle" hidden>
+    <div class="celebrate-card glass">
+      <div class="celebrate-stars" aria-hidden="true">
+        <span>⭐</span><span>⭐</span><span>🌟</span><span>⭐</span><span>⭐</span>
+      </div>
+      <h2 id="celebrateTitle" class="celebrate-title" data-i18n="celebrateTitle">آفرین! ۵ ستاره!</h2>
+      <p class="celebrate-sub" data-i18n="celebrateSub">چیزهایی که به هم می‌خورن رو خوب پیدا کردی.</p>
+      <p class="level-up" id="levelUpText">مرحلهٔ بعد!</p>
+      <div class="celebrate-actions">
+        <button type="button" class="speak-btn" id="speakCelebrate" data-i18n-aria="readAloud" aria-label="بلند خواندن">
+          <span aria-hidden="true">🔊</span>
+        </button>
+        <button type="button" id="nextLevelBtn" class="pill-btn primary"><span id="nextLevelText">مرحلهٔ بعد</span> <span aria-hidden="true" class="dir-arrow">›</span></button>
+        <button type="button" id="playAgainBtn" class="pill-btn"><span id="playAgainText">دوباره همین مرحله</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adult panel -->
+  <dialog id="adultPanel" class="adult-panel glass" aria-labelledby="adultTitle">
+    <form method="dialog" class="adult-form" id="adultForm">
+      <div class="panel-head">
+        <h2 id="adultTitle" data-i18n="adultTitle">پنل بزرگسال</h2>
+        <button type="submit" class="tool-btn" value="close" data-i18n-aria="close" aria-label="بستن"><span aria-hidden="true">✕</span></button>
+      </div>
+
+      <fieldset class="field">
+        <legend data-i18n="levelLegend">مرحله</legend>
+        <div class="seg seg-levels">
+          <label><input type="radio" name="level" value="1" checked> <span>1</span></label>
+          <label><input type="radio" name="level" value="2"> <span>2</span></label>
+          <label><input type="radio" name="level" value="3"> <span>3</span></label>
+        </div>
+        <p class="hint" data-i18n="levelHint">۱: ۲ کارت · ۲: ۳ کارت · ۳: ۴ کارت. با ۵ ستاره، مرحلهٔ بعد باز می‌شود.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend data-i18n="howLegend">روش بازی</legend>
+        <p class="hint" data-i18n="howText">کارت را با انگشت یا ماوس روی تصویر بکشید.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend data-i18n="comfort">صدا و حرکت</legend>
+        <label class="switch"><input type="checkbox" id="soundToggle" checked> <span class="switch-ui" aria-hidden="true"></span> <span data-i18n="sound">صدا، جلوه‌های صوتی و بلندخوانی</span></label>
+        <label class="switch"><input type="checkbox" id="motionToggle" checked> <span class="switch-ui" aria-hidden="true"></span> <span data-i18n="motion">انیمیشن</span></label>
+        <p class="hint" id="voiceStatus"></p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend data-i18n="starsLegend">ستاره‌ها</legend>
+        <button type="button" id="resetStars" class="pill-btn"><span aria-hidden="true">↺</span> <span data-i18n="resetStars">صفر کردن ستاره‌ها</span></button>
+        <p class="hint" id="resetStatus" aria-live="polite"></p>
+      </fieldset>
+
+      <div class="together glass-soft">
+        <h3><span aria-hidden="true">🤝</span> <span data-i18n="togetherTitle">حالت با هم</span></h3>
+        <p data-i18n="togetherText">برای بازی از راه دور، در تماس تصویری صفحه را به اشتراک بگذارید (همراه با صدای رایانه).</p>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="site-footer" role="contentinfo">
+    <p lang="fa" dir="rtl">نمونهٔ اولیه — ابزار بالینی نیست.</p>
+    <p lang="en" dir="ltr">Prototype — not a clinical tool.</p>
+  </footer>
+
+  <script src="art.js?v=20261005-1"></script>
+  <script src="app.js?v=20261005-1"></script>
+</body>
+</html>
