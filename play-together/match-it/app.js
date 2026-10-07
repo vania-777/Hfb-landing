@@ -62,6 +62,7 @@
       comfort: 'صدا و حرکت',
       sound: 'صدا، جلوه‌های صوتی و بلندخوانی',
       motion: 'انیمیشن',
+      egg: 'تخم‌مرغ سورپرایز بعد از هر ۵ ستاره',
       starsLegend: 'ستاره‌ها',
       resetStars: 'صفر کردن ستاره‌ها',
       resetDone: 'ستاره‌ها صفر شد.',
@@ -114,6 +115,7 @@
       comfort: 'Sound and motion',
       sound: 'Sound, sound effects and read-aloud',
       motion: 'Animation',
+      egg: 'Surprise egg after every 5 stars',
       starsLegend: 'Stars',
       resetStars: 'Reset stars',
       resetDone: 'Stars reset.',
@@ -179,7 +181,8 @@
     playAgain: $('playAgainBtn'), playAgainText: $('playAgainText'),
     langBtn: $('langBtn'), langBtnText: $('langBtnText'), themeBtn: $('themeBtn'), themeIcon: $('themeIcon'),
     adultBtn: $('adultBtn'), panel: $('adultPanel'), form: $('adultForm'),
-    sound: $('soundToggle'), motion: $('motionToggle'), reset: $('resetStars'), resetStatus: $('resetStatus'), voiceStatus: $('voiceStatus')
+    sound: $('soundToggle'), motion: $('motionToggle'), reset: $('resetStars'), resetStatus: $('resetStatus'), voiceStatus: $('voiceStatus'),
+    egg: $('eggToggle')
   };
   function t(key) { return STR[state.lang][key]; }
   function itemName(id) { var n = PAIR[id].i[state.lang]; return state.lang === 'en' ? n.charAt(0).toUpperCase() + n.slice(1) : n; }
@@ -189,7 +192,7 @@
      One shared <audio> element; src + play() inside the tap (iOS rule). The first tap also
      plays a tiny silent clip so later clips (after the animation) may play on iPhone.
      speechSynthesis is only a fallback. */
-  var ASSET_VER = '20261005-1';
+  var ASSET_VER = '20261007-1';
   var synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
   var voices = [];
   function refreshVoices() { if (!synth) return; try { voices = synth.getVoices() || []; } catch (e) { voices = []; } updateVoiceStatus(); }
@@ -526,13 +529,33 @@
     speak(t('yes')(p), $('speakFeedback'), 'yes_' + p.id);
     chime();
     clearTimer();
-    if (state.stars >= GOAL) timer = setTimeout(showCelebration, 2800);
+    if (state.stars >= GOAL) { eggPending = true; timer = setTimeout(celebrateWithEgg, 2800); }
     else timer = setTimeout(function () { newRound({ say: true }); }, 4200);
   }
   function next() {
     if (state.phase === 'anim') return;
-    if (state.stars >= GOAL) { showCelebration(); return; }
+    if (state.stars >= GOAL) { celebrateWithEgg(); return; }
     newRound({ say: true });
+  }
+  /* ---------- Surprise egg (shared: ../shared/egg.js) ----------
+     After every 5 stars a big egg wobbles, cracks and reveals a random surprise; then the usual
+     celebration. Turned on/off in the Adult panel (localStorage "hfb-egg", shared by all games). */
+  var eggPending = false; // true from the 5th star until the egg has been shown
+  function eggOn() { return !!(window.HFBEgg && window.HFBEgg.enabled()); }
+  function celebrateWithEgg() {
+    if (window.HFBEgg && window.HFBEgg.isOpen()) return;
+    if (eggPending && eggOn()) {
+      eggPending = false;
+      clearTimer();
+      window.HFBEgg.show({
+        lang: state.lang, sound: state.settings.sound, motion: state.settings.motion,
+        speak: function (text, key) { speak(text, null, key); },
+        onClose: showCelebration
+      });
+      return;
+    }
+    eggPending = false;
+    showCelebration();
   }
   var lastFocus = null;
   function showCelebration() {
@@ -753,6 +776,7 @@
     var s = state.settings;
     el.sound.checked = !!s.sound;
     el.motion.checked = !!s.motion;
+    if (el.egg) el.egg.checked = eggOn();
     el.form.querySelectorAll('input[name="level"]').forEach(function (x) { x.checked = Number(x.value) === s.level; });
   }
 
@@ -791,6 +815,7 @@
     if (tg.name === 'level') setSetting('level', Number(tg.value));
     else if (tg === el.sound) setSetting('sound', tg.checked);
     else if (tg === el.motion) setSetting('motion', tg.checked);
+    else if (tg === el.egg) { if (window.HFBEgg) window.HFBEgg.setEnabled(tg.checked); emit('setting', { key: 'egg', value: tg.checked }); }
   });
   el.reset.addEventListener('click', function () { resetStars(); el.resetStatus.textContent = t('resetDone'); });
   document.addEventListener('keydown', function (e) {
@@ -820,7 +845,7 @@
     getState: function () { return JSON.parse(JSON.stringify(state)); },
     on: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
     render: render,
-    actions: { newRound: newRound, select: select, drop: drop, finish: finish, next: next, showCelebration: showCelebration,
+    actions: { newRound: newRound, select: select, drop: drop, finish: finish, next: next, showCelebration: showCelebration, celebrateWithEgg: celebrateWithEgg,
                nextLevel: nextLevel, closeCelebration: closeCelebration, resetStars: resetStars, setSetting: setSetting },
     PAIRS: PAIRS.map(function (p) { return { id: p.id, avoid: p.avoid.slice(), target: p.t, item: p.i, yes: p.yes, ms: p.ms }; }),
     getMissed: function () { return JSON.parse(JSON.stringify(missed)); }

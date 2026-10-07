@@ -84,3 +84,11 @@ Reward) can sync rounds and drops. There is no networking today.
 ## Saved in localStorage
 
 `hfb-theme`, `hfb-lang` (shared), `hfb-mi-settings`, `hfb-mi-stars`, `hfb-mi-rand`.
+
+## Surprise egg (shared)
+
+After every 5 stars, `../shared/egg.js` shows a big egg. It wobbles, cracks, and reveals one of 12 random surprises (car, dinosaur, duck, puppy, rocket, butterfly, frog, train, kitten, chick, fish, unicorn). Each surprise has a Web Audio sound and an excited line read aloud from `audio/<lang>/egg_<id>.mp3`. After that comes the usual celebration.
+- Tap, or press Enter, to continue. Escape closes it.
+- With motion off, the egg simply opens.
+- Every surprise appears once before any repeats, and never twice in a row (`hfb-egg-bag`).
+- The Adult panel toggle "Surprise egg after every 5 stars" sets `hfb-egg` (`off` to turn it off). The setting is shared by all games.

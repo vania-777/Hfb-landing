@@ -102,6 +102,7 @@
       comfort: 'صدا و حرکت',
       sound: 'صدا و بلندخوانی',
       motion: 'انیمیشن ملایم',
+      egg: 'تخم‌مرغ سورپرایز بعد از هر ۵ ستاره',
       starsLegend: 'ستاره‌ها',
       resetStars: 'صفر کردن ستاره‌ها',
       resetDone: 'ستاره‌ها صفر شد.',
@@ -186,6 +187,7 @@
       comfort: 'Sound & motion',
       sound: 'Sound & read-aloud',
       motion: 'Gentle animation',
+      egg: 'Surprise egg after every 5 stars',
       starsLegend: 'Stars',
       resetStars: 'Reset stars',
       resetDone: 'Stars reset.',
@@ -282,7 +284,7 @@
     celebrate: $('celebrate'), playAgain: $('playAgainBtn'),
     langBtn: $('langBtn'), langBtnText: $('langBtnText'), themeBtn: $('themeBtn'), themeIcon: $('themeIcon'),
     adultBtn: $('adultBtn'), panel: $('adultPanel'), form: $('adultForm'),
-    sound: $('soundToggle'), motion: $('motionToggle'), reset: $('resetStars'), voiceStatus: $('voiceStatus'),
+    sound: $('soundToggle'), motion: $('motionToggle'), egg: $('eggToggle'), reset: $('resetStars'), voiceStatus: $('voiceStatus'),
     catHint: $('catHint'), feedbackTeam: $('feedbackTeam')
   };
   function t(key) { return STR[state.lang][key]; }
@@ -321,7 +323,7 @@
      One shared <audio> element, so a new clip always stops the previous one; once it has
      played from a tap, iOS also lets it play the (delayed) celebration line.
      speechSynthesis is only a fallback when a clip fails to load. */
-  var ASSET_VER = '20261004-5'; // bump when clips change (cache-busting)
+  var ASSET_VER = '20261007-1'; // bump when clips change (cache-busting)
   var player = null;
   try { if (typeof Audio !== 'undefined') { player = new Audio(); player.preload = 'auto'; } } catch (e) { player = null; }
   var playToken = 0;
@@ -702,7 +704,8 @@
       else if (m) delete state.missed[id];
     }
     if (earned && state.stars >= GOAL) {
-      state.advanceTimer = setTimeout(showCelebration, 3000);
+      eggPending = true;
+      state.advanceTimer = setTimeout(celebrateWithEgg, 3000);
     } else {
       state.advanceTimer = setTimeout(nextRoundSay, earned ? 6000 : 5000); // gentle auto-advance; "Next" skips the wait
     }
@@ -729,6 +732,26 @@
     $('nextLevelText').textContent = t('nextLevel');
     $('playAgainText').textContent = more ? t('repeatLevel') : t('playAgain');
     el.playAgain.classList.toggle('primary', !more);
+  }
+  /* ---------- Surprise egg (shared: ../shared/egg.js) ----------
+     After every 5 stars a big egg wobbles, cracks and reveals a random surprise; then the usual
+     celebration. Turned on/off in the Adult panel (localStorage "hfb-egg", shared by all games). */
+  var eggPending = false; // true from the 5th star until the egg has been shown
+  function eggOn() { return !!(window.HFBEgg && window.HFBEgg.enabled()); }
+  function celebrateWithEgg() {
+    if (window.HFBEgg && window.HFBEgg.isOpen()) return;
+    if (eggPending && eggOn()) {
+      eggPending = false;
+      clearTimeout(state.advanceTimer);
+      window.HFBEgg.show({
+        lang: state.lang, sound: settings.sound, motion: settings.motion,
+        speak: function (text, key) { speak(text, null, key); },
+        onClose: showCelebration
+      });
+      return;
+    }
+    eggPending = false;
+    showCelebration();
   }
   var lastFocus = null;
   function showCelebration() {
@@ -851,6 +874,12 @@
       speakQuestion(null, true); // new "find it" question from the adult's device
     }
     renderStars(state.stars > before ? state.stars - 1 : -1);
+    if (state.stars >= GOAL && before < GOAL && eggOn()) {
+      clearTimeout(live.eggTimer);
+      live.eggTimer = setTimeout(function () {
+        if (state.stars >= GOAL && !window.HFBEgg.isOpen()) window.HFBEgg.show({ lang: state.lang, sound: settings.sound, motion: settings.motion, speak: function (text, key) { speak(text, null, key); } });
+      }, 2600);
+    }
     if (m.celebrate && el.celebrate.hidden) showCelebration();
     if (!m.celebrate && !el.celebrate.hidden) closeCelebration();
   }
@@ -1181,6 +1210,7 @@
     root.classList.toggle('sound-off', !settings.sound);
     el.sound.checked = !!settings.sound;
     el.motion.checked = !!settings.motion;
+    if (el.egg) el.egg.checked = eggOn();
     el.form.querySelectorAll('input[name="level"]').forEach(function (r) { r.checked = Number(r.value) === state.level; });
     el.form.querySelectorAll('input[name="cat"]').forEach(function (c) { c.checked = settings.cats.indexOf(c.value) >= 0; });
   }
@@ -1202,7 +1232,7 @@
   $('speakFeedback').addEventListener('click', function () { speak(feedbackSentence(), this, feedbackKey()); });
   $('speakCelebrate').addEventListener('click', function () { speak(t('celebrateSay'), this, 'celebrate'); });
   function goNext() {
-    if (state.stars >= GOAL) { showCelebration(); return; }
+    if (state.stars >= GOAL) { celebrateWithEgg(); return; }
     newRound({ say: true });
     var first = el.choices.querySelector('.card-main');
     if (first) first.focus({ preventScroll: true });
@@ -1241,6 +1271,8 @@
     } else if (tg === el.motion) {
       settings.motion = tg.checked;
       persist(); applySettings();
+    } else if (tg === el.egg) {
+      if (window.HFBEgg) window.HFBEgg.setEnabled(tg.checked);
     }
   });
   function resetStars() {

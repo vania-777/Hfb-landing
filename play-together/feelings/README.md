@@ -124,3 +124,11 @@ celebration (repeats the level).
   so a new session doesn't start where the old one ended.
   With only 2 feelings turned on, the same feeling may come at most twice in a row, because
   strict alternation would itself be a pattern.
+
+## Surprise egg (shared)
+
+After every 5 stars, `../shared/egg.js` shows a big egg. It wobbles, cracks, and reveals one of 12 random surprises (car, dinosaur, duck, puppy, rocket, butterfly, frog, train, kitten, chick, fish, unicorn). Each surprise has a Web Audio sound and an excited line read aloud from `audio/<lang>/egg_<id>.mp3`. After that comes the usual celebration.
+- Tap, or press Enter, to continue. Escape closes it.
+- With motion off, the egg simply opens.
+- Every surprise appears once before any repeats, and never twice in a row (`hfb-egg-bag`).
+- The Adult panel toggle "Surprise egg after every 5 stars" sets `hfb-egg` (`off` to turn it off). The setting is shared by all games.

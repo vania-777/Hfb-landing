@@ -124,6 +124,7 @@
       comfort: 'صدا و حرکت',
       sound: 'صدا و بلندخوانی',
       motion: 'انیمیشن ملایم',
+      egg: 'تخم‌مرغ سورپرایز بعد از هر ۵ ستاره',
       starsLegend: 'ستاره‌ها',
       resetStars: 'صفر کردن ستاره‌ها',
       resetDone: 'ستاره‌ها صفر شد.',
@@ -185,6 +186,7 @@
       comfort: 'Sound & motion',
       sound: 'Sound & read-aloud',
       motion: 'Gentle animation',
+      egg: 'Surprise egg after every 5 stars',
       starsLegend: 'Stars',
       resetStars: 'Reset stars',
       resetDone: 'Stars reset.',
@@ -268,7 +270,7 @@
     promptText: $('promptText'), faceHint: $('faceHint'),
     langBtn: $('langBtn'), langBtnText: $('langBtnText'), themeBtn: $('themeBtn'), themeIcon: $('themeIcon'),
     adultBtn: $('adultBtn'), panel: $('adultPanel'), form: $('adultForm'), emoChecks: $('emoChecks'), emoHint: $('emoHint'),
-    sound: $('soundToggle'), motion: $('motionToggle'), errorless: $('errorlessToggle'),
+    sound: $('soundToggle'), motion: $('motionToggle'), errorless: $('errorlessToggle'), egg: $('eggToggle'),
     reset: $('resetStars'), resetStatus: $('resetStatus'), voiceStatus: $('voiceStatus')
   };
   function t(key) { return STR[state.lang][key]; }
@@ -304,7 +306,7 @@
      and per situation sit_<id> (scene + question), sityes_<id> (right), sitis_<id> (gentle answer).
      Same path as Choice & Reward: one shared <audio> element, src + play() run
      synchronously inside the tap handler (iOS rule). speechSynthesis is only a fallback. */
-  var ASSET_VER = '20261004-3'; // bump when clips change (cache-busting)
+  var ASSET_VER = '20261007-1'; // bump when clips change (cache-busting)
   var player = null;
   try { if (typeof Audio !== 'undefined') { player = new Audio(); player.preload = 'auto'; } } catch (e) { player = null; }
   var playToken = 0;
@@ -956,7 +958,7 @@
     if (correct) chime(false, 0.15); else softCue();
 
     clearTimer();
-    if (correct && state.stars >= GOAL) timer = setTimeout(showCelebration, 2800);
+    if (correct && state.stars >= GOAL) { eggPending = true; timer = setTimeout(celebrateWithEgg, 2800); }
     else timer = setTimeout(function () { newRound({ say: true }); }, correct ? 4200 : 5000); // "Next" skips the wait
     el.nextBtn.focus({ preventScroll: true });
   }
@@ -980,12 +982,32 @@
   }
 
   function next() {
-    if (state.stars >= GOAL) { showCelebration(); return; }
+    if (state.stars >= GOAL) { celebrateWithEgg(); return; }
     newRound({ say: true });
     var first = el.answers.querySelector('.answer');
     if (first) first.focus({ preventScroll: true });
   }
 
+  /* ---------- Surprise egg (shared: ../shared/egg.js) ----------
+     After every 5 stars a big egg wobbles, cracks and reveals a random surprise; then the usual
+     celebration. Turned on/off in the Adult panel (localStorage "hfb-egg", shared by all games). */
+  var eggPending = false; // true from the 5th star until the egg has been shown
+  function eggOn() { return !!(window.HFBEgg && window.HFBEgg.enabled()); }
+  function celebrateWithEgg() {
+    if (window.HFBEgg && window.HFBEgg.isOpen()) return;
+    if (eggPending && eggOn()) {
+      eggPending = false;
+      clearTimer();
+      window.HFBEgg.show({
+        lang: state.lang, sound: state.settings.sound, motion: state.settings.motion,
+        speak: function (text, key) { speak(text, null, key); },
+        onClose: showCelebration
+      });
+      return;
+    }
+    eggPending = false;
+    showCelebration();
+  }
   var lastFocus = null;
   function showCelebration() {
     clearTimer();
@@ -1158,6 +1180,7 @@
     var s = state.settings, L = state.lang;
     el.sound.checked = !!s.sound;
     el.motion.checked = !!s.motion;
+    if (el.egg) el.egg.checked = eggOn();
     el.errorless.checked = !!s.errorless;
     el.form.querySelectorAll('input[name="level"]').forEach(function (r) { r.checked = Number(r.value) === s.level; });
     if (el.emoChecks.dataset.lang !== L) {
@@ -1231,6 +1254,7 @@
     }
     else if (tg === el.sound) setSetting('sound', tg.checked);
     else if (tg === el.motion) setSetting('motion', tg.checked);
+    else if (tg === el.egg) { if (window.HFBEgg) window.HFBEgg.setEnabled(tg.checked); emit('setting', { key: 'egg', value: tg.checked }); }
     else if (tg === el.errorless) setSetting('errorless', tg.checked);
   });
   el.reset.addEventListener('click', function () {
@@ -1267,7 +1291,7 @@
     getState: function () { return JSON.parse(JSON.stringify(state)); },
     on: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
     render: render,
-    actions: { newRound: newRound, answer: answer, next: next, showCelebration: showCelebration,
+    actions: { newRound: newRound, answer: answer, next: next, showCelebration: showCelebration, celebrateWithEgg: celebrateWithEgg,
                closeCelebration: closeCelebration, nextLevel: nextLevel, resetStars: resetStars, setSetting: setSetting },
     faceSVG: faceSVG, // draw any face: faceSVG({ emotion, skin, hair, style })
     LEVELS: LEVELS.slice(1),

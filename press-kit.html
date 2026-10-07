@@ -17,27 +17,42 @@
   <script>(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('hfb-theme')||localStorage.getItem('hfb_theme_v3')||localStorage.getItem('hfb_theme');if(t!=='dark'&&t!=='dim'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}d.setAttribute('data-theme',t);}catch(e){d.setAttribute('data-theme','dark');}})();</script>
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="assets/site.css?v=2026.10">
-  <script src="assets/site.js?v=2026.10" defer></script>
+  <link rel="stylesheet" href="assets/site.css?v=2026.10.7">
+  <script src="assets/site.js?v=2026.10.7" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap header-row">
-      <a class="brand" href="index.html" aria-label="High Functioning Brains (HFB) — Home">
+      <a class="brand" href="./" aria-label="High Functioning Brains (HFB): welcome page">
         <img src="assets/logo-hfb-original@1x.png" srcset="assets/logo-hfb-original@1x.png 1x, assets/logo-hfb-original@2x.png 2x" width="44" height="44" alt="">
         <span class="brand-name"><span class="full">High Functioning Brains</span><span class="short">HFB</span></span>
       </a>
       <nav class="site-nav" id="siteNav" aria-label="Main">
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="tools.html">Tools</a></li>
-          <li><a href="product.html">Platform</a></li>
+          <li><a href="home/">Home</a></li>
+          <li><a href="games/">Games</a></li>
+          <li><a href="resources/">Resources</a></li>
+          <li><a href="community/">Community</a></li>
+          <li><a href="research/">Research</a></li>
+          <li><a href="wellbeing/">Wellbeing</a></li>
           <li><a href="about.html">About</a></li>
-          <li><a href="investors.html">Investors</a></li>
         </ul>
       </nav>
       <div class="header-tools">
+        <div class="view-switch">
+          <a class="tool-btn view-btn" id="viewBtn" href="./" aria-controls="viewMenu" aria-expanded="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg><span class="view-label">I’m a…</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></a>
+          <div class="view-menu" id="viewMenu" hidden>
+            <p class="view-menu-title" id="viewMenuTitle">See the site as…</p>
+            <ul aria-labelledby="viewMenuTitle">
+            <li><a href="home/?for=families" data-aud="families"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7.5" r="3"/><circle cx="17" cy="9.5" r="2.4"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M13.5 20a3.8 3.8 0 0 1 7.6 0"/></svg><span>Families &amp; caregivers</span></a></li>
+            <li><a href="home/?for=therapists" data-aud="therapists"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.8h6V4M8.5 10h7M8.5 14h7M8.5 18h4"/></svg><span>Therapists &amp; educators</span></a></li>
+            <li><a href="home/?for=adults" data-aud="adults"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg><span>Neurodivergent adults</span></a></li>
+            <li><a href="investors.html" data-aud="investors"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M6.5 17v-4M11 17V9.5M15.5 17v-6M20 17V6"/></svg><span>Investors &amp; partners</span></a></li>
+            </ul>
+            <a class="view-welcome" href="./"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11L12 4l8.5 7"/><path d="M6 9.5V20h12V9.5"/></svg><span>Back to the welcome page</span></a>
+          </div>
+        </div>
         <button type="button" class="tool-btn" id="themeBtn" aria-label="Color theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg><span class="theme-label">Dark</span></button>
         <button type="button" class="tool-btn menu-btn" id="menuBtn" aria-expanded="false" aria-controls="siteNav"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg><span class="menu-label">Menu</span></button>
       </div>
@@ -109,16 +124,22 @@
         <nav aria-label="Explore">
           <h2>Explore</h2>
           <ul>
-            <li><a href="play-together/choice-reward/">Choice &amp; Reward game</a></li>
-            <li><a href="tools.html">Tools</a></li>
-            <li><a href="product.html">Platform (planned)</a></li>
-            <li><a href="about.html">About &amp; our symbol</a></li>
+            <li><a href="home/">Home</a></li>
+            <li><a href="games/">Games &amp; Play</a></li>
+            <li><a href="resources/">Resources &amp; Links</a></li>
+            <li><a href="community/">Community (coming soon)</a></li>
+            <li><a href="research/">Research &amp; Professional</a></li>
+            <li><a href="wellbeing/">Hope &amp; Wellbeing</a></li>
           </ul>
         </nav>
-        <nav aria-label="Resources">
-          <h2>Resources</h2>
+        <nav aria-label="About HFB">
+          <h2>About HFB</h2>
           <ul>
-            <li><a href="investors.html">Investors</a></li>
+            <li><a href="./">Welcome page</a></li>
+            <li><a href="about.html">About &amp; our symbol</a></li>
+            <li><a href="product.html">Platform plans</a></li>
+            <li><a href="investors.html">Investors &amp; partners</a></li>
+            <li><a href="tools.html">Game details</a></li>
             <li><a href="docs.html">Docs</a></li>
             <li><a href="press-kit.html">Press kit</a></li>
             <li><a href="privacy.html">Privacy</a></li>
