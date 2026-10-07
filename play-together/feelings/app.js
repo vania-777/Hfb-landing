@@ -929,11 +929,35 @@
     else speak(say, btn, 'sit_' + x.id);
   }
 
+  /* ---------- Shared session log + Live view (../shared/session.js) ---------- */
+  var SESS = null;
+  function emoLab(id) { return { id: id, en: EMO[id].en, fa: EMO[id].fa }; }
+  function sessRound() {
+    var r = state.round; if (!SESS || !r) return;
+    var lv = state.settings.level, L0 = LEVELS[lv], n = r.options.length;
+    var info = {
+      level: lv,
+      levelName: L0.kind === 'sit' ? { en: 'Situations, ' + n + ' choices', fa: 'موقعیت‌ها، ' + toFaDigits(n) + ' گزینه' } : { en: 'Faces, ' + n + ' choices', fa: 'چهره‌ها، ' + toFaDigits(n) + ' گزینه' },
+      answer: r.emotion, choices: r.options.map(emoLab)
+    };
+    if (r.kind === 'sit') {
+      var x = SIT[r.sit];
+      info.key = 'sit:' + x.id;
+      info.target = { id: x.id, en: x.en + ' → ' + EMO[x.emo].en, fa: x.fa + ' ← ' + EMO[x.emo].fa };
+      info.stimulus = { en: 'Situation picture', fa: 'تصویر موقعیت' };
+    } else {
+      info.key = r.emotion; info.target = emoLab(r.emotion);
+      info.stimulus = { en: 'Cartoon face', fa: 'چهرهٔ کارتونی' };
+    }
+    SESS.round(info);
+  }
+
   function newRound(opts) {
     clearTimer();
     state.round = makeRound();
     state.answer = null;
     render();
+    sessRound();
     emit('round', state.round);
     if (opts && opts.say) sayRound(null, true);
   }
@@ -942,6 +966,7 @@
     if (state.answer || state.celebrating || !state.round) return;
     var m = EMO[state.round.emotion], r0 = state.round;
     var correct = id === m.id;
+    if (SESS && EMO[id]) SESS.log({ response: emoLab(id), correct: correct, prompted: !!state.settings.errorless, prompt: 'errorless pulse' });
     state.answer = { pick: id, correct: correct };
     noteSitResult(r0, correct);
     if (correct) {
@@ -1307,6 +1332,7 @@
     if (typeof synth.addEventListener === 'function') synth.addEventListener('voiceschanged', refreshVoices);
     else synth.onvoiceschanged = refreshVoices;
   }
+  if (window.HFBSession) SESS = window.HFBSession.init({ game: 'feelings', name: { en: 'Feelings', fa: 'احساس‌ها' } });
   newRound();
   if (state.stars >= GOAL) showCelebration();
 })();

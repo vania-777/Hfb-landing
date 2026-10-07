@@ -465,6 +465,22 @@
     else if (m && r.retry) delete missed[r.pair];
   }
 
+  /* ---------- Shared session log + Live view (../shared/session.js) ---------- */
+  var SESS = null;
+  function cap(x) { x = String(x || '').replace(/^the /, ''); return x.charAt(0).toUpperCase() + x.slice(1); }
+  function itemLab(id) { var q = PAIR[id]; return { id: id, en: cap(q.i.en), fa: q.i.fa }; }
+  function sessRound() {
+    var r = state.round; if (!SESS || !r) return;
+    var p = PAIR[r.pair], n = LEVELS[state.settings.level].n;
+    SESS.round({
+      level: state.settings.level, levelName: { en: n + ' cards', fa: STR.fa.levelMode(n) },
+      key: r.pair, answer: r.pair,
+      target: { id: r.pair, en: cap(p.t.en) + ' + ' + p.i.en.replace(/^the /, ''), fa: p.t.fa + ' + ' + p.i.fa },
+      stimulus: { en: 'Picture: ' + p.t.en.replace(/^the /, ''), fa: 'تصویر: ' + p.t.fa },
+      choices: r.options.map(itemLab)
+    });
+  }
+
   /* ---------- Actions ---------- */
   var timer = null;
   function clearTimer() { clearTimeout(timer); timer = null; }
@@ -482,6 +498,7 @@
     state.round = makeRound();
     state.phase = 'ask'; state.misses = 0; state.hint = false; state.selected = null;
     render();
+    sessRound();
     emit('round', state.round);
     if (opts && opts.say) sayRound(null, true);
   }
@@ -497,6 +514,7 @@
     if (state.phase !== 'ask' || state.celebrating || !state.round) return false;
     var r = state.round, p = PAIR[r.pair];
     state.selected = null;
+    if (SESS && PAIR[id]) SESS.log({ response: itemLab(id), correct: id === r.pair, prompted: state.hint, prompt: 'wiggle hint' });
     if (id === r.pair) {
       state.phase = 'anim';
       render();
@@ -857,6 +875,7 @@
     if (typeof synth.addEventListener === 'function') synth.addEventListener('voiceschanged', refreshVoices);
     else synth.onvoiceschanged = refreshVoices;
   }
+  if (window.HFBSession) SESS = window.HFBSession.init({ game: 'match-it', name: { en: 'Match It', fa: 'چی به چی می‌خوره؟' } });
   newRound();
   if (state.stars >= GOAL) showCelebration();
 })();

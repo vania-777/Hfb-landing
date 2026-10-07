@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>نمایش زنده · Live view — HFB Play Together</title>
+  <meta name="description" content="Watch an HFB Play Together session live from your own phone, read-only, with the private code from the child's device.">
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('hfb-theme');
+        if (t === 'dark' || t === 'dim' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+        var l = localStorage.getItem('hfb-lang');
+        if (l === 'en') { document.documentElement.lang = 'en'; document.documentElement.dir = 'ltr'; }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="watch.css?v=20261007-3">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="../../home/" id="homeLink" aria-label="HFB">
+      <img src="../../assets/logo-hfb-original@1x.png" srcset="../../assets/logo-hfb-original@1x.png 1x, ../../assets/logo-hfb-original@2x.png 2x" width="40" height="40" alt="">
+      <span id="pageTitle">نمایش زنده</span>
+    </a>
+    <button type="button" class="tool-btn" id="langBtn"><span id="langBtnText">EN</span></button>
+  </header>
+
+  <main id="main" class="wrap">
+    <section id="codeForm" class="card" hidden>
+      <h1 id="codeTitle">تماشای زنده</h1>
+      <p id="codeIntro" class="muted"></p>
+      <form id="codeFormEl" autocomplete="off">
+        <label for="codeInput" id="codeLabel" class="label"></label>
+        <input id="codeInput" inputmode="text" autocapitalize="off" spellcheck="false" dir="ltr" maxlength="12" placeholder="abcd-efgh">
+        <button type="submit" class="btn primary" id="codeGo"></button>
+        <p id="codeErr" class="warn" hidden></p>
+      </form>
+    </section>
+
+    <section id="watch" hidden>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <div class="card now" id="nowCard">
+        <p class="eyebrow" id="nowGame"></p>
+        <p class="level" id="nowLevel"></p>
+        <h1 class="question" id="nowQ"></h1>
+        <p class="stim muted" id="nowStim"></p>
+        <ul class="chips" id="nowChoices" aria-label=""></ul>
+        <p class="muted small" id="nowEmpty"></p>
+      </div>
+      <div class="card">
+        <ul class="counts" id="counts"></ul>
+        <p class="muted small" id="countsSub"></p>
+      </div>
+      <div class="card">
+        <h2 id="perTargetTitle"></h2>
+        <ul class="targets" id="targets"></ul>
+        <p class="muted small" id="legend"></p>
+      </div>
+      <div class="card">
+        <h2 id="feedTitle"></h2>
+        <ol class="feed" id="feed" reversed></ol>
+      </div>
+      <div class="card" id="pastCard" hidden>
+        <h2 id="pastTitle"></h2>
+        <ul class="past" id="past"></ul>
+      </div>
+      <p class="muted small center" id="privacyNote"></p>
+    </section>
+  </main>
+
+  <script src="../choice-reward/vendor/peerjs.min.js?v=20261007-3"></script>
+  <script src="watch.js?v=20261007-3"></script>
+</body>
+</html>

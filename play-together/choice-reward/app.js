@@ -577,6 +577,23 @@
     return shuffle(set);
   }
 
+  /* ---------- Shared session log + Live view (../shared/session.js) ----------
+     In two-device mode the log runs on the adult's (host) device only; the child's picks arrive there. */
+  var SESS = null, remotePick = false;
+  function itLab(it) { return { id: it.id, en: it.en, fa: it.fa }; }
+  function sessRound() {
+    if (!SESS || isLiveChild()) return;
+    var L0 = lvl(), n = state.current.length;
+    SESS.round({
+      level: state.level,
+      levelName: { en: STR.en['mode_' + L0.mode] + ', ' + n + ' cards', fa: STR.fa['mode_' + L0.mode] + '، ' + toFaDigits(n) + ' کارت' },
+      key: state.target ? state.target.id : 'free',
+      target: state.target ? itLab(state.target) : { id: 'free', en: 'Free choice (no right answer)', fa: 'انتخاب آزاد' },
+      answer: state.target ? state.target.id : null,
+      choices: state.current.map(itLab)
+    });
+  }
+
   function newRound(opts) {
     clearTimeout(state.advanceTimer);
     if (isLiveChild()) return; // in live mode the adult's device deals the cards
@@ -598,6 +615,7 @@
     else state.current.forEach(function (it) { state.lastShown[it.id] = state.roundNo; });
     el.feedback.hidden = true;
     renderChoices();
+    sessRound();
     if (opts && opts.say && isFind()) speakQuestion(null, true);
     sendState();
   }
@@ -685,6 +703,7 @@
     var find = !!state.target;
     state.chosen = item;
     state.correct = find ? item.id === state.target.id : null;
+    if (SESS && !isLiveChild()) SESS.log({ response: itLab(item), correct: state.correct, prompted: false, via: remotePick ? 'child\'s device (two-device mode)' : undefined });
     showResult();
     var earned = !find || state.correct;
     if (earned) {
@@ -1016,7 +1035,7 @@
     // Host: the child's actions.
     if (m.t === 'choose') {
       var it = state.current.filter(function (x) { return x.id === m.id; })[0];
-      if (it && !state.chosen && el.celebrate.hidden) choose(it); else sendState();
+      if (it && !state.chosen && el.celebrate.hidden) { remotePick = true; try { choose(it); } finally { remotePick = false; } } else sendState();
     } else if (m.t === 'next') { goNext(); }
     else if (m.t === 'again') { if (!el.celebrate.hidden) hideCelebration(); }
     else if (m.t === 'nextLevel') { if (!el.celebrate.hidden) nextLevel(); }
@@ -1321,6 +1340,7 @@
   }
   applySettings();
   if (live.role === 'child') state.stars = 0; // team stars come from the adult's device
+  if (window.HFBSession && live.role !== 'child') SESS = window.HFBSession.init({ game: 'choice-reward', name: { en: 'Choice & Reward', fa: 'انتخاب و پاداش' } });
   newRound();
   applyLang();
   if (live.role === 'child') {

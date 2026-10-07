@@ -163,6 +163,30 @@
   }
   function nextFocusId() { var act = activePairs(), i = act.indexOf(focusPair()); return act[(i + 1) % act.length]; }
 
+  /* ---------- Shared session log + Live view (../shared/session.js) ---------- */
+  var SESS = null;
+  function wl(group, id) { return { id: id, en: WORDS.en[group][id], fa: WORDS.fa[group][id] }; }
+  function humanize(d) { return String(d || '').replace(/([A-Z])/g, ' $1').toLowerCase(); }
+  function sessRound() {
+    var r = state.round; if (!SESS || !r) return;
+    var lv = state.settings.level, info = { level: lv, levelName: { en: STR.en.modes[lv], fa: STR.fa.modes[lv] } };
+    if (r.kind === 'sit') {
+      info.key = 'sit:' + r.sit; info.target = wl('sit', r.sit); info.answer = r.answer;
+      info.choices = r.options.map(function (id) { return wl('item', id); });
+    } else {
+      var e = r.kind === 'sort' ? EXI[r.queue[Math.min(r.idx, r.queue.length - 1)]] : EXI[r.ex];
+      info.key = e.pole; info.target = wl('word', e.pole); info.answer = e.pole;
+      info.stimulus = { en: 'Picture: ' + humanize(e.d) + (r.kind === 'sort' ? ' (sorting into boxes)' : ''), fa: 'تصویر: ' + humanize(e.d) + (r.kind === 'sort' ? ' (دسته‌بندی در جعبه)' : '') };
+      info.choices = (r.kind === 'sort' ? r.bins : r.options).map(function (p) { return wl('word', p); });
+    }
+    SESS.round(info);
+  }
+  function sessLog(resp, correct, prompted, hint) {
+    if (!SESS) return;
+    var r = state.round;
+    SESS.log({ response: r.kind === 'sit' ? wl('item', resp) : wl('word', resp), correct: correct, prompted: !!(prompted || hint), prompt: prompted ? 'gold ring' : 'wiggle hint' });
+  }
+
   /* ---------- DOM ---------- */
   var $ = function (id) { return document.getElementById(id); };
   var el = {
@@ -503,6 +527,7 @@
     state.phase = 'ask'; state.misses = 0; state.prompt = false; state.hint = false; state.justFilled = -1;
     schedulePrompt();
     render();
+    sessRound();
     emit('round', state.round);
     if (opts.say) present(null, { first: true });
   }
@@ -510,6 +535,7 @@
     var r = state.round;
     if (!r || r.kind === 'sort' || state.phase !== 'ask' || state.celebrating) return false;
     var right = rightAnswer();
+    sessLog(id, id === right, state.prompt, state.hint);
     if (id === right) {
       clearTimer(); stopSpeech();
       state.phase = 'anim'; state.prompt = false; state.hint = false;
@@ -537,6 +563,7 @@
     var r = state.round;
     if (!r || r.kind !== 'sort' || state.phase !== 'ask' || state.celebrating) return false;
     var e = curSortEx();
+    sessLog(pole, pole === e.pole, state.prompt, state.hint);
     if (pole === e.pole) {
       clearTimer(); stopSpeech();
       state.phase = 'placing'; state.prompt = false; state.hint = false;
@@ -551,6 +578,7 @@
         if (r.idx >= r.queue.length) { award(); return; }
         state.phase = 'ask';
         schedulePrompt(); render();
+        sessRound();
         present(null, {});
       }, state.settings.motion ? 1300 : 900);
       return true;
@@ -1016,6 +1044,7 @@
     if (typeof synth.addEventListener === 'function') synth.addEventListener('voiceschanged', refreshVoices);
     else synth.onvoiceschanged = refreshVoices;
   }
+  if (window.HFBSession) SESS = window.HFBSession.init({ game: 'opposites', name: { en: 'Opposites', fa: 'برعکس‌ها' } });
   newRound();
   if (state.stars >= GOAL) showCelebration();
 })();

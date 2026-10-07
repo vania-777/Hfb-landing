@@ -1,0 +1,13 @@
+/* Shared Adult-panel block for the session log + Live view (all games). */
+.hfb-sess .pill-btn { margin-top: 8px; }
+.hfb-sess .pill-btn.small { min-height: 48px; padding: 0 16px; font-size: 1rem; margin-top: 0; white-space: nowrap; }
+.hfb-live-on { margin-top: 6px; }
+.hfb-live-badge { margin: 8px 0 6px; padding: 8px 12px; border-radius: 12px; font-weight: 700; background: var(--glass-strong); border: 1px solid var(--glass-border); }
+.hfb-live-badge.ok { border-color: #3fbf7f; background: color-mix(in srgb, #3fbf7f 18%, transparent); }
+.hfb-live-badge.ok::before { content: "● "; color: #3fbf7f; }
+.hfb-live-badge.warn { border-color: #e0a63a; background: color-mix(in srgb, #e0a63a 16%, transparent); }
+.hfb-live-code { margin: 6px 0; font-size: 1.05rem; }
+.hfb-live-code strong { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 1.5rem; letter-spacing: .08em; unicode-bidi: isolate; }
+.hfb-live-linkrow { display: flex; gap: 8px; align-items: center; }
+.hfb-live-linkrow input { flex: 1; min-width: 0; min-height: 48px; padding: 0 10px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--glass); color: var(--text); font-size: .9rem; }
+.hfb-sess .hfb-stop { border-color: #e0a63a; }
